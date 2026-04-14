@@ -70,7 +70,7 @@ BTL-nhom24/
     ├── Chức năng đăng nhập.png
     ├── Trang chủ ADMIN.png
     ├── Quản lý phòng học.png
-    ├── FROM đặt phòng.png
+    ├── FORM đặt phòng.png
     ├── Danh sách đặt phòng.png
     ├── Quản lý người dùng.png
     ├── Quản lý thiết bị.png
