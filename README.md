@@ -1,5 +1,5 @@
 # BTL-nhom24
-Nhóm 24 – Hệ thống quản lý đặt phòng học
+Nhóm 24 – Hệ thống quản lý phòng học trong trường đại học
 
 ---
 THÀNH VIÊN
