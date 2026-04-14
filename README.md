@@ -1,5 +1,105 @@
 # BTL-nhom24
-Nhóm 24 – Hệ thống quản lý phòng học trong trường đại học
+Nhóm 24 – Hệ thống quản lý đặt phòng học trong trường đại học
+
+---
+
+## Mô tả chương trình
+
+**Hệ Thống Quản Lý Đặt Phòng Học** là ứng dụng desktop xây dựng bằng Python + Tkinter, kết nối cơ sở dữ liệu MySQL. Hệ thống hỗ trợ ba vai trò: **Admin**, **Giảng viên** và **Sinh viên**.
+
+### Chức năng chính
+
+| Chức năng | Mô tả |
+|---|---|
+| Đăng nhập | Xác thực tài khoản, phân quyền theo vai trò |
+| Trang chủ | Thống kê nhanh (tổng phòng, đặt hôm nay, chờ duyệt, từ chối), danh sách đặt phòng gần đây |
+| Quản lý phòng học | Thêm/sửa/xóa phòng, tìm kiếm, xem tình trạng |
+| Đặt phòng | Form đặt phòng 2 cột: chọn phòng, ngày, ca học, hiển thị ca còn trống |
+| Danh sách đặt phòng | Lọc theo ngày/phòng/trạng thái, duyệt/từ chối, xuất Excel |
+| Quản lý tài khoản | Thêm/sửa/xóa tài khoản (Admin/GV/SV) |
+| Quản lý thiết bị | Theo dõi thiết bị theo phòng, trạng thái hoạt động/bảo trì |
+| Báo cáo thống kê | Bảng tổng hợp + biểu đồ cột tỷ lệ sử dụng phòng, xuất Excel |
+| Lịch biểu phòng | Lưới tuần (Ca × Thứ), hiển thị trạng thái từng ô |
+| Thông báo | Thông báo kết quả duyệt/từ chối cho GV và SV |
+
+---
+
+## Thiết kế chi tiết
+
+### Phân quyền (Role-based)
+
+```
+Admin       → Tất cả chức năng
+Giảng viên  → Trang chủ · Đặt phòng · Lịch đặt của tôi · Thông báo
+Sinh viên   → Trang chủ · Đặt phòng · Lịch đặt của tôi · Thông báo
+```
+
+### Giao diện (GUI Layout)
+
+```
+┌──────────────────────────────────────────────────────────┐
+│  TOPBAR: Tiêu đề hệ thống  │  Tên người dùng │ Đăng xuất │
+├────────────┬─────────────────────────────────────────────┤
+│            │                                             │
+│  SIDEBAR   │            CONTENT AREA                     │
+│  (200 px)  │            (thay đổi theo trang)            │
+│            │                                             │
+└────────────┴─────────────────────────────────────────────┘
+```
+
+### Cơ sở dữ liệu (MySQL) – ERD chính
+
+| Bảng | Các cột chính |
+|---|---|
+| `users` | id, ten, vaitro, email, sdt, mat_khau (SHA-256), trang_thai |
+| `rooms` | id, ten, loai, suc_chua, tang, toa, trang_thiet_bi, trang_thai |
+| `bookings` | id, user_id (FK), room_id (FK), ngay, ca, muc_dich, trang_thai |
+| `equipment` | id, ten, loai, room_id (FK), trang_thai, ngay_mua |
+
+---
+
+## Cấu trúc mã nguồn
+
+```
+BTL-nhom24/
+├── main.py                   # Toàn bộ ứng dụng GUI (entry point)
+├── requirements.txt          # Các thư viện Python cần cài
+├── README.md                 # Tài liệu dự án
+├── Giao Dien.drawio          # Sơ đồ ERD / Use Case / Flowchart
+└── Trang Giao Diện/          # Ảnh thiết kế mockup từng màn hình
+    ├── Chức năng đăng nhập.png
+    ├── Trang chủ ADMIN.png
+    ├── Quản lý phòng học.png
+    ├── FROM đặt phòng.png
+    ├── Danh sách đặt phòng.png
+    ├── Quản lý người dùng.png
+    ├── Quản lý thiết bị.png
+    ├── Báo cáo thống kê.png
+    ├── Lịch Biểu Phòng Học.png
+    └── Chi Tiết phòng học.png
+```
+
+### Giải thích `main.py`
+
+| Lớp / Hàm | Ý nghĩa |
+|---|---|
+| `App` | Cửa sổ gốc Tk, điều hướng giữa màn hình đăng nhập và shell chính |
+| `LoginFrame` | Màn hình đăng nhập (username, password, vai trò) |
+| `MainShell` | Shell chính: TopBar + Sidebar + vùng Content; xây dựng nav theo role |
+| `_BasePage` | Frame cơ sở có scroll dọc, tất cả trang kế thừa |
+| `HomePage` | Trang chủ: 4 thẻ thống kê + bảng đặt phòng gần đây |
+| `RoomManagementPage` | Quản lý phòng: CRUD table + dialog inline + tìm kiếm |
+| `BookingFormPage` | Form đặt phòng 2 cột: thông tin người đặt / chọn ca và mục đích |
+| `BookingListPage` | Danh sách đặt phòng: bộ lọc + bảng trạng thái màu + phân trang |
+| `UserManagementPage` | Quản lý tài khoản: bảng + dialog thêm/sửa |
+| `EquipmentPage` | Quản lý thiết bị: bảng lọc theo phòng |
+| `StatisticsPage` | Báo cáo: bảng tổng hợp + biểu đồ cột vẽ trên Canvas |
+| `SchedulePage` | Lịch biểu: lưới Ca × Thứ hiển thị đặt phòng theo tuần |
+| `NotifyPage` | Thông báo duyệt/từ chối cho GV và SV |
+| `build_treeview()` | Hàm tiện ích tạo Treeview có scrollbar và style chuẩn |
+| `MOCK_*` | Dữ liệu mẫu (thay bằng kết nối MySQL thực khi triển khai) |
+
+---
 
 ---
 THÀNH VIÊN
