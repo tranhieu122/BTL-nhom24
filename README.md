@@ -2,7 +2,10 @@
 Nhóm 24 – Hệ thống quản lý đặt phòng học
 
 ---
-
+THÀNH VIÊN
+- Trần Trung Hiếu
+- Nguyễn Huy Hải
+- Nguyễn Tuấn Minh
 ## Các công cụ xây dựng hệ thống
 
 ### 1. MySQL
