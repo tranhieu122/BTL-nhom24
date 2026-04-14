@@ -1,4 +1,4 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6" pages="6">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6" pages="10">
   <diagram id="page1" name="1. Đăng nhập">
     <mxGraphModel dx="1226" dy="736" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -562,6 +562,816 @@
         </mxCell>
         <mxCell id="p6_54" value="3       |  P305 – Hội trường  |  15 lượt  |  17.2%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;" vertex="1" parent="1">
           <mxGeometry x="220" y="620" width="500" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page7" name="7. Lịch biểu phòng học">
+    <mxGraphModel dx="1389" dy="835" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===== HEADER ===== -->
+        <mxCell id="p7_header_bg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0057a8;strokeColor=#0057a8;fontColor=#ffffff;fontStyle=1;fontSize=14;" value="HỆ THỐNG QUẢN LÝ ĐẶT PHÒNG HỌC" vertex="1">
+          <mxGeometry x="0" y="0" width="1254" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_header_user" parent="1" style="text;html=1;strokeColor=none;fillColor=#0057a8;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#ffffff;fontSize=11;" value="Admin: Nguyễn Văn A  |  Đăng xuất" vertex="1">
+          <mxGeometry x="1054" y="0" width="300" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ===== LEFT SIDEBAR ===== -->
+        <mxCell id="p7_sidebar" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1e3a5f;strokeColor=#1e3a5f;" value="" vertex="1">
+          <mxGeometry x="0" y="50" width="200" height="819" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_nav1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#aaaaaa;spacingLeft=15;" value="🏠  Trang chủ" vertex="1">
+          <mxGeometry x="0" y="80" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_nav2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#aaaaaa;spacingLeft=15;" value="🏫  Quản lý phòng" vertex="1">
+          <mxGeometry x="0" y="130" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_nav3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#aaaaaa;spacingLeft=15;" value="📅  Đặt phòng" vertex="1">
+          <mxGeometry x="0" y="180" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_nav4" parent="1" style="text;html=1;strokeColor=none;fillColor=#2e5080;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#ffffff;spacingLeft=15;fontStyle=1;" value="🗓  Lịch biểu phòng" vertex="1">
+          <mxGeometry x="0" y="230" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_nav5" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#aaaaaa;spacingLeft=15;" value="🔧  Thiết bị" vertex="1">
+          <mxGeometry x="0" y="280" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_nav6" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#aaaaaa;spacingLeft=15;" value="👥  Người dùng" vertex="1">
+          <mxGeometry x="0" y="330" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_nav7" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#aaaaaa;spacingLeft=15;" value="📊  Báo cáo" vertex="1">
+          <mxGeometry x="0" y="380" width="200" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ===== MAIN AREA ===== -->
+        <mxCell id="p7_title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=15;fontColor=#1a237e;" value="📅  Lịch biểu phòng học" vertex="1">
+          <mxGeometry x="220" y="58" width="400" height="36" as="geometry" />
+        </mxCell>
+
+        <!-- ===== TOOLBAR ===== -->
+        <mxCell id="p7_toolbar" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#90caf9;" value="" vertex="1">
+          <mxGeometry x="220" y="100" width="1034" height="46" as="geometry" />
+        </mxCell>
+        <!-- Mode toggle -->
+        <mxCell id="p7_lbl_mode" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;" value="CHẾ ĐỘ:" vertex="1">
+          <mxGeometry x="232" y="112" width="66" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_btn_week" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0057a8;strokeColor=#0057a8;fontColor=#ffffff;fontSize=10;fontStyle=1;" value="Tuần" vertex="1">
+          <mxGeometry x="300" y="111" width="60" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_btn_month" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0057a8;fontColor=#0057a8;fontSize=10;" value="Tháng" vertex="1">
+          <mxGeometry x="366" y="111" width="60" height="26" as="geometry" />
+        </mxCell>
+        <!-- Room filter -->
+        <mxCell id="p7_lbl_room" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;" value="PHÒNG:" vertex="1">
+          <mxGeometry x="444" y="112" width="58" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_room_combo" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=8;fontSize=10;" value="Tất cả phòng  ▼" vertex="1">
+          <mxGeometry x="504" y="111" width="130" height="26" as="geometry" />
+        </mxCell>
+        <!-- Nav label -->
+        <mxCell id="p7_nav_label" parent="1" style="text;html=1;strokeColor=#999999;fillColor=#ffffff;align=center;fontSize=11;fontStyle=1;" value="07/04 – 13/04/2025" vertex="1">
+          <mxGeometry x="660" y="111" width="180" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_btn_prev" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#bdbdbd;fontSize=10;" value="◀ Trước" vertex="1">
+          <mxGeometry x="852" y="111" width="76" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_btn_next" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#bdbdbd;fontSize=10;" value="▶ Sau" vertex="1">
+          <mxGeometry x="934" y="111" width="76" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_btn_today" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#66bb6a;fontColor=#2e7d32;fontSize=10;" value="Hôm nay" vertex="1">
+          <mxGeometry x="1016" y="111" width="76" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- ===== CALENDAR GRID (WEEKLY VIEW) ===== -->
+        <!-- Time column header -->
+        <mxCell id="p7_th_time" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#90caf9;fontStyle=1;fontSize=10;" value="" vertex="1">
+          <mxGeometry x="220" y="154" width="60" height="36" as="geometry" />
+        </mxCell>
+        <!-- Day column headers -->
+        <mxCell id="p7_th_mon" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a237e;strokeColor=#90caf9;fontColor=#ffffff;fontStyle=1;fontSize=10;" value="Thứ 2&#xa;07/04" vertex="1">
+          <mxGeometry x="280" y="154" width="138" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_th_tue" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#90caf9;fontColor=#0d47a1;fontStyle=1;fontSize=10;" value="Thứ 3&#xa;08/04" vertex="1">
+          <mxGeometry x="418" y="154" width="138" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_th_wed" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#90caf9;fontColor=#0d47a1;fontStyle=1;fontSize=10;" value="Thứ 4&#xa;09/04" vertex="1">
+          <mxGeometry x="556" y="154" width="138" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_th_thu" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#90caf9;fontColor=#0d47a1;fontStyle=1;fontSize=10;" value="Thứ 5&#xa;10/04" vertex="1">
+          <mxGeometry x="694" y="154" width="138" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_th_fri" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#90caf9;fontColor=#0d47a1;fontStyle=1;fontSize=10;" value="Thứ 6&#xa;11/04" vertex="1">
+          <mxGeometry x="832" y="154" width="138" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_th_sat" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#f48fb1;fontColor=#880e4f;fontStyle=1;fontSize=10;" value="Thứ 7&#xa;12/04" vertex="1">
+          <mxGeometry x="970" y="154" width="138" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_th_sun" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#f48fb1;fontColor=#880e4f;fontStyle=1;fontSize=10;" value="CN&#xa;13/04" vertex="1">
+          <mxGeometry x="1108" y="154" width="138" height="36" as="geometry" />
+        </mxCell>
+
+        <!-- Time slots (7h–15h shown, 8 rows) -->
+        <mxCell id="p7_t7" parent="1" style="text;html=1;strokeColor=#e0e0e0;fillColor=#f5f5f5;align=center;verticalAlign=middle;fontSize=9;" value="07:00" vertex="1">
+          <mxGeometry x="220" y="190" width="60" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_t8" parent="1" style="text;html=1;strokeColor=#e0e0e0;fillColor=#f5f5f5;align=center;verticalAlign=middle;fontSize=9;" value="08:00" vertex="1">
+          <mxGeometry x="220" y="240" width="60" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_t9" parent="1" style="text;html=1;strokeColor=#e0e0e0;fillColor=#f5f5f5;align=center;verticalAlign=middle;fontSize=9;" value="09:00" vertex="1">
+          <mxGeometry x="220" y="290" width="60" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_t10" parent="1" style="text;html=1;strokeColor=#e0e0e0;fillColor=#f5f5f5;align=center;verticalAlign=middle;fontSize=9;" value="10:00" vertex="1">
+          <mxGeometry x="220" y="340" width="60" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_t11" parent="1" style="text;html=1;strokeColor=#e0e0e0;fillColor=#f5f5f5;align=center;verticalAlign=middle;fontSize=9;" value="11:00" vertex="1">
+          <mxGeometry x="220" y="390" width="60" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_t13" parent="1" style="text;html=1;strokeColor=#e0e0e0;fillColor=#f5f5f5;align=center;verticalAlign=middle;fontSize=9;" value="13:00" vertex="1">
+          <mxGeometry x="220" y="440" width="60" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_t15" parent="1" style="text;html=1;strokeColor=#e0e0e0;fillColor=#f5f5f5;align=center;verticalAlign=middle;fontSize=9;" value="15:00" vertex="1">
+          <mxGeometry x="220" y="490" width="60" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_t17" parent="1" style="text;html=1;strokeColor=#e0e0e0;fillColor=#f5f5f5;align=center;verticalAlign=middle;fontSize=9;" value="17:00" vertex="1">
+          <mxGeometry x="220" y="540" width="60" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Grid cells (empty backgrounds) -->
+        <mxCell id="p7_cell_mon_all" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#e0e0e0;" value="" vertex="1">
+          <mxGeometry x="280" y="190" width="138" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_cell_tue_all" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#e0e0e0;" value="" vertex="1">
+          <mxGeometry x="418" y="190" width="138" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_cell_wed_all" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#e0e0e0;" value="" vertex="1">
+          <mxGeometry x="556" y="190" width="138" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_cell_thu_all" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#e0e0e0;" value="" vertex="1">
+          <mxGeometry x="694" y="190" width="138" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_cell_fri_all" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#e0e0e0;" value="" vertex="1">
+          <mxGeometry x="832" y="190" width="138" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_cell_sat_all" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff8f8;strokeColor=#f48fb1;" value="" vertex="1">
+          <mxGeometry x="970" y="190" width="138" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_cell_sun_all" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff8f8;strokeColor=#f48fb1;" value="" vertex="1">
+          <mxGeometry x="1108" y="190" width="138" height="400" as="geometry" />
+        </mxCell>
+
+        <!-- ===== SCHEDULE BLOCKS ===== -->
+        <!-- Monday: Lập trình Python 07:00–09:00 A101 -->
+        <mxCell id="p7_ev1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4FC3F7;strokeColor=#546e7a;fontSize=9;fontStyle=1;align=left;spacingLeft=6;verticalAlign=top;" value="A101&#xa;Lập trình Python&#xa;TS. Nguyễn Văn An" vertex="1">
+          <mxGeometry x="282" y="192" width="134" height="99" as="geometry" />
+        </mxCell>
+        <!-- Monday: CSDL 15:00–17:00 C301 -->
+        <mxCell id="p7_ev2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#81C784;strokeColor=#546e7a;fontSize=9;fontStyle=1;align=left;spacingLeft=6;verticalAlign=top;" value="C301&#xa;Cơ sở dữ liệu&#xa;TS. Nguyễn Văn An" vertex="1">
+          <mxGeometry x="282" y="492" width="134" height="98" as="geometry" />
+        </mxCell>
+        <!-- Tuesday: Vật lý thực hành 07:00–11:00 A101 -->
+        <mxCell id="p7_ev3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFB74D;strokeColor=#546e7a;fontSize=9;fontStyle=1;align=left;spacingLeft=6;verticalAlign=top;" value="A101&#xa;Vật lý thực hành&#xa;PGS. Lê Văn Cường" vertex="1">
+          <mxGeometry x="420" y="192" width="134" height="199" as="geometry" />
+        </mxCell>
+        <!-- Wednesday: Giải tích 1 09:00–11:00 B201 -->
+        <mxCell id="p7_ev4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BA68C8;strokeColor=#546e7a;fontSize=9;fontStyle=1;align=left;spacingLeft=6;verticalAlign=top;" value="B201&#xa;Giải tích 1&#xa;ThS. Trần Thị Bình" vertex="1">
+          <mxGeometry x="558" y="292" width="134" height="99" as="geometry" />
+        </mxCell>
+        <!-- Wednesday: Vật lý đại cương 13:00–15:00 C301 -->
+        <mxCell id="p7_ev5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4DD0E1;strokeColor=#546e7a;fontSize=9;fontStyle=1;align=left;spacingLeft=6;verticalAlign=top;" value="C301&#xa;Vật lý đại cương&#xa;PGS. Lê Văn Cường" vertex="1">
+          <mxGeometry x="558" y="442" width="134" height="99" as="geometry" />
+        </mxCell>
+        <!-- Thursday: Đại số tuyến tính 09:00–11:00 B202 -->
+        <mxCell id="p7_ev6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F06292;strokeColor=#546e7a;fontSize=9;fontStyle=1;align=left;spacingLeft=6;verticalAlign=top;" value="B202&#xa;Đại số tuyến tính&#xa;ThS. Trần Thị Bình" vertex="1">
+          <mxGeometry x="696" y="292" width="134" height="99" as="geometry" />
+        </mxCell>
+        <!-- Friday: Nhập môn AI 07:00–09:00 C301 -->
+        <mxCell id="p7_ev7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#AED581;strokeColor=#546e7a;fontSize=9;fontStyle=1;align=left;spacingLeft=6;verticalAlign=top;" value="C301&#xa;Nhập môn AI&#xa;TS. Nguyễn Văn An" vertex="1">
+          <mxGeometry x="834" y="192" width="134" height="99" as="geometry" />
+        </mxCell>
+
+        <!-- ===== LEGEND ===== -->
+        <mxCell id="p7_legend_title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;" value="Chú thích phòng:" vertex="1">
+          <mxGeometry x="220" y="605" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_leg1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4FC3F7;strokeColor=#546e7a;fontSize=9;fontStyle=1;" value="  A101  " vertex="1">
+          <mxGeometry x="356" y="605" width="60" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_leg2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#81C784;strokeColor=#546e7a;fontSize=9;fontStyle=1;" value="  A102  " vertex="1">
+          <mxGeometry x="422" y="605" width="60" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_leg3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFB74D;strokeColor=#546e7a;fontSize=9;fontStyle=1;" value="  B201  " vertex="1">
+          <mxGeometry x="488" y="605" width="60" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_leg4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BA68C8;strokeColor=#546e7a;fontSize=9;fontStyle=1;" value="  B202  " vertex="1">
+          <mxGeometry x="554" y="605" width="60" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p7_leg5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4DD0E1;strokeColor=#546e7a;fontSize=9;fontStyle=1;" value="  C301  " vertex="1">
+          <mxGeometry x="620" y="605" width="60" height="24" as="geometry" />
+        </mxCell>
+
+        <!-- ===== MONTH VIEW HINT ===== -->
+        <mxCell id="p7_month_hint" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#f9a825;fontSize=10;align=left;spacingLeft=10;" value="💡 Nhấn nút &quot;Tháng&quot; để chuyển sang chế độ xem tháng. Click vào ô ngày để xem chi tiết tuần đó." vertex="1">
+          <mxGeometry x="220" y="640" width="700" height="32" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page8" name="8. Quản lý thiết bị">
+    <mxGraphModel dx="1389" dy="835" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===== HEADER ===== -->
+        <mxCell id="p8_header" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0057a8;strokeColor=#0057a8;fontColor=#ffffff;fontStyle=1;fontSize=14;" value="HỆ THỐNG QUẢN LÝ ĐẶT PHÒNG HỌC" vertex="1">
+          <mxGeometry x="0" y="0" width="1254" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_header_user" parent="1" style="text;html=1;strokeColor=none;fillColor=#0057a8;align=right;verticalAlign=middle;fontColor=#ffffff;fontSize=11;" value="Admin: Nguyễn Văn A  |  Đăng xuất" vertex="1">
+          <mxGeometry x="1054" y="0" width="300" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ===== SIDEBAR ===== -->
+        <mxCell id="p8_sidebar" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1e3a5f;strokeColor=#1e3a5f;" value="" vertex="1">
+          <mxGeometry x="0" y="50" width="200" height="819" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_nav1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#aaaaaa;spacingLeft=15;" value="🏠  Trang chủ" vertex="1">
+          <mxGeometry x="0" y="80" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_nav4" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#aaaaaa;spacingLeft=15;" value="🗓  Lịch biểu phòng" vertex="1">
+          <mxGeometry x="0" y="130" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_nav5_active" parent="1" style="text;html=1;strokeColor=none;fillColor=#2e5080;align=left;verticalAlign=middle;fontColor=#ffffff;spacingLeft=15;fontStyle=1;" value="🔧  Thiết bị" vertex="1">
+          <mxGeometry x="0" y="180" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_nav6" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#aaaaaa;spacingLeft=15;" value="👥  Người dùng" vertex="1">
+          <mxGeometry x="0" y="230" width="200" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ===== PAGE TITLE ===== -->
+        <mxCell id="p8_title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#1a237e;" value="🔧  Quản lý thiết bị" vertex="1">
+          <mxGeometry x="220" y="58" width="400" height="36" as="geometry" />
+        </mxCell>
+
+        <!-- ===== FILTER BAR ===== -->
+        <mxCell id="p8_filter_bg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#90caf9;" value="" vertex="1">
+          <mxGeometry x="220" y="100" width="1034" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_lbl_room" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;" value="Phòng:" vertex="1">
+          <mxGeometry x="232" y="113" width="48" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_combo_room" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=6;fontSize=10;" value="Tất cả  ▼" vertex="1">
+          <mxGeometry x="282" y="112" width="130" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_lbl_type" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;" value="Loại:" vertex="1">
+          <mxGeometry x="424" y="113" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_combo_type" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=6;fontSize=10;" value="Tất cả  ▼" vertex="1">
+          <mxGeometry x="466" y="112" width="120" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_lbl_status" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;" value="Tình trạng:" vertex="1">
+          <mxGeometry x="598" y="113" width="70" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_combo_status" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=6;fontSize=10;" value="Tất cả  ▼" vertex="1">
+          <mxGeometry x="670" y="112" width="120" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- ===== ACTION BUTTONS ===== -->
+        <mxCell id="p8_btn_add" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0057a8;strokeColor=#0057a8;fontColor=#ffffff;fontSize=10;fontStyle=1;" value="➕ Thêm thiết bị" vertex="1">
+          <mxGeometry x="220" y="158" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_btn_edit" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#bdbdbd;fontSize=10;" value="✏️ Sửa" vertex="1">
+          <mxGeometry x="346" y="158" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_btn_del" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcdd2;strokeColor=#e57373;fontColor=#c62828;fontSize=10;" value="🗑️ Xóa" vertex="1">
+          <mxGeometry x="432" y="158" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_btn_refresh" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#66bb6a;fontColor=#2e7d32;fontSize=10;" value="🔄 Làm mới" vertex="1">
+          <mxGeometry x="518" y="158" width="96" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_count_lbl" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;fontSize=10;fontColor=#455a64;" value="Tổng: 13 thiết bị" vertex="1">
+          <mxGeometry x="1050" y="162" width="140" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- ===== SUMMARY CARDS ===== -->
+        <mxCell id="p8_card_ok" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#a5d6a7;" value="✅ Hoạt động&#xa;9" vertex="1">
+          <mxGeometry x="220" y="200" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_card_broken" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcdd2;strokeColor=#ef9a9a;" value="❌ Hỏng&#xa;2" vertex="1">
+          <mxGeometry x="350" y="200" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_card_maint" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#f9cc1b;" value="🔧 Bảo trì&#xa;2" vertex="1">
+          <mxGeometry x="480" y="200" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ===== EQUIPMENT TABLE HEADER ===== -->
+        <mxCell id="p8_th_bg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a237e;strokeColor=#1a237e;fontColor=#ffffff;fontStyle=1;fontSize=10;" value="" vertex="1">
+          <mxGeometry x="220" y="272" width="1034" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_th_room" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Phòng" vertex="1">
+          <mxGeometry x="224" y="272" width="140" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_th_type2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Loại thiết bị" vertex="1">
+          <mxGeometry x="366" y="272" width="130" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_th_name" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Tên thiết bị" vertex="1">
+          <mxGeometry x="498" y="272" width="220" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_th_stat" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Tình trạng" vertex="1">
+          <mxGeometry x="720" y="272" width="120" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_th_checked" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Kiểm tra lần cuối" vertex="1">
+          <mxGeometry x="842" y="272" width="140" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_th_notes" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Ghi chú" vertex="1">
+          <mxGeometry x="984" y="272" width="160" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- Equipment rows -->
+        <mxCell id="p8_row1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#e0e0e0;align=left;spacingLeft=8;fontSize=10;" value="A101 – Phòng A101 | 📽 Máy chiếu | Máy chiếu Epson EB-X41 | ✅ Hoạt động | 14/04/2025 |" vertex="1">
+          <mxGeometry x="220" y="304" width="1034" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_row2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#e0e0e0;align=left;spacingLeft=8;fontSize=10;" value="A101 – Phòng A101 | 🔊 Loa | Loa JBL 305P | 🔧 Bảo trì | 14/04/2025 |" vertex="1">
+          <mxGeometry x="220" y="336" width="1034" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_row3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#e0e0e0;align=left;spacingLeft=8;fontSize=10;" value="A101 – Phòng A101 | ❄️ Điều hòa | Điều hòa Daikin 1.5HP | ✅ Hoạt động | 14/04/2025 |" vertex="1">
+          <mxGeometry x="220" y="368" width="1034" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_row4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcdd2;strokeColor=#e0e0e0;align=left;spacingLeft=8;fontSize=10;" value="A102 – Phòng A102 | ❄️ Điều hòa | Điều hòa LG 2HP | ❌ Hỏng | 14/04/2025 | Cần sửa gấp" vertex="1">
+          <mxGeometry x="220" y="400" width="1034" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_row5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#e0e0e0;align=left;spacingLeft=8;fontSize=10;" value="B201 – Phòng B201 | 📽 Máy chiếu | Máy chiếu Sony VPL-DX221 | ✅ Hoạt động | 14/04/2025 |" vertex="1">
+          <mxGeometry x="220" y="432" width="1034" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_row6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#e0e0e0;align=left;spacingLeft=8;fontSize=10;" value="B201 – Phòng B201 | 🔊 Loa | Loa Bose Companion 2 | ✅ Hoạt động | 14/04/2025 |" vertex="1">
+          <mxGeometry x="220" y="464" width="1034" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_row7_sel" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1565c0;align=left;spacingLeft=8;fontSize=10;strokeWidth=2;" value="B202 – Phòng B202 | 💻 Máy tính | Máy tính Dell OptiPlex 3080 | ✅ Hoạt động | 14/04/2025 |" vertex="1">
+          <mxGeometry x="220" y="496" width="1034" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_row8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcdd2;strokeColor=#e0e0e0;align=left;spacingLeft=8;fontSize=10;" value="C301 – Phòng C301 | 📽 Máy chiếu | Máy chiếu Panasonic PT-VX600 | ❌ Hỏng | 14/04/2025 |" vertex="1">
+          <mxGeometry x="220" y="528" width="1034" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- ===== EDIT FORM POPUP ===== -->
+        <mxCell id="p8_dlg_bg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;shadow=1;" value="" vertex="1">
+          <mxGeometry x="700" y="580" width="480" height="350" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_dlg_title" parent="1" style="text;html=1;strokeColor=none;fillColor=#1a237e;fontColor=#ffffff;align=center;fontStyle=1;fontSize=13;" value="Sửa thiết bị" vertex="1">
+          <mxGeometry x="700" y="580" width="480" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_dlg_f1_lbl" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontStyle=1;" value="Phòng học:" vertex="1">
+          <mxGeometry x="716" y="628" width="110" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_dlg_f1_val" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=6;fontSize=10;" value="B202 – Phòng B202  ▼" vertex="1">
+          <mxGeometry x="830" y="627" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_dlg_f2_lbl" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontStyle=1;" value="Loại thiết bị:" vertex="1">
+          <mxGeometry x="716" y="664" width="110" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_dlg_f2_val" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=6;fontSize=10;" value="Máy tính  ▼" vertex="1">
+          <mxGeometry x="830" y="663" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_dlg_f3_lbl" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontStyle=1;" value="Tên thiết bị:" vertex="1">
+          <mxGeometry x="716" y="700" width="110" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_dlg_f3_val" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=6;fontSize=10;" value="Máy tính Dell OptiPlex 3080" vertex="1">
+          <mxGeometry x="830" y="699" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_dlg_f4_lbl" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontStyle=1;" value="Tình trạng:" vertex="1">
+          <mxGeometry x="716" y="736" width="110" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_dlg_f4_val" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=6;fontSize=10;" value="Hoạt động  ▼" vertex="1">
+          <mxGeometry x="830" y="735" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_dlg_f5_lbl" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontStyle=1;" value="Ngày kiểm tra:" vertex="1">
+          <mxGeometry x="716" y="772" width="110" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_dlg_f5_val" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=6;fontSize=10;" value="14/04/2025" vertex="1">
+          <mxGeometry x="830" y="771" width="200" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p8_dlg_save" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0057a8;strokeColor=#0057a8;fontColor=#ffffff;fontStyle=1;fontSize=11;" value="💾 Lưu" vertex="1">
+          <mxGeometry x="870" y="880" width="120" height="34" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page9" name="9. Quản lý người dùng">
+    <mxGraphModel dx="1389" dy="835" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===== HEADER ===== -->
+        <mxCell id="p9_header" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0057a8;strokeColor=#0057a8;fontColor=#ffffff;fontStyle=1;fontSize=14;" value="HỆ THỐNG QUẢN LÝ ĐẶT PHÒNG HỌC" vertex="1">
+          <mxGeometry x="0" y="0" width="1254" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_header_user" parent="1" style="text;html=1;strokeColor=none;fillColor=#0057a8;align=right;verticalAlign=middle;fontColor=#ffffff;fontSize=11;" value="Admin: Nguyễn Văn A  |  Đăng xuất" vertex="1">
+          <mxGeometry x="1054" y="0" width="300" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ===== SIDEBAR ===== -->
+        <mxCell id="p9_sidebar" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1e3a5f;strokeColor=#1e3a5f;" value="" vertex="1">
+          <mxGeometry x="0" y="50" width="200" height="819" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_nav1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#aaaaaa;spacingLeft=15;" value="🏠  Trang chủ" vertex="1">
+          <mxGeometry x="0" y="80" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_nav5" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#aaaaaa;spacingLeft=15;" value="🔧  Thiết bị" vertex="1">
+          <mxGeometry x="0" y="130" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_nav6_active" parent="1" style="text;html=1;strokeColor=none;fillColor=#2e5080;align=left;verticalAlign=middle;fontColor=#ffffff;spacingLeft=15;fontStyle=1;" value="👥  Người dùng" vertex="1">
+          <mxGeometry x="0" y="180" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_nav7" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#aaaaaa;spacingLeft=15;" value="📊  Báo cáo" vertex="1">
+          <mxGeometry x="0" y="230" width="200" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ===== PAGE TITLE ===== -->
+        <mxCell id="p9_title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#1a237e;" value="👥  Quản lý người dùng" vertex="1">
+          <mxGeometry x="220" y="58" width="400" height="36" as="geometry" />
+        </mxCell>
+
+        <!-- ===== TABS ===== -->
+        <mxCell id="p9_tab_lecturer_active" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a237e;strokeColor=#1a237e;fontColor=#ffffff;fontStyle=1;fontSize=11;" value="👨‍🏫  Giảng viên" vertex="1">
+          <mxGeometry x="220" y="100" width="180" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_tab_student" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#90caf9;fontColor=#0d47a1;fontSize=11;" value="🎓  Sinh viên" vertex="1">
+          <mxGeometry x="400" y="100" width="180" height="36" as="geometry" />
+        </mxCell>
+
+        <!-- ===== SEARCH + ACTIONS ===== -->
+        <mxCell id="p9_search_bg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#a5d6a7;" value="" vertex="1">
+          <mxGeometry x="220" y="148" width="1034" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_search_lbl" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;" value="🔍 Tìm kiếm:" vertex="1">
+          <mxGeometry x="232" y="158" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_search_box" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=6;fontSize=10;" value="Nhập tên, tài khoản, email..." vertex="1">
+          <mxGeometry x="326" y="157" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_btn_refresh" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#66bb6a;fontColor=#2e7d32;fontSize=10;" value="🔄 Làm mới" vertex="1">
+          <mxGeometry x="596" y="157" width="90" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- Action buttons -->
+        <mxCell id="p9_btn_add" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0057a8;strokeColor=#0057a8;fontColor=#ffffff;fontSize=10;fontStyle=1;" value="➕ Thêm" vertex="1">
+          <mxGeometry x="220" y="200" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_btn_edit" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#bdbdbd;fontSize=10;" value="✏️ Sửa" vertex="1">
+          <mxGeometry x="316" y="200" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_btn_del" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcdd2;strokeColor=#e57373;fontColor=#c62828;fontSize=10;" value="🗑️ Xóa" vertex="1">
+          <mxGeometry x="402" y="200" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_count" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;fontSize=10;fontColor=#455a64;" value="Tổng: 3 giảng viên" vertex="1">
+          <mxGeometry x="1100" y="204" width="154" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- ===== TABLE HEADER ===== -->
+        <mxCell id="p9_th" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a237e;strokeColor=#1a237e;fontColor=#ffffff;fontStyle=1;fontSize=10;" value="" vertex="1">
+          <mxGeometry x="220" y="242" width="1034" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_th_user" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Tên đăng nhập" vertex="1">
+          <mxGeometry x="224" y="242" width="130" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_th_name" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Họ và tên" vertex="1">
+          <mxGeometry x="358" y="242" width="190" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_th_email" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Email" vertex="1">
+          <mxGeometry x="550" y="242" width="200" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_th_phone" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Điện thoại" vertex="1">
+          <mxGeometry x="752" y="242" width="130" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_th_dept" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Khoa / Bộ môn" vertex="1">
+          <mxGeometry x="884" y="242" width="180" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- Table rows -->
+        <mxCell id="p9_r1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#e0e0e0;align=left;spacingLeft=8;fontSize=10;" value="gv001 | TS. Nguyễn Văn An | ngvanan@uni.edu.vn | 0901111111 | CNTT" vertex="1">
+          <mxGeometry x="220" y="274" width="1034" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_r2_sel" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1565c0;align=left;spacingLeft=8;fontSize=10;strokeWidth=2;" value="gv002 | ThS. Trần Thị Bình | tttbinh@uni.edu.vn | 0902222222 | Toán" vertex="1">
+          <mxGeometry x="220" y="306" width="1034" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_r3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#e0e0e0;align=left;spacingLeft=8;fontSize=10;" value="gv003 | PGS. Lê Văn Cường | lvcuong@uni.edu.vn | 0903333333 | Vật lý" vertex="1">
+          <mxGeometry x="220" y="338" width="1034" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- ===== ADD / EDIT FORM POPUP ===== -->
+        <mxCell id="p9_dlg_bg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;shadow=1;" value="" vertex="1">
+          <mxGeometry x="380" y="400" width="500" height="440" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_dlg_title" parent="1" style="text;html=1;strokeColor=none;fillColor=#1a237e;fontColor=#ffffff;align=center;fontStyle=1;fontSize=13;" value="Sửa thông tin người dùng" vertex="1">
+          <mxGeometry x="380" y="400" width="500" height="36" as="geometry" />
+        </mxCell>
+
+        <!-- Form fields -->
+        <mxCell id="p9_f1_lbl" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontStyle=1;" value="Tên đăng nhập:" vertex="1">
+          <mxGeometry x="396" y="448" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_f1_val" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=6;fontSize=10;" value="gv002" vertex="1">
+          <mxGeometry x="530" y="447" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_f2_lbl" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontStyle=1;" value="Mật khẩu:" vertex="1">
+          <mxGeometry x="396" y="484" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_f2_val" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=6;fontSize=10;" value="••••••••  (bỏ trống = giữ nguyên)" vertex="1">
+          <mxGeometry x="530" y="483" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_f3_lbl" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontStyle=1;" value="Họ và tên:" vertex="1">
+          <mxGeometry x="396" y="520" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_f3_val" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=6;fontSize=10;" value="ThS. Trần Thị Bình" vertex="1">
+          <mxGeometry x="530" y="519" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_f4_lbl" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontStyle=1;" value="Email:" vertex="1">
+          <mxGeometry x="396" y="556" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_f4_val" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=6;fontSize=10;" value="tttbinh@uni.edu.vn" vertex="1">
+          <mxGeometry x="530" y="555" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_f5_lbl" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontStyle=1;" value="Điện thoại:" vertex="1">
+          <mxGeometry x="396" y="592" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_f5_val" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=6;fontSize=10;" value="0902222222" vertex="1">
+          <mxGeometry x="530" y="591" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_f6_lbl" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontStyle=1;" value="Khoa / Ngành:" vertex="1">
+          <mxGeometry x="396" y="628" width="130" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_f6_val" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=6;fontSize=10;" value="Toán" vertex="1">
+          <mxGeometry x="530" y="627" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p9_dlg_save" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0057a8;strokeColor=#0057a8;fontColor=#ffffff;fontStyle=1;fontSize=11;" value="💾 Lưu" vertex="1">
+          <mxGeometry x="560" y="790" width="140" height="34" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page10" name="10. Chi tiết phòng học">
+    <mxGraphModel dx="1389" dy="835" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===== HEADER ===== -->
+        <mxCell id="p10_header" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0057a8;strokeColor=#0057a8;fontColor=#ffffff;fontStyle=1;fontSize=14;" value="HỆ THỐNG QUẢN LÝ ĐẶT PHÒNG HỌC" vertex="1">
+          <mxGeometry x="0" y="0" width="1254" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_header_user" parent="1" style="text;html=1;strokeColor=none;fillColor=#0057a8;align=right;verticalAlign=middle;fontColor=#ffffff;fontSize=11;" value="Admin: Nguyễn Văn A  |  Đăng xuất" vertex="1">
+          <mxGeometry x="1054" y="0" width="300" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ===== SIDEBAR ===== -->
+        <mxCell id="p10_sidebar" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1e3a5f;strokeColor=#1e3a5f;" value="" vertex="1">
+          <mxGeometry x="0" y="50" width="200" height="819" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_nav1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#aaaaaa;spacingLeft=15;" value="🏠  Trang chủ" vertex="1">
+          <mxGeometry x="0" y="80" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_nav3_active" parent="1" style="text;html=1;strokeColor=none;fillColor=#2e5080;align=left;verticalAlign=middle;fontColor=#ffffff;spacingLeft=15;fontStyle=1;" value="🏫  Chi tiết phòng học" vertex="1">
+          <mxGeometry x="0" y="130" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_nav4" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#aaaaaa;spacingLeft=15;" value="🗓  Lịch biểu phòng" vertex="1">
+          <mxGeometry x="0" y="180" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_nav5" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#aaaaaa;spacingLeft=15;" value="🔧  Thiết bị" vertex="1">
+          <mxGeometry x="0" y="230" width="200" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ===== LEFT PANEL: ROOM LIST ===== -->
+        <mxCell id="p10_roomlist_header" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a237e;strokeColor=#1a237e;fontColor=#ffffff;fontStyle=1;fontSize=10;" value="DANH SÁCH PHÒNG HỌC" vertex="1">
+          <mxGeometry x="220" y="50" width="220" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_roomlist_search" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;spacingLeft=8;fontSize=10;" value="🔍 Tìm phòng..." vertex="1">
+          <mxGeometry x="220" y="84" width="220" height="28" as="geometry" />
+        </mxCell>
+        <!-- Room list items -->
+        <mxCell id="p10_rl1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a237e;strokeColor=none;fontColor=#ffffff;align=left;spacingLeft=12;fontSize=10;fontStyle=1;" value="A101  –  Phòng A101" vertex="1">
+          <mxGeometry x="220" y="112" width="220" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_rl2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=none;align=left;spacingLeft=12;fontSize=10;" value="A102  –  Phòng A102" vertex="1">
+          <mxGeometry x="220" y="146" width="220" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_rl3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=none;align=left;spacingLeft=12;fontSize=10;" value="B201  –  Phòng B201" vertex="1">
+          <mxGeometry x="220" y="180" width="220" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_rl4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=none;align=left;spacingLeft=12;fontSize=10;" value="B202  –  Phòng B202" vertex="1">
+          <mxGeometry x="220" y="214" width="220" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_rl5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=none;align=left;spacingLeft=12;fontSize=10;" value="C301  –  Phòng C301" vertex="1">
+          <mxGeometry x="220" y="248" width="220" height="34" as="geometry" />
+        </mxCell>
+
+        <!-- ===== DETAIL PANEL ===== -->
+        <!-- Room header -->
+        <mxCell id="p10_detail_header" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a237e;strokeColor=#1a237e;fontColor=#ffffff;fontStyle=1;fontSize=15;" value="🏛️  Phòng A101  (A101)" vertex="1">
+          <mxGeometry x="450" y="50" width="800" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_room_type_badge" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#283593;strokeColor=#283593;fontColor=#bbdefb;fontSize=10;" value="Phòng học lý thuyết" vertex="1">
+          <mxGeometry x="1110" y="60" width="130" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Info cards -->
+        <mxCell id="p10_card1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#a5d6a7;" value="👥 Sức chứa&#xa;50 chỗ" vertex="1">
+          <mxGeometry x="450" y="114" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_card2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#90caf9;" value="🏢 Tòa nhà&#xa;Nhà A" vertex="1">
+          <mxGeometry x="592" y="114" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_card3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#f48fb1;" value="🔢 Tầng&#xa;Tầng 1" vertex="1">
+          <mxGeometry x="734" y="114" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_card4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#f9cc1b;" value="🪑 Sơ đồ ghế&#xa;5×10 ghế" vertex="1">
+          <mxGeometry x="876" y="114" width="130" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Section: Seating diagram -->
+        <mxCell id="p10_seat_title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=12;fontColor=#1a237e;" value="🪑  SƠ ĐỒ CHỖ NGỒI" vertex="1">
+          <mxGeometry x="450" y="188" width="280" height="28" as="geometry" />
+        </mxCell>
+        <!-- Seating canvas background -->
+        <mxCell id="p10_seat_bg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#bdbdbd;" value="" vertex="1">
+          <mxGeometry x="450" y="220" width="530" height="230" as="geometry" />
+        </mxCell>
+        <!-- Podium -->
+        <mxCell id="p10_podium" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#90a4ae;strokeColor=#546e7a;fontColor=#ffffff;fontSize=8;fontStyle=1;" value="BÀN GIẢNG VIÊN" vertex="1">
+          <mxGeometry x="595" y="228" width="150" height="22" as="geometry" />
+        </mxCell>
+        <!-- Seat grid (5 rows × 10 cols, shown as 4×8 for space) -->
+        <mxCell id="p10_s11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="1" vertex="1">
+          <mxGeometry x="462" y="260" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="2" vertex="1">
+          <mxGeometry x="494" y="260" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="3" vertex="1">
+          <mxGeometry x="526" y="260" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s14" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="4" vertex="1">
+          <mxGeometry x="558" y="260" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s15" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="5" vertex="1">
+          <mxGeometry x="590" y="260" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s16" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="6" vertex="1">
+          <mxGeometry x="622" y="260" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s17" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="7" vertex="1">
+          <mxGeometry x="654" y="260" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s18" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="8" vertex="1">
+          <mxGeometry x="686" y="260" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s19" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="9" vertex="1">
+          <mxGeometry x="718" y="260" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s110" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="10" vertex="1">
+          <mxGeometry x="750" y="260" width="28" height="28" as="geometry" />
+        </mxCell>
+        <!-- Row 2 -->
+        <mxCell id="p10_s21" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="11" vertex="1">
+          <mxGeometry x="462" y="294" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s22" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="12" vertex="1">
+          <mxGeometry x="494" y="294" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s23" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="13" vertex="1">
+          <mxGeometry x="526" y="294" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s24" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="14" vertex="1">
+          <mxGeometry x="558" y="294" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s25" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="15" vertex="1">
+          <mxGeometry x="590" y="294" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s26" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="16" vertex="1">
+          <mxGeometry x="622" y="294" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s27" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="17" vertex="1">
+          <mxGeometry x="654" y="294" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s28" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="18" vertex="1">
+          <mxGeometry x="686" y="294" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s29" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="19" vertex="1">
+          <mxGeometry x="718" y="294" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s210" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="20" vertex="1">
+          <mxGeometry x="750" y="294" width="28" height="28" as="geometry" />
+        </mxCell>
+        <!-- Row 3 -->
+        <mxCell id="p10_s31" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="21" vertex="1">
+          <mxGeometry x="462" y="328" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s32" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="22" vertex="1">
+          <mxGeometry x="494" y="328" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s33" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="23" vertex="1">
+          <mxGeometry x="526" y="328" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s34" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="24" vertex="1">
+          <mxGeometry x="558" y="328" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s35" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="25" vertex="1">
+          <mxGeometry x="590" y="328" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s36" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="26" vertex="1">
+          <mxGeometry x="622" y="328" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s37" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="27" vertex="1">
+          <mxGeometry x="654" y="328" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s38" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="28" vertex="1">
+          <mxGeometry x="686" y="328" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s39" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="29" vertex="1">
+          <mxGeometry x="718" y="328" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_s310" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=7;" value="30" vertex="1">
+          <mxGeometry x="750" y="328" width="28" height="28" as="geometry" />
+        </mxCell>
+        <!-- Seat legend -->
+        <mxCell id="p10_seat_legend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#42a5f5;fontSize=8;" value="🔵 Ghế trống" vertex="1">
+          <mxGeometry x="462" y="400" width="100" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_seat_dots" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=14;fontColor=#9e9e9e;" value="... (50 chỗ)" vertex="1">
+          <mxGeometry x="790" y="290" width="100" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- Section: Equipment -->
+        <mxCell id="p10_equip_title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=12;fontColor=#1a237e;" value="🔧  THIẾT BỊ TRONG PHÒNG" vertex="1">
+          <mxGeometry x="450" y="468" width="320" height="28" as="geometry" />
+        </mxCell>
+        <!-- Equipment table header -->
+        <mxCell id="p10_eq_th" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a237e;strokeColor=#1a237e;fontColor=#ffffff;fontStyle=1;fontSize=10;" value="" vertex="1">
+          <mxGeometry x="450" y="498" width="780" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_eq_th_type" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Loại" vertex="1">
+          <mxGeometry x="454" y="498" width="130" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_eq_th_name" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Tên thiết bị" vertex="1">
+          <mxGeometry x="586" y="498" width="220" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_eq_th_stat" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Tình trạng" vertex="1">
+          <mxGeometry x="808" y="498" width="120" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_eq_th_date" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Kiểm tra" vertex="1">
+          <mxGeometry x="930" y="498" width="110" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_eq_r1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#e0e0e0;align=left;spacingLeft=8;fontSize=10;" value="📽 Máy chiếu | Máy chiếu Epson EB-X41 | ✅ Hoạt động | 14/04/2025" vertex="1">
+          <mxGeometry x="450" y="526" width="780" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_eq_r2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#e0e0e0;align=left;spacingLeft=8;fontSize=10;" value="🔊 Loa | Loa JBL 305P | 🔧 Bảo trì | 14/04/2025" vertex="1">
+          <mxGeometry x="450" y="554" width="780" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_eq_r3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#e0e0e0;align=left;spacingLeft=8;fontSize=10;" value="❄️ Điều hòa | Điều hòa Daikin 1.5HP | ✅ Hoạt động | 14/04/2025" vertex="1">
+          <mxGeometry x="450" y="582" width="780" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- Amenities -->
+        <mxCell id="p10_amenities_lbl" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#1a237e;" value="✨  TIỆN ÍCH:" vertex="1">
+          <mxGeometry x="450" y="624" width="120" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_amenities_val" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#a5d6a7;fontColor=#1b5e20;fontSize=10;align=left;spacingLeft=10;" value="Máy chiếu, Điều hòa, Bảng trắng, Loa" vertex="1">
+          <mxGeometry x="450" y="650" width="600" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Section: Upcoming Schedule -->
+        <mxCell id="p10_sched_title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=12;fontColor=#1a237e;" value="📅  LỊCH HỌC SẮP TỚI" vertex="1">
+          <mxGeometry x="450" y="696" width="320" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_sched_th" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a237e;strokeColor=#1a237e;fontColor=#ffffff;fontStyle=1;fontSize=10;" value="" vertex="1">
+          <mxGeometry x="450" y="726" width="780" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_sched_th_date" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Ngày" vertex="1">
+          <mxGeometry x="454" y="726" width="100" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_sched_th_time" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Giờ" vertex="1">
+          <mxGeometry x="556" y="726" width="140" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_sched_th_subj" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Môn học" vertex="1">
+          <mxGeometry x="698" y="726" width="220" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_sched_th_code" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Mã lớp" vertex="1">
+          <mxGeometry x="920" y="726" width="110" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_sched_th_teach" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=10;fontColor=#ffffff;" value="Giảng viên" vertex="1">
+          <mxGeometry x="1032" y="726" width="180" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_sched_r1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#e0e0e0;align=left;spacingLeft=8;fontSize=10;" value="14/04/2025 | 07:00 – 09:00 | Lập trình Python | IT101-01 | TS. Nguyễn Văn An" vertex="1">
+          <mxGeometry x="450" y="754" width="780" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_sched_r2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#e0e0e0;align=left;spacingLeft=8;fontSize=10;" value="16/04/2025 | 07:00 – 09:00 | Lập trình Python | IT101-01 | TS. Nguyễn Văn An" vertex="1">
+          <mxGeometry x="450" y="782" width="780" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p10_sched_r3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#e0e0e0;align=left;spacingLeft=8;fontSize=10;" value="17/04/2025 | 07:00 – 11:00 | Vật lý thực hành | PHY102-01 | PGS. Lê Văn Cường" vertex="1">
+          <mxGeometry x="450" y="810" width="780" height="28" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
