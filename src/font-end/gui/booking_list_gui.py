@@ -1,0 +1,230 @@
+# booking_list_gui.py  –  booking list screen
+from __future__ import annotations
+import datetime as dt
+import tkinter as tk
+from tkinter import filedialog, messagebox, ttk
+from utils.export_excel import export_rows_to_excel
+from gui.theme import (C_BG, C_SURFACE, C_BORDER,
+                       make_tree, fill_tree, with_scrollbar,
+                       page_header, btn)
+
+try:
+    from tkcalendar import DateEntry
+    _HAS_CALENDAR = True
+except ImportError:
+    _HAS_CALENDAR = False
+
+
+class BookingListFrame(tk.Frame):
+    def __init__(self, master, booking_controller, current_user,
+                 room_controller=None) -> None:
+        super().__init__(master, bg=C_BG)
+        self.booking_ctrl = booking_controller
+        self.room_ctrl    = room_controller
+        self.current_user = current_user
+        self.status_var   = tk.StringVar()
+        self.tree: ttk.Treeview | None = None
+        self._build()
+        self.refresh()
+
+    def _build(self) -> None:
+        page_header(self, "Danh sach dat phong", "📋").pack(fill="x")
+
+        toolbar = tk.Frame(self, bg=C_BG)
+        toolbar.pack(fill="x", padx=20, pady=(0, 10))
+
+        tk.Label(toolbar, text="Trang thai:", bg=C_BG,
+                 font=("Segoe UI", 10)).pack(side="left", padx=(0, 4))
+        ttk.Combobox(toolbar, textvariable=self.status_var,
+                     values=["", "Cho duyet", "Da duyet", "Tu choi"],
+                     width=14, state="readonly").pack(side="left")
+        btn(toolbar, "Loc", self.refresh,
+            variant="ghost", icon="🔍").pack(side="left", padx=(8, 0))
+        btn(toolbar, "Xuat Excel", self._export,
+            variant="ghost", icon="📊").pack(side="left", padx=6)
+
+        # Sửa lịch – chủ lịch hoặc Admin
+        btn(toolbar, "Sua lich", self._edit_booking,
+            variant="outline", icon="✏️").pack(side="left", padx=4)
+        # Xóa lịch – chủ lịch hoặc Admin
+        btn(toolbar, "Xoa lich", self._delete_booking,
+            variant="danger", icon="🗑").pack(side="left", padx=4)
+
+        if self.current_user.role == "Admin":
+            btn(toolbar, "Duyet",
+                lambda: self._set_status("Da duyet"),
+                variant="success", icon="✔").pack(side="left", padx=4)
+            btn(toolbar, "Tu choi",
+                lambda: self._set_status("Tu choi"),
+                variant="danger",  icon="✖").pack(side="left", padx=4)
+
+        wrap = tk.Frame(self, bg=C_SURFACE, highlightthickness=1,
+                        highlightbackground=C_BORDER, padx=14, pady=14)
+        wrap.pack(fill="both", expand=True, padx=20, pady=(0, 16))
+
+        cols = ("ma", "nguoi_dat", "phong", "ngay", "ca", "muc_dich", "trang_thai")
+        hdrs = ("Ma", "Nguoi dat", "Phong", "Ngay", "Ca", "Muc dich", "Trang thai")
+        wids = (90, 150, 90, 110, 80, 240, 120)
+        self.tree = make_tree(wrap, cols, hdrs, wids)
+        with_scrollbar(wrap, self.tree)
+
+    def refresh(self) -> None:
+        rows = [(b.booking_id, b.user_name, b.room_id,
+                 b.booking_date, b.slot, b.purpose, b.status)
+                for b in self.booking_ctrl.list_bookings(
+                    current_user=self.current_user,
+                    status=self.status_var.get().strip())]
+        fill_tree(self.tree, rows)
+
+    def _selected_id(self) -> str | None:
+        sel = self.tree.selection()
+        return str(self.tree.item(sel[0], "values")[0]) if sel else None
+
+    def _set_status(self, new_status: str) -> None:
+        bid = self._selected_id()
+        if bid is None:
+            messagebox.showwarning("Chua chon yeu cau", "Hay chon mot ban ghi.")
+            return
+        self.booking_ctrl.update_status(bid, new_status)
+        self.refresh()
+
+    def _export(self) -> None:
+        rows = [list(self.tree.item(item, "values"))
+                for item in self.tree.get_children()]
+        if not rows:
+            messagebox.showinfo("Khong co du lieu", "Khong co ban ghi de xuat.")
+            return
+        path = filedialog.asksaveasfilename(defaultextension=".xlsx",
+                                            filetypes=[("Excel file", "*.xlsx")])
+        if not path:
+            return
+        export_rows_to_excel(
+            headers=["Ma", "Nguoi dat", "Phong", "Ngay", "Ca",
+                     "Muc dich", "Trang thai"],
+            rows=rows, output_path=path)
+        messagebox.showinfo("Thanh cong", "Da xuat file Excel.")
+
+    def _delete_booking(self) -> None:
+        bid = self._selected_id()
+        if bid is None:
+            messagebox.showwarning("Chua chon", "Hay chon mot ban ghi.")
+            return
+        if not messagebox.askyesno("Xac nhan", f"Xoa lich [{bid}]?"):
+            return
+        try:
+            self.booking_ctrl.delete_booking(bid, self.current_user)
+            self.refresh()
+            messagebox.showinfo("Thanh cong", "Da xoa lich dat phong.")
+        except (ValueError, PermissionError) as e:
+            messagebox.showerror("Loi", str(e))
+
+    def _edit_booking(self) -> None:
+        bid = self._selected_id()
+        if bid is None:
+            messagebox.showwarning("Chua chon", "Hay chon mot ban ghi.")
+            return
+        booking = self.booking_ctrl.booking_dao.find_by_id(bid)
+        if booking is None:
+            messagebox.showerror("Loi", "Khong tim thay ban ghi.")
+            return
+        if (self.current_user.role != "Admin"
+                and booking.user_id != self.current_user.user_id):
+            messagebox.showerror("Khong co quyen", "Ban chi co the sua lich cua chinh minh.")
+            return
+        _EditBookingDialog(self, booking, self.booking_ctrl,
+                           self.room_ctrl, self.current_user,
+                           on_done=self.refresh)
+
+
+class _EditBookingDialog(tk.Toplevel):
+    """Modal dialog to edit an existing booking."""
+
+    def __init__(self, parent, booking, booking_ctrl, room_ctrl,
+                 current_user, on_done=None):
+        super().__init__(parent)
+        self.title("Sua lich dat phong")
+        self.resizable(False, False)
+        self.grab_set()
+        self.booking    = booking
+        self.booking_ctrl = booking_ctrl
+        self.room_ctrl  = room_ctrl
+        self.current_user = current_user
+        self.on_done    = on_done
+
+        from gui.theme import C_BG, C_SURFACE, C_BORDER, C_MUTED, F_INPUT, btn as theme_btn
+
+        self.configure(bg=C_BG)
+        pad = {"padx": 10, "pady": 6}
+
+        tk.Label(self, text="Sua lich dat phong", bg=C_BG,
+                 font=("Segoe UI", 13, "bold")).grid(
+            row=0, column=0, columnspan=2, pady=(16, 8))
+
+        def lbl(row, text):
+            tk.Label(self, text=text, bg=C_BG,
+                     font=("Segoe UI", 9, "bold"), anchor="w").grid(
+                row=row, column=0, sticky="w", padx=20, pady=(8, 0))
+
+        # Room
+        lbl(1, "PHONG HOC")
+        rooms = room_ctrl.list_rooms() if room_ctrl else []
+        room_values = [f"{r.room_id} – {r.name}" for r in rooms if r.status == "Hoat dong"]
+        self._room_map = {f"{r.room_id} – {r.name}": r.room_id for r in rooms}
+        self.room_var = tk.StringVar(value=next(
+            (k for k, v in self._room_map.items() if v == booking.room_id), booking.room_id))
+        ttk.Combobox(self, textvariable=self.room_var,
+                     values=room_values, state="readonly", width=34).grid(
+            row=2, column=0, columnspan=2, padx=20, **pad)
+
+        # Date
+        lbl(3, "NGAY DAT (YYYY-MM-DD)")
+        self.date_var = tk.StringVar(value=booking.booking_date)
+        if _HAS_CALENDAR:
+            de = DateEntry(self, textvariable=self.date_var, width=34,
+                           date_pattern="yyyy-mm-dd", background="#2255a4",
+                           foreground="white", borderwidth=1,
+                           font=("Segoe UI", 10))
+            de.grid(row=4, column=0, columnspan=2, padx=20, **pad)
+        else:
+            tk.Entry(self, textvariable=self.date_var, width=36,
+                     font=F_INPUT, relief="solid", bd=1).grid(
+                row=4, column=0, columnspan=2, padx=20, **pad)
+
+        # Slot
+        lbl(5, "CA HOC")
+        self.slot_var = tk.StringVar(value=booking.slot)
+        ttk.Combobox(self, textvariable=self.slot_var,
+                     values=booking_ctrl.SLOT_OPTIONS,
+                     state="readonly", width=34).grid(
+            row=6, column=0, columnspan=2, padx=20, **pad)
+
+        # Purpose
+        lbl(7, "MUC DICH SU DUNG")
+        self.purpose_text = tk.Text(self, width=38, height=4,
+                                    relief="solid", bd=1,
+                                    font=("Segoe UI", 10))
+        self.purpose_text.insert("1.0", booking.purpose)
+        self.purpose_text.grid(row=8, column=0, columnspan=2, padx=20, **pad)
+
+        # Buttons
+        btn_f = tk.Frame(self, bg=C_BG)
+        btn_f.grid(row=9, column=0, columnspan=2, pady=16)
+        theme_btn(btn_f, "Luu thay doi", self._save).pack(side="left", padx=6)
+        theme_btn(btn_f, "Huy", self.destroy, variant="ghost").pack(side="left", padx=6)
+
+    def _save(self) -> None:
+        room_display = self.room_var.get()
+        room_id = self._room_map.get(room_display, room_display.split(" – ")[0])
+        date    = self.date_var.get().strip()
+        slot    = self.slot_var.get()
+        purpose = self.purpose_text.get("1.0", "end-1c").strip()
+        try:
+            self.booking_ctrl.update_booking(
+                self.booking.booking_id, self.current_user,
+                room_id, date, slot, purpose)
+            if self.on_done:
+                self.on_done()
+            messagebox.showinfo("Thanh cong", "Da cap nhat lich dat phong.")
+            self.destroy()
+        except (ValueError, PermissionError) as e:
+            messagebox.showerror("Loi", str(e))
