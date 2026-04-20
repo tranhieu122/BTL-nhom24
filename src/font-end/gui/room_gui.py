@@ -38,12 +38,16 @@ class RoomManagementFrame(tk.Frame):
         search_box(toolbar, self.search_var).pack(side="left")
         btn(toolbar, "Tim kiem", self.refresh,
             variant="ghost",   icon="🔍").pack(side="left", padx=(6, 0))
-        btn(toolbar, "Them phong", self._add,
-            variant="success", icon="+").pack(side="left", padx=6)
-        btn(toolbar, "Sua",       self._edit,
-            variant="outline", icon="✏️").pack(side="left", padx=4)
-        btn(toolbar, "Xoa",       self._delete,
-            variant="danger",  icon="🗑").pack(side="left", padx=4)
+
+        is_admin = (self.current_user is not None
+                    and getattr(self.current_user, "role", "") == "Admin")
+        if is_admin:
+            btn(toolbar, "Them phong", self._add,
+                variant="success", icon="+").pack(side="left", padx=6)
+            btn(toolbar, "Sua",       self._edit,
+                variant="outline", icon="✏️").pack(side="left", padx=4)
+            btn(toolbar, "Xoa",       self._delete,
+                variant="danger",  icon="🗑").pack(side="left", padx=4)
 
         # Feedback buttons (visible to all users)
         tk.Frame(toolbar, bg="#e2e8f0", width=1).pack(

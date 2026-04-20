@@ -1,5 +1,6 @@
 # login_gui.py  –  split-panel login screen  (login + register + forgot-pw)
 from __future__ import annotations
+import random as _rnd
 import tkinter as tk
 from tkinter import messagebox, ttk
 from gui.theme import (C_DARK, C_PRIMARY, C_SURFACE, C_BORDER,
@@ -291,7 +292,6 @@ class LoginFrame(tk.Frame):
         cv = tk.Canvas(left, bg=C_DARK, highlightthickness=0)
         cv.pack(fill="both", expand=True)
 
-        import random as _rnd
         _particles: list[dict] = []
         _anim_ref: list = [None]
 
@@ -483,12 +483,12 @@ class LoginFrame(tk.Frame):
         reg_lbl.pack(side="left")
         reg_lbl.bind("<Button-1>", lambda _: self._open_register())
 
-        self.bind_all("<Return>", lambda _: self._submit())
+        self.bind("<Return>", lambda _: self._submit())
 
     @staticmethod
     def _bind_focus(entry: tk.Entry, frame: tk.Frame) -> None:
         def on_in(_):
-            frame.config(highlightbackground="#2255a4", highlightthickness=2)
+            frame.config(highlightbackground=C_PRIMARY, highlightthickness=2)
         def on_out(_):
             frame.config(highlightbackground=C_BORDER,  highlightthickness=1)
         entry.bind("<FocusIn>",  on_in)

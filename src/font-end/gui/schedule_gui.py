@@ -84,7 +84,7 @@ class ScheduleFrame(tk.Frame):
             "<Configure>",
             lambda _e: canvas.configure(scrollregion=canvas.bbox("all")))
         canvas.create_window((0, 0), window=self._grid_frame, anchor="nw")
-        canvas.bind_all("<MouseWheel>",
+        canvas.bind("<MouseWheel>",
                         lambda e: canvas.yview_scroll(-1*(e.delta//120), "units"))
 
         self._refresh()
