@@ -73,7 +73,8 @@ class BookingListFrame(tk.Frame):
                  b.booking_date, b.slot, b.purpose, b.status)
                 for b in self.booking_ctrl.list_bookings(
                     current_user=self.current_user,
-                    status=self.status_var.get().strip())]
+                    status=self.status_var.get().strip(),
+                    from_today=False)]
         fill_tree(self.tree, rows)
 
     def _selected_id(self) -> str | None:

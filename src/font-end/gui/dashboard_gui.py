@@ -48,7 +48,7 @@ class DashboardFrame(tk.Frame):
         canvas.configure(yscrollcommand=vsb.set)
         canvas.pack(side="left", fill="both", expand=True)
         vsb.pack(side="right", fill="y")
-        canvas.bind_all("<MouseWheel>",
+        canvas.bind("<MouseWheel>",
                         lambda e: canvas.yview_scroll(-1*(e.delta//120), "units"))
 
         self._draw_cards(body)
@@ -60,7 +60,7 @@ class DashboardFrame(tk.Frame):
         grid.pack(fill="x", padx=20, pady=(6, 12))
 
         summary_values = list(self.report_ctrl.build_dashboard().values())
-        bookings = self.booking_ctrl.list_bookings()
+        bookings = self.booking_ctrl.list_bookings(from_today=False)
         total_b  = len(bookings) or 1
 
         for idx in range(6):
@@ -282,171 +282,3 @@ class DashboardFrame(tk.Frame):
                      bg="#fffbeb", fg="#b45309",
                      font=("Segoe UI", 8, "italic")).pack(anchor="w")
 
-
-# ── Legacy stub kept for backward compat — DO NOT USE ──────────────────────────
-class _LegacyDashboardFrame_UNUSED(tk.Frame):
-    def __init__(self, master, report_controller, booking_controller,
-                 booking_ctrl_approve=None, current_user=None) -> None:
-        super().__init__(master, bg=C_BG)
-        self.report_ctrl   = report_controller
-        self.booking_ctrl  = booking_controller
-        self.current_user  = current_user
-        self._build()
-
-    def _build(self) -> None:
-        page_header(self, "Tong quan he thong", "🏠").pack(fill="x")
-
-        # ── Stat cards ────────────────────────────────────────────────────────
-        grid = tk.Frame(self, bg=C_BG)
-        grid.pack(fill="x", padx=20, pady=(0, 16))
-        summary = self.report_ctrl.build_dashboard()
-
-        for idx, (label, value) in enumerate(summary.items()):
-            bg, fg, icon = CARD_PALETTE[idx % len(CARD_PALETTE)]
-            card = tk.Frame(grid, bg=bg, padx=18, pady=16,
-                            highlightthickness=1,
-                            highlightbackground="#c7d8f5")
-            card.grid(row=idx // 3, column=idx % 3,
-                      sticky="nsew", padx=6, pady=6)
-
-            top = tk.Frame(card, bg=bg)
-            top.pack(fill="x")
-            tk.Label(top, text=icon, bg=bg,
-                     font=("Segoe UI", 26)).pack(side="left")
-            tk.Label(top, text=str(value), bg=bg, fg=fg,
-                     font=("Segoe UI", 32, "bold")).pack(side="right", anchor="s")
-            tk.Label(card, text=label, bg=bg, fg="#475569",
-                     font=("Segoe UI", 10, "bold")).pack(anchor="w", pady=(6, 0))
-
-        for col in range(3):
-            grid.grid_columnconfigure(col, weight=1)
-
-        # ── Bottom area: two columns ──────────────────────────────────────────
-        bottom = tk.Frame(self, bg=C_BG)
-        bottom.pack(fill="both", expand=True, padx=20, pady=(0, 16))
-        bottom.columnconfigure(0, weight=3)
-        bottom.columnconfigure(1, weight=2)
-        bottom.rowconfigure(0, weight=1)
-
-        # Left: recent bookings
-        left_card = tk.Frame(bottom, bg=C_SURFACE, highlightthickness=1,
-                             highlightbackground=C_BORDER, padx=14, pady=14)
-        left_card.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
-
-        tk.Label(left_card, text="📋  Dat phong gan day",
-                 bg=C_SURFACE, fg=C_DARK, font=F_SECTION).pack(
-            anchor="w", pady=(0, 8))
-
-        cols = ("ma", "nguoi_dat", "phong", "ngay", "ca", "trang_thai")
-        hdrs = ("Ma", "Nguoi dat", "Phong", "Ngay", "Ca", "Trang thai")
-        wids = (80, 160, 70, 110, 70, 110)
-        tree = make_tree(left_card, cols, hdrs, wids, height=9)
-        with_scrollbar(left_card, tree)
-
-        rows = [(b.booking_id, b.user_name, b.room_id,
-                 b.booking_date, b.slot, b.status)
-                for b in self.booking_ctrl.list_bookings()[:15]]
-        fill_tree(tree, rows)
-
-        # Right: status chart + pending approvals (admin)
-        right_col = tk.Frame(bottom, bg=C_BG)
-        right_col.grid(row=0, column=1, sticky="nsew")
-
-        # Booking status donut chart
-        self._draw_status_chart(right_col)
-
-        # Pending approvals panel
-        pending = [b for b in self.booking_ctrl.list_bookings()
-                   if b.status == "Cho duyet"]
-        if pending:
-            self._draw_pending_panel(right_col, pending)
-
-    def _draw_status_chart(self, parent: tk.Frame) -> None:
-        bookings = self.booking_ctrl.list_bookings()
-        da_duyet  = sum(1 for b in bookings if b.status == "Da duyet")
-        cho_duyet = sum(1 for b in bookings if b.status == "Cho duyet")
-        tu_choi   = sum(1 for b in bookings if b.status == "Tu choi")
-        total     = len(bookings)
-
-        chart_card = tk.Frame(parent, bg=C_SURFACE, highlightthickness=1,
-                              highlightbackground=C_BORDER, padx=14, pady=14)
-        chart_card.pack(fill="x", pady=(0, 8))
-
-        tk.Label(chart_card, text="📊  Trang thai dat phong",
-                 bg=C_SURFACE, fg=C_DARK, font=F_SECTION).pack(anchor="w", pady=(0, 10))
-
-        if total == 0:
-            tk.Label(chart_card, text="Chua co du lieu dat phong",
-                     bg=C_SURFACE, fg=C_MUTED, font=("Segoe UI", 10)).pack(pady=20)
-            return
-
-        cv = tk.Canvas(chart_card, width=180, height=110, bg=C_SURFACE,
-                       highlightthickness=0)
-        cv.pack(side="left")
-
-        # Bar chart
-        bar_data = [
-            ("Da duyet",  da_duyet,  "#16a34a"),
-            ("Cho duyet", cho_duyet, "#b45309"),
-            ("Tu choi",   tu_choi,   "#dc2626"),
-        ]
-        max_val = max(v for _, v, _ in bar_data) or 1
-        bw, gap = 32, 18
-        x0 = 14
-        ch = 80
-        for label, val, color in bar_data:
-            bh = int((val / max_val) * ch) if max_val else 0
-            y_top = 10 + (ch - bh)
-            cv.create_rectangle(x0, y_top, x0 + bw, 10 + ch,
-                                fill=color, outline="", width=0)
-            cv.create_text(x0 + bw // 2, 10 + ch + 10,
-                           text=str(val), font=("Segoe UI", 9, "bold"),
-                           fill=C_DARK)
-            x0 += bw + gap
-
-        # Legend
-        legend = tk.Frame(chart_card, bg=C_SURFACE)
-        legend.pack(side="left", padx=(16, 0), anchor="center")
-        for label, val, color in bar_data:
-            row = tk.Frame(legend, bg=C_SURFACE)
-            row.pack(anchor="w", pady=3)
-            dot = tk.Frame(row, bg=color, width=10, height=10)
-            dot.pack(side="left")
-            tk.Label(row, text=f"  {label}: {val}", bg=C_SURFACE, fg="#475569",
-                     font=("Segoe UI", 9)).pack(side="left")
-
-        pct_frame = tk.Frame(chart_card, bg=C_SURFACE)
-        pct_frame.pack(side="left", padx=(10, 0), anchor="center")
-        duyet_pct = int(da_duyet / total * 100)
-        tk.Label(pct_frame, text=f"{duyet_pct}%", bg=C_SURFACE, fg="#16a34a",
-                 font=("Segoe UI", 22, "bold")).pack()
-        tk.Label(pct_frame, text="da duyet", bg=C_SURFACE, fg=C_MUTED,
-                 font=("Segoe UI", 8)).pack()
-
-    def _draw_pending_panel(self, parent: tk.Frame,
-                            pending: list) -> None:
-        p_card = tk.Frame(parent, bg="#fefce8", highlightthickness=1,
-                          highlightbackground="#fde68a", padx=14, pady=12)
-        p_card.pack(fill="x")
-
-        hdr = tk.Frame(p_card, bg="#fefce8")
-        hdr.pack(fill="x", pady=(0, 8))
-        tk.Label(hdr, text=f"⏳  {len(pending)} yeu cau cho duyet",
-                 bg="#fefce8", fg="#92400e",
-                 font=("Segoe UI", 11, "bold")).pack(side="left")
-
-        for b in pending[:4]:
-            row = tk.Frame(p_card, bg="#fffbeb",
-                           highlightthickness=1,
-                           highlightbackground="#fde68a")
-            row.pack(fill="x", pady=(0, 4))
-            tk.Label(row,
-                     text=f"  {b.booking_id}  {b.user_name}  |  {b.room_id}  {b.booking_date}",
-                     bg="#fffbeb", fg="#78350f",
-                     font=("Segoe UI", 8), anchor="w").pack(
-                side="left", fill="x", expand=True, pady=5, padx=4)
-
-        if len(pending) > 4:
-            tk.Label(p_card, text=f"...va {len(pending)-4} yeu cau khac",
-                     bg="#fefce8", fg="#b45309",
-                     font=("Segoe UI", 8, "italic")).pack(anchor="w")

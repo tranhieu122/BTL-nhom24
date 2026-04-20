@@ -64,7 +64,7 @@ class ReportFrame(tk.Frame):
         canvas.configure(yscrollcommand=vsb.set)
         canvas.pack(side="left", fill="both", expand=True)
         vsb.pack(side="right", fill="y")
-        canvas.bind_all("<MouseWheel>",
+        canvas.bind("<MouseWheel>",
                         lambda e: canvas.yview_scroll(-1*(e.delta//120), "units"))
 
         self._draw_stat_cards(body)
