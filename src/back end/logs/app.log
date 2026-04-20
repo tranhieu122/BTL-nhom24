@@ -1656,3 +1656,427 @@
 2026-04-21 00:23:54  INFO      controllers.auth_controller  User 'admin' (Admin) logged in
 2026-04-21 00:24:02  INFO      controllers.booking_controller  Booking created: B3F7336BE by admin for room S101 on 2026-04-21 Ca 1
 2026-04-21 00:29:50  INFO      main  Application exited normally
+2026-04-20 17:41:33  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:33  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:33  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:33  INFO      controllers.auth_controller  New account registered: username='nguyenvana' role='Sinh vien'
+2026-04-20 17:41:33  INFO      controllers.auth_controller  User 'nguyenvana' (Sinh vien) logged in
+2026-04-20 17:41:33  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:33  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:33  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:33  INFO      controllers.auth_controller  New account registered: username='tranthib' role='Sinh vien'
+2026-04-20 17:41:33  WARNING   controllers.auth_controller  Wrong password for username='tranthib'
+2026-04-20 17:41:33  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:33  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:33  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:33  WARNING   controllers.auth_controller  Failed login attempt for username='nobody'
+2026-04-20 17:41:33  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:33  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:33  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:33  INFO      controllers.auth_controller  New account registered: username='dupuser' role='Sinh vien'
+2026-04-20 17:41:33  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:33  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:33  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:33  INFO      controllers.auth_controller  New account registered: username='user1dup' role='Sinh vien'
+2026-04-20 17:41:33  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:33  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:33  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:33  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:33  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:33  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:33  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:33  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:33  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:33  INFO      controllers.auth_controller  New account registered: username='gva' role='Giang vien'
+2026-04-20 17:41:33  INFO      controllers.auth_controller  User 'gva' (Giang vien) logged in
+2026-04-20 17:41:33  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:33  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:33  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:33  INFO      controllers.auth_controller  New account registered: username='resetuser' role='Sinh vien'
+2026-04-20 17:41:33  INFO      controllers.auth_controller  User 'resetuser' (Sinh vien) logged in
+2026-04-20 17:41:33  WARNING   controllers.auth_controller  Wrong password for username='resetuser'
+2026-04-20 17:41:33  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:33  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:33  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:33  INFO      controllers.auth_controller  New account registered: username='resetuser2' role='Sinh vien'
+2026-04-20 17:41:33  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:33  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:33  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:33  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='lockeduser' role='Sinh vien'
+2026-04-20 17:41:34  WARNING   controllers.auth_controller  Failed login attempt for username='lockeduser'
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='testbc' role='Sinh vien'
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking created: B4A5F6F35 by testbc for room R01 on 2026-05-01 Ca 1
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='adminbc' role='Admin'
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking created: BE7A4D597 by adminbc for room R01 on 2026-05-01 Ca 1
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='testbc' role='Sinh vien'
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='testbc' role='Sinh vien'
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='testbc' role='Sinh vien'
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='testbc' role='Sinh vien'
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='testbc' role='Sinh vien'
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking created: B8D5DE8C9 by testbc for room R01 on 2026-05-01 Ca 1
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='testbc' role='Sinh vien'
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking created: B246C6322 by testbc for room R01 on 2026-05-01 Ca 1
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='testbc' role='Sinh vien'
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking created: B18C1AB19 by testbc for room R01 on 2026-05-01 Ca 1
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking B18C1AB19 status changed to 'Da duyet'
+2026-04-20 17:41:34  DEBUG     utils.email_notifier  Email disabled – bo qua thong bao cho bc@test.com
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='testbc' role='Sinh vien'
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking created: B5994E007 by testbc for room R01 on 2026-05-01 Ca 1
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='testbc' role='Sinh vien'
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking created: BFC0AA83F by testbc for room R01 on 2026-05-01 Ca 1
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking BFC0AA83F deleted by user SV4A42AC
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='testbc' role='Sinh vien'
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking created: BAF48CE22 by testbc for room R01 on 2026-05-01 Ca 1
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='testbc' role='Sinh vien'
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking created: B61E202C2 by testbc for room R01 on 2026-05-01 Ca 1
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='rptuser' role='Sinh vien'
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking created: BC3D79BB7 by rptuser for room P101 on 2026-05-01 Ca 1
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking created: BE56C66F2 by rptuser for room P101 on 2026-05-01 Ca 2
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='rptuser' role='Sinh vien'
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking created: B7A1FA809 by rptuser for room P101 on 2026-05-01 Ca 1
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking created: BD7580D90 by rptuser for room P101 on 2026-05-01 Ca 2
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      controllers.auth_controller  New account registered: username='rptuser' role='Sinh vien'
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking created: B1D49C93F by rptuser for room P101 on 2026-05-01 Ca 1
+2026-04-20 17:41:34  INFO      controllers.booking_controller  Booking created: BDA672FDD by rptuser for room P101 on 2026-05-01 Ca 2
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Running 2 pending migration(s) (current version: 0)
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v1
+2026-04-20 17:41:34  INFO      database.migrations  Migration v1 applied successfully
+2026-04-20 17:41:34  INFO      database.migrations  Applying migration v2
+2026-04-20 17:41:34  INFO      database.migrations  Migration v2 applied successfully
