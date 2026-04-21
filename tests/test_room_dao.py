@@ -1,14 +1,16 @@
 """Unit tests for RoomDAO."""
+# pyright: reportMissingImports=false, reportUnknownVariableType=false, reportUnknownMemberType=false, reportUnknownArgumentType=false, reportUnknownParameterType=false, reportUnknownLambdaType=false
 from __future__ import annotations
 
-import pytest
-from dao.room_dao import RoomDAO
-from models.room import Room
+from typing import Any
+
+from dao.room_dao import RoomDAO  # type: ignore[import-not-found]
+from models.room import Room  # type: ignore[import-not-found]
 
 
-def _room(**ov) -> Room:
-    base = dict(room_id="R01", name="Phong 101", capacity=40,
-                room_type="Phong hoc", equipment="May chieu", status="Hoat dong")
+def _room(**ov: Any) -> Any:
+    base: dict[str, Any] = dict(room_id="R01", name="Phong 101", capacity=40,
+                                room_type="Phong hoc", equipment="May chieu", status="Hoat dong")
     base.update(ov)
     return Room(**base)
 

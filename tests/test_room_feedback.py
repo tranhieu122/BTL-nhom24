@@ -1,15 +1,18 @@
 """Unit tests for RoomFeedbackController."""
+# pyright: reportMissingImports=false, reportUnknownVariableType=false, reportUnknownMemberType=false, reportUnknownArgumentType=false, reportUnknownParameterType=false, reportUnknownLambdaType=false
 from __future__ import annotations
 
 import pytest
-from controllers.room_feedback_controller import RoomFeedbackController
-from dao.room_dao import RoomDAO
-from dao.user_dao import UserDAO
-from models.room import Room
-from models.user import User
+from typing import Any
+
+from controllers.room_feedback_controller import RoomFeedbackController  # type: ignore[import-not-found]
+from dao.room_dao import RoomDAO  # type: ignore[import-not-found]
+from dao.user_dao import UserDAO  # type: ignore[import-not-found]
+from models.room import Room  # type: ignore[import-not-found]
+from models.user import User  # type: ignore[import-not-found]
 
 
-def _setup() -> tuple[RoomFeedbackController, User]:
+def _setup() -> tuple[Any, Any]:
     RoomDAO().save(Room("P101", "Phong 101", 40, "Phong hoc", "", "Hoat dong"))
     user = User("U01", "fbuser", "Feedback User", "Sinh vien",
                 "fb@test.com", "0901234567", "h", "Hoat dong")

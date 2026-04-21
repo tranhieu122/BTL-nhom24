@@ -1,23 +1,25 @@
 # booking_list_gui.py  –  booking list screen
 from __future__ import annotations
-import datetime as dt
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
-from utils.export_excel import export_rows_to_excel
+from typing import Any
+from utils.export_excel import export_rows_to_excel  # type: ignore[import-untyped]
 from gui.theme import (C_BG, C_SURFACE, C_BORDER,
                        make_tree, fill_tree, with_scrollbar,
                        page_header, btn)
 
+_has_calendar = False
 try:
-    from tkcalendar import DateEntry
-    _HAS_CALENDAR = True
+    from tkcalendar import DateEntry  # type: ignore[import-untyped]
+    _has_calendar = True
 except ImportError:
-    _HAS_CALENDAR = False
+    pass
 
 
 class BookingListFrame(tk.Frame):
-    def __init__(self, master, booking_controller, current_user,
-                 room_controller=None) -> None:
+    def __init__(self, master: tk.Misc, booking_controller: Any,
+                 current_user: Any,
+                 room_controller: Any = None) -> None:
         super().__init__(master, bg=C_BG)
         self.booking_ctrl = booking_controller
         self.room_ctrl    = room_controller
@@ -75,9 +77,11 @@ class BookingListFrame(tk.Frame):
                     current_user=self.current_user,
                     status=self.status_var.get().strip(),
                     from_today=False)]
+        assert self.tree is not None
         fill_tree(self.tree, rows)
 
     def _selected_id(self) -> str | None:
+        assert self.tree is not None
         sel = self.tree.selection()
         return str(self.tree.item(sel[0], "values")[0]) if sel else None
 
@@ -90,6 +94,7 @@ class BookingListFrame(tk.Frame):
         self.refresh()
 
     def _export(self) -> None:
+        assert self.tree is not None
         rows = [list(self.tree.item(item, "values"))
                 for item in self.tree.get_children()]
         if not rows:
@@ -140,8 +145,8 @@ class BookingListFrame(tk.Frame):
 class _EditBookingDialog(tk.Toplevel):
     """Modal dialog to edit an existing booking."""
 
-    def __init__(self, parent, booking, booking_ctrl, room_ctrl,
-                 current_user, on_done=None):
+    def __init__(self, parent: tk.Misc, booking: Any, booking_ctrl: Any,
+                 room_ctrl: Any, current_user: Any, on_done: Any = None):
         super().__init__(parent)
         self.title("Sua lich dat phong")
         self.resizable(False, False)
@@ -152,44 +157,43 @@ class _EditBookingDialog(tk.Toplevel):
         self.current_user = current_user
         self.on_done    = on_done
 
-        from gui.theme import C_BG, C_SURFACE, C_BORDER, C_MUTED, F_INPUT, btn as theme_btn
+        from gui.theme import C_BG, F_INPUT, btn as theme_btn
 
         self.configure(bg=C_BG)
-        pad = {"padx": 10, "pady": 6}
 
         tk.Label(self, text="Sua lich dat phong", bg=C_BG,
                  font=("Segoe UI", 13, "bold")).grid(
             row=0, column=0, columnspan=2, pady=(16, 8))
 
-        def lbl(row, text):
+        def lbl(row: int, text: str) -> None:
             tk.Label(self, text=text, bg=C_BG,
                      font=("Segoe UI", 9, "bold"), anchor="w").grid(
                 row=row, column=0, sticky="w", padx=20, pady=(8, 0))
 
         # Room
         lbl(1, "PHONG HOC")
-        rooms = room_ctrl.list_rooms() if room_ctrl else []
+        rooms: list[Any] = room_ctrl.list_rooms() if room_ctrl else []
         room_values = [f"{r.room_id} – {r.name}" for r in rooms if r.status == "Hoat dong"]
-        self._room_map = {f"{r.room_id} – {r.name}": r.room_id for r in rooms}
+        self._room_map: dict[str, Any] = {f"{r.room_id} – {r.name}": r.room_id for r in rooms}
         self.room_var = tk.StringVar(value=next(
             (k for k, v in self._room_map.items() if v == booking.room_id), booking.room_id))
         ttk.Combobox(self, textvariable=self.room_var,
                      values=room_values, state="readonly", width=34).grid(
-            row=2, column=0, columnspan=2, padx=20, **pad)
+            row=2, column=0, columnspan=2, padx=20, pady=6)
 
         # Date
         lbl(3, "NGAY DAT (YYYY-MM-DD)")
         self.date_var = tk.StringVar(value=booking.booking_date)
-        if _HAS_CALENDAR:
-            de = DateEntry(self, textvariable=self.date_var, width=34,
+        if _has_calendar:
+            de = DateEntry(self, textvariable=self.date_var, width=34,  # type: ignore[possibly-unbound]
                            date_pattern="yyyy-mm-dd", background="#2255a4",
                            foreground="white", borderwidth=1,
                            font=("Segoe UI", 10))
-            de.grid(row=4, column=0, columnspan=2, padx=20, **pad)
+            de.grid(row=4, column=0, columnspan=2, padx=20, pady=6)  # type: ignore[attr-defined]
         else:
             tk.Entry(self, textvariable=self.date_var, width=36,
                      font=F_INPUT, relief="solid", bd=1).grid(
-                row=4, column=0, columnspan=2, padx=20, **pad)
+                row=4, column=0, columnspan=2, padx=20, pady=6)
 
         # Slot
         lbl(5, "CA HOC")
@@ -197,7 +201,7 @@ class _EditBookingDialog(tk.Toplevel):
         ttk.Combobox(self, textvariable=self.slot_var,
                      values=booking_ctrl.SLOT_OPTIONS,
                      state="readonly", width=34).grid(
-            row=6, column=0, columnspan=2, padx=20, **pad)
+            row=6, column=0, columnspan=2, padx=20, pady=6)
 
         # Purpose
         lbl(7, "MUC DICH SU DUNG")
@@ -205,7 +209,7 @@ class _EditBookingDialog(tk.Toplevel):
                                     relief="solid", bd=1,
                                     font=("Segoe UI", 10))
         self.purpose_text.insert("1.0", booking.purpose)
-        self.purpose_text.grid(row=8, column=0, columnspan=2, padx=20, **pad)
+        self.purpose_text.grid(row=8, column=0, columnspan=2, padx=20, pady=6)
 
         # Buttons
         btn_f = tk.Frame(self, bg=C_BG)

@@ -1,8 +1,9 @@
 """Unit tests for AuthController."""
+# pyright: reportMissingImports=false, reportUnknownVariableType=false, reportUnknownMemberType=false, reportUnknownArgumentType=false, reportUnknownParameterType=false, reportUnknownLambdaType=false
 from __future__ import annotations
 
 import pytest
-from controllers.auth_controller import AuthController
+from controllers.auth_controller import AuthController  # type: ignore[import-not-found]
 
 
 class TestAuthController:

@@ -1,17 +1,20 @@
 """Unit tests for ReportController."""
+# pyright: reportMissingImports=false, reportUnknownVariableType=false, reportUnknownMemberType=false, reportUnknownArgumentType=false, reportUnknownParameterType=false, reportUnknownLambdaType=false
 from __future__ import annotations
 
-from controllers.auth_controller import AuthController
-from controllers.booking_controller import BookingController
-from controllers.equipment_controller import EquipmentController
-from controllers.report_controller import ReportController
-from controllers.room_controller import RoomController
-from controllers.user_controller import UserController
-from dao.room_dao import RoomDAO
-from models.room import Room
+from typing import Any
+
+from controllers.auth_controller import AuthController  # type: ignore[import-not-found]
+from controllers.booking_controller import BookingController  # type: ignore[import-not-found]
+from controllers.equipment_controller import EquipmentController  # type: ignore[import-not-found]
+from controllers.report_controller import ReportController  # type: ignore[import-not-found]
+from controllers.room_controller import RoomController  # type: ignore[import-not-found]
+from controllers.user_controller import UserController  # type: ignore[import-not-found]
+from dao.room_dao import RoomDAO  # type: ignore[import-not-found]
+from models.room import Room  # type: ignore[import-not-found]
 
 
-def _setup() -> tuple[ReportController, BookingController]:
+def _setup() -> tuple[Any, Any]:
     rc = RoomController()
     bc = BookingController()
     uc = UserController()
@@ -29,23 +32,23 @@ def _setup() -> tuple[ReportController, BookingController]:
 
 
 class TestReportController:
-    def test_dashboard_counts(self):
-        report, bc = _setup()
+    def test_dashboard_counts(self) -> None:
+        report, _ = _setup()
         dash = report.build_dashboard()
         assert dash["Tong phong"] >= 1
         assert dash["Tong dat phong"] >= 2
         assert dash["Nguoi dung"] >= 1
 
-    def test_room_usage_rows(self):
-        report, bc = _setup()
+    def test_room_usage_rows(self) -> None:
+        report, _ = _setup()
         rows = report.room_usage_rows()
         assert len(rows) >= 1
         # P101 should have 2 bookings
         p101_row = next(r for r in rows if r[0] == "P101")
         assert p101_row[1] >= 2
 
-    def test_room_stats_table(self):
-        report, bc = _setup()
+    def test_room_stats_table(self) -> None:
+        report, _ = _setup()
         stats = report.room_stats_table()
         assert len(stats) >= 1
         # Each row: (room_id, total, approved, rejected, rate_pct)

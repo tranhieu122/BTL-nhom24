@@ -1,0 +1,24 @@
+{
+  "typeCheckingMode": "basic",
+  "extraPaths": [
+    "src/back end",
+    "src/font-end"
+  ],
+  "reportMissingTypeArgument": "none",
+  "reportUnknownParameterType": "none",
+  "reportUnknownArgumentType": "none",
+  "reportUnknownVariableType": "none",
+  "reportUnknownMemberType": "none",
+  "reportMissingTypeStubs": "none",
+  "reportUnknownLambdaType": "none",
+  "reportUnknownImportType": "none",
+  "reportMissingImports": "none",
+  "reportMissingModuleSource": "none",
+  "reportMissingParameterType": "none",
+  "reportUnknownReturnType": "none",
+  "exclude": [
+    "src/back end/logs/**",
+    "__pycache__/**",
+    ".venv/**"
+  ]
+}

@@ -1,7 +1,7 @@
 """Unit tests for input validators."""
 from __future__ import annotations
 
-from utils.validators import is_valid_email, is_valid_phone, is_valid_room_code
+from utils.validators import is_valid_email, is_valid_phone, is_valid_room_code  # type: ignore[import-not-found]
 
 
 class TestEmailValidator:

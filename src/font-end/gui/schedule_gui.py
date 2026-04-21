@@ -2,7 +2,8 @@
 from __future__ import annotations
 import tkinter as tk
 from tkinter import ttk
-from gui.theme import C_BG, C_SURFACE, C_BORDER, C_PRIMARY, C_DARK, page_header
+from typing import Any
+from gui.theme import C_BG, C_PRIMARY, C_DARK, page_header
 
 DAYS      = ["Thu 2", "Thu 3", "Thu 4", "Thu 5", "Thu 6", "Thu 7", "Chu nhat"]
 SLOTS_LBL = [
@@ -30,7 +31,7 @@ LEGEND = [
 
 
 class ScheduleFrame(tk.Frame):
-    def __init__(self, master, booking_controller, room_controller) -> None:
+    def __init__(self, master: tk.Misc, booking_controller: Any, room_controller: Any) -> None:
         super().__init__(master, bg=C_BG)
         self.booking_ctrl = booking_controller
         self.room_ctrl    = room_controller
@@ -70,8 +71,8 @@ class ScheduleFrame(tk.Frame):
         outer.pack(fill="both", expand=True, padx=20, pady=(4, 16))
 
         canvas = tk.Canvas(outer, bg=C_BG, highlightthickness=0)
-        hsb = ttk.Scrollbar(outer, orient="horizontal", command=canvas.xview)
-        vsb = ttk.Scrollbar(outer, orient="vertical",   command=canvas.yview)
+        hsb = ttk.Scrollbar(outer, orient="horizontal", command=canvas.xview)  # type: ignore[arg-type]
+        vsb = ttk.Scrollbar(outer, orient="vertical",   command=canvas.yview)  # type: ignore[arg-type]
         canvas.configure(xscrollcommand=hsb.set, yscrollcommand=vsb.set)
         canvas.grid(row=0, column=0, sticky="nsew")
         vsb.grid(row=0, column=1, sticky="ns")
@@ -94,10 +95,10 @@ class ScheduleFrame(tk.Frame):
             w.destroy()
 
         room_filter = self._v_room.get()
-        schedule_rows = self.booking_ctrl.build_schedule()
+        schedule_rows: list[Any] = self.booking_ctrl.build_schedule()
 
         # build lookup {(day, slot_key): [(label, status), …]}
-        lookup: dict[tuple, list] = {}
+        lookup: dict[tuple[str, str], list[tuple[str, str]]] = {}
         for s in schedule_rows:
             if room_filter != "Tat ca phong" and s.room_id != room_filter:
                 continue

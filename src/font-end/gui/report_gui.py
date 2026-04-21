@@ -3,9 +3,10 @@ from __future__ import annotations
 import datetime as dt
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
-from gui.theme import (C_BG, C_DARK, C_SURFACE, C_BORDER, C_PRIMARY,
+from typing import Any
+from gui.theme import (C_BG, C_DARK, C_SURFACE, C_BORDER,
                        F_SECTION, make_tree, fill_tree, with_scrollbar,
-                       page_header, btn)
+                       page_header)
 
 CARD_PALETTE = [
     ("#dbeafe", "#2255a4", "📚"),
@@ -23,7 +24,7 @@ BAR_COLORS = [
 
 
 class ReportFrame(tk.Frame):
-    def __init__(self, master, report_controller) -> None:
+    def __init__(self, master: tk.Misc, report_controller: Any) -> None:
         super().__init__(master, bg=C_BG)
         self.report_ctrl = report_controller
         self._build()
@@ -56,7 +57,7 @@ class ReportFrame(tk.Frame):
 
         # ── Scrollable body ──────────────────────────────────────────────────
         canvas = tk.Canvas(self, bg=C_BG, highlightthickness=0)
-        vsb = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)
+        vsb = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)  # type: ignore[arg-type]
         body = tk.Frame(canvas, bg=C_BG)
         body.bind("<Configure>",
                   lambda _e: canvas.configure(scrollregion=canvas.bbox("all")))
@@ -73,7 +74,7 @@ class ReportFrame(tk.Frame):
     # ── Export helpers ────────────────────────────────────────────────────────
 
     def _export_excel(self) -> None:
-        from utils.export_excel import export_rows_to_excel
+        from utils.export_excel import export_rows_to_excel  # type: ignore[import-not-found]
         path = filedialog.asksaveasfilename(
             title="Luu file Excel",
             defaultextension=".xlsx",
@@ -82,7 +83,7 @@ class ReportFrame(tk.Frame):
         )
         if not path:
             return
-        rows = self.report_ctrl.room_stats_table()
+        rows: list[tuple[object, object, object, object, object]] = self.report_ctrl.room_stats_table()
         try:
             export_rows_to_excel(
                 headers=["Phong", "Tong dat", "Da duyet", "Tu choi", "Ty le SD (%)"],
@@ -96,7 +97,7 @@ class ReportFrame(tk.Frame):
 
     def _export_pdf(self) -> None:
         try:
-            from utils.export_pdf import export_report_pdf
+            from utils.export_pdf import export_report_pdf  # type: ignore[import-not-found]
         except ImportError:
             messagebox.showerror(
                 "Thieu thu vien",
@@ -128,7 +129,7 @@ class ReportFrame(tk.Frame):
     def _draw_stat_cards(self, body: tk.Frame) -> None:
         panel = tk.Frame(body, bg=C_BG)
         panel.pack(fill="x", padx=20, pady=(10, 4))
-        summary = self.report_ctrl.build_dashboard()
+        summary: dict[str, object] = self.report_ctrl.build_dashboard()
         for idx, (label, value) in enumerate(summary.items()):
             bg, fg, icon = CARD_PALETTE[idx % len(CARD_PALETTE)]
             card = tk.Frame(panel, bg=bg, padx=18, pady=14,
@@ -153,7 +154,7 @@ class ReportFrame(tk.Frame):
                  bg=C_BG, fg=C_DARK, font=F_SECTION).pack(
             anchor="w", padx=20, pady=(12, 6))
 
-        row_data = self.report_ctrl.room_stats_table()
+        row_data: list[tuple[object, object, object, object, str]] = self.report_ctrl.room_stats_table()
 
         # Two-column layout
         two_col = tk.Frame(body, bg=C_BG)
@@ -178,7 +179,7 @@ class ReportFrame(tk.Frame):
             height=8,
         )
         with_scrollbar(left, tree)
-        rows = [(r[0], r[1], r[2], r[3], r[4]) for r in row_data]
+        rows: list[tuple[object, object, object, object, str]] = [(r[0], r[1], r[2], r[3], r[4]) for r in row_data]
         fill_tree(tree, rows)
 
         # ── Right: bar chart (usage rate %) ─────────────────────────────────
@@ -205,12 +206,12 @@ class ReportFrame(tk.Frame):
         tree2 = make_tree(wrap2, ("room", "count"),
                           ("Phong", "So lan dat"), (200, 160), height=5)
         with_scrollbar(wrap2, tree2)
-        usage_rows = [(rid, cnt)
-                      for rid, cnt in self.report_ctrl.room_usage_rows()
-                      if cnt > 0]
+        usage_rows: list[tuple[object, object]] = [(rid, cnt)
+                                                   for rid, cnt in self.report_ctrl.room_usage_rows()
+                                                   if cnt > 0]
         fill_tree(tree2, usage_rows)
 
-    def _draw_bar_chart(self, row_data: list[tuple]) -> None:
+    def _draw_bar_chart(self, row_data: list[tuple[object, object, object, object, str]]) -> None:
         c = self._chart_canvas
         c.update_idletasks()
         W = c.winfo_width() or 420
@@ -252,5 +253,5 @@ class ReportFrame(tk.Frame):
                           font=("Segoe UI", 8, "bold"), fill=C_DARK)
             # room label
             c.create_text(x0 + bar_w // 2, H - mb + 14,
-                          text=room_id, font=("Segoe UI", 8), fill="#374151")
+                          text=str(room_id), font=("Segoe UI", 8), fill="#374151")
 

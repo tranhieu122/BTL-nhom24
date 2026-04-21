@@ -1,12 +1,13 @@
 """Unit tests for RoomController and EquipmentController."""
+# pyright: reportMissingImports=false, reportUnknownVariableType=false, reportUnknownMemberType=false, reportUnknownArgumentType=false, reportUnknownParameterType=false, reportUnknownLambdaType=false
 from __future__ import annotations
 
 import pytest
-from controllers.room_controller import RoomController
-from controllers.equipment_controller import EquipmentController
-from controllers.booking_controller import BookingController
-from dao.room_dao import RoomDAO
-from models.room import Room
+from controllers.room_controller import RoomController  # type: ignore[import-not-found]
+from controllers.equipment_controller import EquipmentController  # type: ignore[import-not-found]
+from controllers.booking_controller import BookingController  # type: ignore[import-not-found]
+from dao.room_dao import RoomDAO  # type: ignore[import-not-found]
+from models.room import Room  # type: ignore[import-not-found]
 
 
 class TestRoomController:

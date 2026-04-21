@@ -3,12 +3,13 @@ from __future__ import annotations
 import random as _rnd
 import tkinter as tk
 from tkinter import messagebox, ttk
+from typing import Any
 from gui.theme import (C_DARK, C_PRIMARY, C_SURFACE, C_BORDER,
                        C_TEXT, C_MUTED, F_INPUT, btn)
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
-def _labeled_entry(parent, label: str, var: tk.StringVar,
+def _labeled_entry(parent: tk.Misc, label: str, var: tk.StringVar,
                    show: str = "", width: int = 32) -> tk.Frame:
     """Return a labeled, focus-bordered entry block."""
     tk.Label(parent, text=label, bg=C_SURFACE, fg=C_MUTED,
@@ -20,25 +21,25 @@ def _labeled_entry(parent, label: str, var: tk.StringVar,
                  font=F_INPUT, relief="flat", bg=C_SURFACE, fg=C_TEXT)
     e.pack(padx=12, pady=8)
 
-    def on_in(_):
+    def on_in(_: object) -> None:
         wrap.config(highlightbackground="#2255a4", highlightthickness=2)
-    def on_out(_):
+    def on_out(_: object) -> None:
         wrap.config(highlightbackground=C_BORDER,  highlightthickness=1)
-    e.bind("<FocusIn>",  on_in)
-    e.bind("<FocusOut>", on_out)
+    e.bind("<FocusIn>",  on_in)  # type: ignore[arg-type]
+    e.bind("<FocusOut>", on_out)  # type: ignore[arg-type]
     return wrap
 
 
 # ── Register dialog ───────────────────────────────────────────────────────────
 
 class RegisterDialog(tk.Toplevel):
-    def __init__(self, master, auth_controller) -> None:
+    def __init__(self, master: tk.Misc, auth_controller: Any) -> None:
         super().__init__(master)
         self.auth_ctrl = auth_controller
         self.title("Dang ky tai khoan")
         self.resizable(False, False)
         self.configure(bg=C_SURFACE)
-        self.transient(master)
+        self.transient(master)  # type: ignore[arg-type]
         self.grab_set()
         self._vars = {k: tk.StringVar() for k in
                       ("full_name", "username", "email", "phone",
@@ -92,8 +93,8 @@ class RegisterDialog(tk.Toplevel):
             fill="x", padx=10, pady=6)
 
         # Buttons
-        btn_row = tk.Frame(self, bg=C_SURFACE, padx=28, pady=(0, 20))
-        btn_row.pack(fill="x")
+        btn_row = tk.Frame(self, bg=C_SURFACE, padx=28)
+        btn_row.pack(fill="x", pady=(0, 20))
         btn(btn_row, "  Dang ky  ", self._submit,
             icon="✅").pack(side="left")
         btn(btn_row, "Huy", self.destroy,
@@ -127,16 +128,16 @@ class RegisterDialog(tk.Toplevel):
 # ── Forgot-password dialog ────────────────────────────────────────────────────
 
 class ForgotPasswordDialog(tk.Toplevel):
-    def __init__(self, master, auth_controller) -> None:
+    def __init__(self, master: tk.Misc, auth_controller: Any) -> None:
         super().__init__(master)
         self.auth_ctrl = auth_controller
         self.title("Quen mat khau")
         self.resizable(False, False)
         self.configure(bg=C_SURFACE)
-        self.transient(master)
+        self.transient(master)  # type: ignore[arg-type]
         self.grab_set()
         self._step = 1          # 1 = verify identity, 2 = set new password
-        self._verified_user = None
+        self._verified_user: Any = None
         self._vars = {k: tk.StringVar() for k in
                       ("username", "email", "new_pw", "confirm_pw")}
         self._build_step1()
@@ -181,8 +182,8 @@ class ForgotPasswordDialog(tk.Toplevel):
         _labeled_entry(body, "TEN DANG NHAP",    self._vars["username"])
         _labeled_entry(body, "EMAIL DA DANG KY", self._vars["email"])
 
-        btn_row = tk.Frame(self, bg=C_SURFACE, padx=28, pady=(0, 20))
-        btn_row.pack(fill="x")
+        btn_row = tk.Frame(self, bg=C_SURFACE, padx=28)
+        btn_row.pack(fill="x", pady=(0, 20))
         btn(btn_row, "  Xac minh  ", self._verify_step1,
             variant="primary", icon="🔍").pack(side="left")
         btn(btn_row, "Huy", self.destroy,
@@ -238,8 +239,8 @@ class ForgotPasswordDialog(tk.Toplevel):
         _labeled_entry(body, "XAC NHAN MAT KHAU MOI",
                        self._vars["confirm_pw"], show="*")
 
-        btn_row = tk.Frame(self, bg=C_SURFACE, padx=28, pady=(0, 20))
-        btn_row.pack(fill="x")
+        btn_row = tk.Frame(self, bg=C_SURFACE, padx=28)
+        btn_row.pack(fill="x", pady=(0, 20))
         btn(btn_row, "  Luu mat khau moi  ", self._save_password,
             variant="success", icon="💾").pack(side="left")
         btn(btn_row, "Huy", self.destroy,
@@ -272,7 +273,8 @@ class ForgotPasswordDialog(tk.Toplevel):
 # ── Login frame ───────────────────────────────────────────────────────────────
 
 class LoginFrame(tk.Frame):
-    def __init__(self, master, on_login, auth_controller=None) -> None:
+    def __init__(self, master: tk.Misc, on_login: Any,
+                 auth_controller: Any = None) -> None:
         super().__init__(master, bg=C_DARK)
         self.on_login   = on_login
         self.auth_ctrl  = auth_controller
@@ -292,8 +294,8 @@ class LoginFrame(tk.Frame):
         cv = tk.Canvas(left, bg=C_DARK, highlightthickness=0)
         cv.pack(fill="both", expand=True)
 
-        _particles: list[dict] = []
-        _anim_ref: list = [None]
+        _particles: list[dict[str, Any]] = []
+        _anim_ref: list[Any] = [None]
 
         def _init_particles(w: int, h: int) -> None:
             _particles.clear()
@@ -376,11 +378,11 @@ class LoginFrame(tk.Frame):
 
             _anim_ref[0] = cv.after(38, _animate)
 
-        def _on_configure(_e=None) -> None:
+        def _on_configure(_e: Any = None) -> None:
             if _anim_ref[0] is None:
                 _animate()
 
-        def _on_destroy(_e=None) -> None:
+        def _on_destroy(_e: Any = None) -> None:
             if _anim_ref[0] is not None:
                 try:
                     cv.after_cancel(_anim_ref[0])
@@ -388,8 +390,8 @@ class LoginFrame(tk.Frame):
                     pass
                 _anim_ref[0] = None
 
-        cv.bind("<Configure>", _on_configure)
-        cv.bind("<Destroy>",   _on_destroy)
+        cv.bind("<Configure>", _on_configure)  # type: ignore[arg-type]
+        cv.bind("<Destroy>",   _on_destroy)    # type: ignore[arg-type]
 
         # ── Right form panel ──────────────────────────────────────────────────
         right = tk.Frame(self, bg=C_SURFACE)
@@ -487,12 +489,12 @@ class LoginFrame(tk.Frame):
 
     @staticmethod
     def _bind_focus(entry: tk.Entry, frame: tk.Frame) -> None:
-        def on_in(_):
+        def on_in(_: Any) -> None:
             frame.config(highlightbackground=C_PRIMARY, highlightthickness=2)
-        def on_out(_):
+        def on_out(_: Any) -> None:
             frame.config(highlightbackground=C_BORDER,  highlightthickness=1)
-        entry.bind("<FocusIn>",  on_in)
-        entry.bind("<FocusOut>", on_out)
+        entry.bind("<FocusIn>",  on_in)   # type: ignore[arg-type]
+        entry.bind("<FocusOut>", on_out)  # type: ignore[arg-type]
 
     def _open_register(self) -> None:
         if self.auth_ctrl is None:

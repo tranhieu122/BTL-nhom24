@@ -2,6 +2,7 @@
 from __future__ import annotations
 import tkinter as tk
 from tkinter import ttk
+from typing import Any
 
 # ── Palette ──────────────────────────────────────────────────────────────────
 C_DARK       = "#1a2f5e"
@@ -82,8 +83,8 @@ def apply_theme(style: ttk.Style) -> None:
               background=[("active", "#1a4490"), ("pressed", "#1a4490")])
 
 
-def btn(parent, text: str, command, variant: str = "primary",
-        icon: str = "", **kw) -> tk.Button:
+def btn(parent: tk.Misc, text: str, command: Any, variant: str = "primary",
+    icon: str = "", **kw: Any) -> tk.Button:
     """Themed button with hover + active press effects."""
     label = f"{icon}  {text}" if icon else text
     colours = {
@@ -106,7 +107,7 @@ def btn(parent, text: str, command, variant: str = "primary",
     return b
 
 
-def search_box(parent, var: tk.StringVar, width: int = 22) -> tk.Frame:
+def search_box(parent: tk.Misc, var: tk.StringVar, width: int = 22) -> tk.Frame:
     outer = tk.Frame(parent, bg=C_SURFACE, highlightthickness=1,
                      highlightbackground=C_BORDER)
     tk.Label(outer, text="🔍", bg=C_SURFACE,
@@ -116,16 +117,16 @@ def search_box(parent, var: tk.StringVar, width: int = 22) -> tk.Frame:
                  bg=C_SURFACE, fg=C_TEXT)
     e.pack(side="left", ipady=6, padx=(0, 8))
 
-    def _in(_):
+    def _in(_: Any) -> None:
         outer.config(highlightbackground=C_PRIMARY, highlightthickness=2)
-    def _out(_):
+    def _out(_: Any) -> None:
         outer.config(highlightbackground=C_BORDER, highlightthickness=1)
-    e.bind("<FocusIn>",  _in)
-    e.bind("<FocusOut>", _out)
+    e.bind("<FocusIn>",  _in)  # type: ignore[arg-type]
+    e.bind("<FocusOut>", _out)  # type: ignore[arg-type]
     return outer
 
 
-def page_header(parent, text: str, icon: str = "") -> tk.Frame:
+def page_header(parent: tk.Misc, text: str, icon: str = "") -> tk.Frame:
     frm = tk.Frame(parent, bg=C_BG)
 
     # Accent top bar (gradient simulation with two frames)
@@ -147,7 +148,7 @@ def page_header(parent, text: str, icon: str = "") -> tk.Frame:
 
 
 def make_card(parent: tk.Widget, padx: int = 16, pady: int = 14,
-              shadow: bool = True, **kw) -> tuple[tk.Frame, tk.Frame]:
+              shadow: bool = True, **kw: Any) -> tuple[tk.Frame, tk.Frame]:
     """Returns (outer_frame, content_frame).
     Pack/grid the outer_frame; add widgets to content_frame.
     The outer frame simulates a drop shadow."""
@@ -164,12 +165,16 @@ def make_card(parent: tk.Widget, padx: int = 16, pady: int = 14,
     return outer, content
 
 
-def make_tree(parent, columns, headers, widths,
+def make_tree(parent: tk.Misc, columns: tuple[str, ...] | list[str],
+              headers: tuple[str, ...] | list[str],
+              widths: tuple[int, ...] | list[int],
               height: int = 0) -> ttk.Treeview:
-    kw: dict = dict(style="TV.Treeview", columns=columns, show="headings")
     if height:
-        kw["height"] = height
-    tree = ttk.Treeview(parent, **kw)
+        tree = ttk.Treeview(parent, style="TV.Treeview", columns=columns,
+                            show="headings", height=height)
+    else:
+        tree = ttk.Treeview(parent, style="TV.Treeview", columns=columns,
+                            show="headings")
     for col, hdr, w in zip(columns, headers, widths):
         tree.heading(col, text=hdr)
         tree.column(col, width=w, anchor="center", minwidth=40)
@@ -188,7 +193,7 @@ def _tag_cfg(tree: ttk.Treeview) -> None:
     tree.tag_configure("Khoa",      background=C_DANGER_BG,  foreground=C_DANGER)
 
 
-def fill_tree(tree: ttk.Treeview, rows) -> None:
+def fill_tree(tree: ttk.Treeview, rows: list[tuple[object, ...]]) -> None:
     for item in tree.get_children():
         tree.delete(item)
     for i, values in enumerate(rows):
@@ -200,8 +205,8 @@ def fill_tree(tree: ttk.Treeview, rows) -> None:
         tree.insert("", "end", values=values, tags=tags)
 
 
-def with_scrollbar(parent, tree: ttk.Treeview) -> None:
-    vsb = ttk.Scrollbar(parent, orient="vertical", command=tree.yview)
+def with_scrollbar(parent: tk.Misc, tree: ttk.Treeview) -> None:
+    vsb = ttk.Scrollbar(parent, orient="vertical", command=tree.yview)  # type: ignore[arg-type]
     tree.configure(yscrollcommand=vsb.set)
     tree.pack(side="left", fill="both", expand=True)
     vsb.pack(side="right", fill="y")

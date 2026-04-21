@@ -2,6 +2,7 @@
 from __future__ import annotations
 import tkinter as tk
 from tkinter import messagebox, ttk
+from typing import Any
 from gui.theme import (C_BG, C_PRIMARY, C_SURFACE, C_BORDER, C_MUTED,
                        F_INPUT, make_tree, fill_tree, with_scrollbar,
                        page_header, btn, search_box)
@@ -10,14 +11,15 @@ from gui.theme import (C_BG, C_PRIMARY, C_SURFACE, C_BORDER, C_MUTED,
 class EquipmentDialog(tk.Toplevel):
     """Add / Edit equipment dialog."""
 
-    def __init__(self, master, room_controller, equipment=None) -> None:
-        super().__init__(master)
+    def __init__(self, master: tk.Misc, room_controller: Any,
+                 equipment: Any = None) -> None:
+        super().__init__(master)  # type: ignore[arg-type]
         self.room_ctrl = room_controller
         self.result = None
         self.title("Them thiet bi" if equipment is None else "Sua thiet bi")
         self.resizable(False, False)
         self.configure(bg=C_SURFACE)
-        self.transient(master)
+        self.transient(master)  # type: ignore[arg-type]
         self.grab_set()
 
         self.vars = {
@@ -101,7 +103,8 @@ class EquipmentDialog(tk.Toplevel):
 
 
 class EquipmentManagementFrame(tk.Frame):
-    def __init__(self, master, equipment_controller, room_controller) -> None:
+    def __init__(self, master: tk.Misc, equipment_controller: Any,
+                 room_controller: Any) -> None:
         super().__init__(master, bg=C_BG)
         self.equip_ctrl = equipment_controller
         self.room_ctrl  = room_controller
@@ -167,10 +170,12 @@ class EquipmentManagementFrame(tk.Frame):
         rows = [(e.equipment_id, e.name, e.equipment_type,
                  e.room_id, e.status, e.purchase_date)
                 for e in all_eq]
-        fill_tree(self.tree, rows)
+        assert self.tree is not None
+        fill_tree(self.tree, rows)  # type: ignore[arg-type]
         self._status_lbl.config(text=f"Hien thi {len(rows)} thiet bi")
 
     def _selected_id(self) -> str | None:
+        assert self.tree is not None
         sel = self.tree.selection()
         return str(self.tree.item(sel[0], "values")[0]) if sel else None
 

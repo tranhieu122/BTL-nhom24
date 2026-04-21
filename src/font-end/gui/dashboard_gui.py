@@ -1,12 +1,13 @@
 # dashboard_gui.py  –  home / dashboard screen  (v2.0 pro-max)
 from __future__ import annotations
 import tkinter as tk
-from tkinter import messagebox, ttk
-from gui.theme import (C_BG, C_DARK, C_PRIMARY, C_SURFACE, C_BORDER,
-                       C_SUCCESS, C_DANGER, C_MUTED,
-                       F_SECTION, F_BODY, F_SMALL,
+from tkinter import ttk
+from typing import Any
+from gui.theme import (C_BG, C_DARK, C_SURFACE, C_BORDER,
+                       C_MUTED,
+                       F_SECTION,
                        make_tree, fill_tree, with_scrollbar,
-                       page_header, btn, MiniProgressBar)
+                       page_header, MiniProgressBar)
 
 # Card colour palette: (bg, accent_fg, icon)
 CARD_PALETTE = [
@@ -26,8 +27,10 @@ STATUS_COLOR = {
 
 
 class DashboardFrame(tk.Frame):
-    def __init__(self, master, report_controller, booking_controller,
-                 booking_ctrl_approve=None, current_user=None) -> None:
+    def __init__(self, master: tk.Misc, report_controller: Any,
+                 booking_controller: Any,
+                 booking_ctrl_approve: Any = None,
+                 current_user: Any = None) -> None:
         super().__init__(master, bg=C_BG)
         self.report_ctrl   = report_controller
         self.booking_ctrl  = booking_controller
@@ -40,7 +43,7 @@ class DashboardFrame(tk.Frame):
 
         # Scrollable body
         canvas = tk.Canvas(self, bg=C_BG, highlightthickness=0)
-        vsb = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)
+        vsb = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)  # type: ignore[arg-type]
         body = tk.Frame(canvas, bg=C_BG)
         body.bind("<Configure>",
                   lambda _: canvas.configure(scrollregion=canvas.bbox("all")))
@@ -183,7 +186,7 @@ class DashboardFrame(tk.Frame):
                 (tu_choi,   "#ef4444"),
             ]
             if total == 0:
-                cv.create_arc(MARGIN, MARGIN, SIZE - MARGIN, SIZE - MARGIN,
+                cv.create_arc(MARGIN, MARGIN, SIZE - MARGIN, SIZE - MARGIN,  # type: ignore[no-untyped-call]
                               start=0, extent=359,
                               style="arc", outline="#e5e7eb", width=STROKE)
                 cv.create_text(cx, cy, text="0",
@@ -195,7 +198,7 @@ class DashboardFrame(tk.Frame):
                 if val == 0:
                     continue
                 extent = -(360.0 * val / total)
-                cv.create_arc(MARGIN, MARGIN, SIZE - MARGIN, SIZE - MARGIN,
+                cv.create_arc(MARGIN, MARGIN, SIZE - MARGIN, SIZE - MARGIN,  # type: ignore[no-untyped-call]
                               start=start, extent=extent,
                               style="arc", outline=color, width=STROKE)
                 start += extent

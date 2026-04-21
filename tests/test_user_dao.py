@@ -1,13 +1,16 @@
 """Unit tests for UserDAO."""
+# pyright: reportMissingImports=false, reportUnknownVariableType=false, reportUnknownMemberType=false, reportUnknownArgumentType=false, reportUnknownParameterType=false, reportUnknownLambdaType=false
 from __future__ import annotations
 
 import pytest
-from dao.user_dao import UserDAO
-from models.user import User
+from typing import Any
+
+from dao.user_dao import UserDAO  # type: ignore[import-not-found]
+from models.user import User  # type: ignore[import-not-found]
 
 
-def _make_user(**overrides) -> User:
-    base = dict(
+def _make_user(**overrides: Any) -> Any:
+    base: dict[str, Any] = dict(
         user_id="T001",
         username="testuser",
         full_name="Test User",

@@ -1,7 +1,8 @@
 """Unit tests for password hashing (PBKDF2 + legacy SHA-256)."""
+# pyright: reportMissingImports=false, reportUnknownVariableType=false, reportUnknownMemberType=false, reportUnknownArgumentType=false, reportUnknownParameterType=false, reportUnknownLambdaType=false
 from __future__ import annotations
 
-from utils.password_hash import hash_password, verify_password, sha256_hash
+from utils.password_hash import hash_password, verify_password, sha256_hash  # type: ignore[import-not-found]
 
 
 class TestPasswordHash:

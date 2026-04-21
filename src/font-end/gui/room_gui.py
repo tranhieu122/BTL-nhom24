@@ -3,11 +3,11 @@ from __future__ import annotations
 import datetime as dt
 import tkinter as tk
 from tkinter import messagebox, ttk
+from typing import Any
 from gui.room_detail_gui import RoomDetailDialog
 from gui.room_feedback_gui import RoomRatingDialog, RoomIssueDialog
-from gui.theme import (C_BG, C_SURFACE, C_BORDER, C_PRIMARY, C_DARK,
-                       C_TEXT, C_MUTED, C_SUCCESS,
-                       F_SECTION, F_BODY, F_BODY_B, F_SMALL,
+from gui.theme import (C_BG, C_SURFACE, C_BORDER, C_PRIMARY,
+                       C_TEXT, C_MUTED, F_BODY_B,
                        make_tree, fill_tree, with_scrollbar,
                        page_header, btn, search_box)
 
@@ -15,8 +15,8 @@ from gui.theme import (C_BG, C_SURFACE, C_BORDER, C_PRIMARY, C_DARK,
 class RoomManagementFrame(tk.Frame):
     SLOT_OPTIONS = ["Ca 1", "Ca 2", "Ca 3", "Ca 4", "Ca 5"]
 
-    def __init__(self, master, room_controller, booking_controller=None,
-                 feedback_ctrl=None, current_user=None) -> None:
+    def __init__(self, master: tk.Misc, room_controller: Any, booking_controller: Any = None,
+                 feedback_ctrl: Any = None, current_user: Any = None) -> None:
         super().__init__(master, bg=C_BG)
         self.room_ctrl     = room_controller
         self.booking_ctrl  = booking_controller
@@ -151,9 +151,11 @@ class RoomManagementFrame(tk.Frame):
         rows = [(r.room_id, r.name, r.capacity,
                  r.room_type, r.equipment, r.status)
                 for r in self.room_ctrl.list_rooms(self.search_var.get())]
+        assert self.tree is not None
         fill_tree(self.tree, rows)
 
     def _selected_room_id(self) -> str | None:
+        assert self.tree is not None
         sel = self.tree.selection()
         return str(self.tree.item(sel[0], "values")[0]) if sel else None
 
@@ -195,14 +197,14 @@ class RoomManagementFrame(tk.Frame):
         self.room_ctrl.delete_room(rid)
         self.refresh()
 
-    def _get_selected_room(self):
+    def _get_selected_room(self) -> tuple[str | None, str | None]:
         """Return (room_id, room_name) of selected row, or (None, None)."""
         rid = self._selected_room_id()
         if rid is None:
             return None, None
-        rooms = {r.room_id: r for r in self.room_ctrl.list_rooms()}
+        rooms: dict[str, Any] = {r.room_id: r for r in self.room_ctrl.list_rooms()}
         room = rooms.get(rid)
-        name = room.name if room else rid
+        name: str = str(room.name) if room else rid
         return rid, name
 
     def _rate_room(self) -> None:
@@ -210,6 +212,7 @@ class RoomManagementFrame(tk.Frame):
         if rid is None:
             messagebox.showwarning("Chua chon phong", "Hay chon phong can danh gia.")
             return
+        assert name is not None
         if self.feedback_ctrl is None or self.current_user is None:
             messagebox.showwarning("Chua san sang", "Tinh nang chua duoc ket noi.")
             return
@@ -220,6 +223,7 @@ class RoomManagementFrame(tk.Frame):
         if rid is None:
             messagebox.showwarning("Chua chon phong", "Hay chon phong can bao loi.")
             return
+        assert name is not None
         if self.feedback_ctrl is None or self.current_user is None:
             messagebox.showwarning("Chua san sang", "Tinh nang chua duoc ket noi.")
             return
@@ -242,6 +246,7 @@ class RoomManagementFrame(tk.Frame):
             self.booking_ctrl, date_text, slot)
         rows = [(r.room_id, r.name, r.capacity, r.room_type, r.equipment)
                 for r in rooms]
+        assert self._suggest_tree is not None
         fill_tree(self._suggest_tree, rows)
         count = len(rows)
         if count:

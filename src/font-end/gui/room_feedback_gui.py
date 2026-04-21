@@ -1,11 +1,13 @@
 # room_feedback_gui.py – dialogs and admin page for room ratings & issue reports
 from __future__ import annotations
+import sqlite3
 import tkinter as tk
 from tkinter import messagebox, ttk
+from typing import Any, cast
 from gui.theme import (
-    C_BG, C_SURFACE, C_BORDER, C_PRIMARY, C_TEXT, C_MUTED,
-    C_WARNING, C_WARNING_BG, C_SUCCESS, C_SUCCESS_BG,
-    C_DANGER, C_DANGER_BG, F_BODY, F_BODY_B, F_INPUT, F_SMALL,
+    C_BG, C_SURFACE, C_BORDER, C_MUTED,
+    C_SUCCESS_BG,
+    C_DANGER_BG, F_BODY, F_BODY_B, F_INPUT, F_SMALL,
     make_tree, fill_tree, with_scrollbar, page_header, btn,
 )
 
@@ -17,9 +19,10 @@ from gui.theme import (
 class RoomRatingDialog(tk.Toplevel):
     """Modal: chọn số sao (1-5) và nhập nhận xét cho một phòng."""
 
-    def __init__(self, parent, room_id: str, room_name: str,
-                 current_user, feedback_ctrl, on_done=None):
-        super().__init__(parent)
+    def __init__(self, parent: tk.Misc, room_id: str, room_name: str,
+                 current_user: Any, feedback_ctrl: Any,
+                 on_done: Any = None) -> None:
+        super().__init__(parent)  # type: ignore[arg-type]
         self.title(f"Đánh giá phòng – {room_name}")
         self.resizable(False, False)
         self.grab_set()
@@ -32,13 +35,11 @@ class RoomRatingDialog(tk.Toplevel):
         self._build(room_name)
 
     def _build(self, room_name: str) -> None:
-        pad = {"padx": 20, "pady": 6}
-
         tk.Label(self, text=f"Đánh giá phòng  {room_name}", bg=C_BG,
                  font=("Segoe UI", 13, "bold")).pack(pady=(18, 4))
 
         tk.Label(self, text="Chon so sao:", bg=C_BG,
-                 font=F_BODY_B).pack(anchor="w", **pad)
+                 font=F_BODY_B).pack(anchor="w", padx=20, pady=6)
 
         # ── star buttons ──────────────────────────────────────────────────────
         star_row = tk.Frame(self, bg=C_BG)
@@ -55,7 +56,7 @@ class RoomRatingDialog(tk.Toplevel):
 
         # ── comment ───────────────────────────────────────────────────────────
         tk.Label(self, text="Nhan xet (tuy chon):", bg=C_BG,
-                 font=F_BODY_B).pack(anchor="w", **pad)
+                 font=F_BODY_B).pack(anchor="w", padx=20, pady=6)
         self._comment = tk.Text(self, width=40, height=4, font=F_INPUT,
                                 relief="solid", bd=1, wrap="word")
         self._comment.pack(padx=20, pady=(0, 10))
@@ -116,9 +117,10 @@ class RoomRatingDialog(tk.Toplevel):
 class RoomIssueDialog(tk.Toplevel):
     """Modal: nhập mô tả sự cố/lỗi của một phòng."""
 
-    def __init__(self, parent, room_id: str, room_name: str,
-                 current_user, feedback_ctrl, on_done=None):
-        super().__init__(parent)
+    def __init__(self, parent: tk.Misc, room_id: str, room_name: str,
+                 current_user: Any, feedback_ctrl: Any,
+                 on_done: Any = None) -> None:
+        super().__init__(parent)  # type: ignore[arg-type]
         self.title(f"Báo lỗi phòng – {room_name}")
         self.resizable(False, False)
         self.grab_set()
@@ -130,13 +132,11 @@ class RoomIssueDialog(tk.Toplevel):
         self._build(room_name)
 
     def _build(self, room_name: str) -> None:
-        pad = {"padx": 20, "pady": 6}
-
         tk.Label(self, text=f"Báo lỗi phòng  {room_name}", bg=C_BG,
                  font=("Segoe UI", 13, "bold")).pack(pady=(18, 4))
 
         tk.Label(self, text="Mo ta su co / loi:", bg=C_BG,
-                 font=F_BODY_B).pack(anchor="w", **pad)
+                 font=F_BODY_B).pack(anchor="w", padx=20, pady=6)
         self._desc = tk.Text(self, width=44, height=5, font=F_INPUT,
                              relief="solid", bd=1, wrap="word")
         self._desc.pack(padx=20, pady=(0, 10))
@@ -178,7 +178,7 @@ class RoomIssueDialog(tk.Toplevel):
 class RoomIssueManagementFrame(tk.Frame):
     """Admin page – danh sach bao cao su co phong."""
 
-    def __init__(self, master, feedback_ctrl) -> None:
+    def __init__(self, master: tk.Misc, feedback_ctrl: Any) -> None:
         super().__init__(master, bg=C_BG)
         self.feedback_ctrl = feedback_ctrl
         self.filter_var    = tk.StringVar()
@@ -235,6 +235,7 @@ class RoomIssueManagementFrame(tk.Frame):
         rows = [(i.issue_id, i.room_id, i.user_name,
                  i.description, i.status, i.created_at)
                 for i in issues]
+        assert self.tree is not None
         fill_tree(self.tree, rows)
 
         # colour rows by status
@@ -249,18 +250,20 @@ class RoomIssueManagementFrame(tk.Frame):
 
     def _refresh_ratings(self) -> None:
         # Show all ratings (no filter)
-        conn_rows = []
-        from database.sqlite_db import get_connection
-        conn = get_connection()
-        rows = conn.execute(
+        conn_rows: list[tuple[object, object, str, object, object]] = []
+        from database.sqlite_db import get_connection  # type: ignore[import-not-found]
+        conn: sqlite3.Connection = get_connection()  # type: ignore[assignment]
+        raw_rows = conn.execute(  # type: ignore[reportUnknownMemberType]
             "SELECT room_id, user_name, stars, comment, created_at "
             "FROM room_ratings ORDER BY created_at DESC LIMIT 100"
-        ).fetchall()
+        ).fetchall()  # type: ignore[reportUnknownMemberType]
+        rows = cast(list[tuple[object, object, int, object, object]], raw_rows)
         for r in rows:
             conn_rows.append((r[0], r[1], "★" * r[2], r[3], r[4]))
         fill_tree(self._rating_tree, conn_rows)
 
     def _resolve(self) -> None:
+        assert self.tree is not None
         sel = self.tree.selection()
         if not sel:
             messagebox.showwarning("Chua chon", "Hay chon mot bao cao.")

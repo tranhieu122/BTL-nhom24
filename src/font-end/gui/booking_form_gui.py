@@ -3,19 +3,22 @@ from __future__ import annotations
 import datetime as dt
 import tkinter as tk
 from tkinter import messagebox, ttk
+from typing import Any
 from gui.theme import (C_BG, C_PRIMARY, C_SURFACE, C_BORDER,
-                       C_TEXT, C_MUTED, C_DARK, F_INPUT, page_header, btn)
+                       C_MUTED, F_INPUT, page_header, btn)
 
+_has_calendar = False
 try:
-    from tkcalendar import DateEntry
-    _HAS_CALENDAR = True
+    from tkcalendar import DateEntry  # type: ignore[import-untyped]
+    _has_calendar = True
 except ImportError:
-    _HAS_CALENDAR = False
+    pass
 
 
 class BookingFormFrame(tk.Frame):
-    def __init__(self, master, booking_controller, room_controller,
-                 current_user, on_booking_created=None) -> None:
+    def __init__(self, master: tk.Misc, booking_controller: Any,
+                 room_controller: Any, current_user: Any,
+                 on_booking_created: Any = None) -> None:
         super().__init__(master, bg=C_BG)
         self.booking_ctrl = booking_controller
         self.room_ctrl    = room_controller
@@ -57,7 +60,7 @@ class BookingFormFrame(tk.Frame):
                         highlightbackground=C_BORDER, padx=24, pady=20)
         card.grid(row=0, column=0, sticky="nsew", padx=(0, 10))
 
-        def lbl(row, col, text):
+        def lbl(row: int, col: int, text: str) -> None:
             tk.Label(card, text=text, bg=C_SURFACE, fg=C_MUTED,
                      font=("Segoe UI", 9, "bold")).grid(
                 row=row, column=col, sticky="w", pady=(14, 2))
@@ -68,7 +71,7 @@ class BookingFormFrame(tk.Frame):
         room_values = [f"{r.room_id} – {r.name} (SC: {r.capacity})"
                        for r in self.room_ctrl.list_rooms()
                        if r.status == "Hoat dong"]
-        self._room_display_map = {}
+        self._room_display_map: dict[str, Any] = {}
         for r in self.room_ctrl.list_rooms():
             key = f"{r.room_id} – {r.name} (SC: {r.capacity})"
             self._room_display_map[key] = r.room_id
@@ -76,19 +79,19 @@ class BookingFormFrame(tk.Frame):
         room_cb = ttk.Combobox(card, textvariable=self.room_var,
                                values=room_values, state="readonly", width=28)
         room_cb.grid(row=1, column=0, sticky="w")
-        room_cb.bind("<<ComboboxSelected>>", self._on_room_selected)
+        room_cb.bind("<<ComboboxSelected>>", self._on_room_selected)  # type: ignore[arg-type]
 
         # Date picker
-        if _HAS_CALENDAR:
+        if _has_calendar:
             date_frame = tk.Frame(card, bg=C_SURFACE)
             date_frame.grid(row=1, column=1, sticky="w", padx=(12, 0))
-            de = DateEntry(date_frame, textvariable=self.date_var,
+            de = DateEntry(date_frame, textvariable=self.date_var,  # type: ignore[possibly-unbound]
                            width=26, date_pattern="yyyy-mm-dd",
                            background=C_PRIMARY, foreground="white",
                            borderwidth=1, font=("Segoe UI", 10))
-            de.pack()
-            de.bind("<<DateEntrySelected>>",
-                    lambda _: self.after(100, self._refresh_slots))
+            de.pack()  # type: ignore[attr-defined]
+            de.bind("<<DateEntrySelected>>",  # type: ignore[attr-defined]
+                    lambda _: self.after(100, self._refresh_slots))  # type: ignore[misc]
         else:
             date_e = tk.Entry(card, textvariable=self.date_var, width=30,
                               font=F_INPUT, relief="solid", bd=1)
@@ -154,7 +157,7 @@ class BookingFormFrame(tk.Frame):
                  bg=C_SURFACE, fg=C_MUTED,
                  font=("Segoe UI", 11), justify="center").pack()
 
-    def _draw_room_info(self, room) -> None:
+    def _draw_room_info(self, room: Any) -> None:
         for w in self._room_info_frame.winfo_children():
             w.destroy()
 
@@ -166,7 +169,8 @@ class BookingFormFrame(tk.Frame):
                  bg=C_SURFACE, fg="#1a2f5e",
                  font=("Segoe UI", 12, "bold")).pack(anchor="w", pady=(0, 12))
 
-        def info_row(icon, label, value, val_color="#1e293b"):
+        def info_row(icon: str, label: str, value: str,
+                     val_color: str = "#1e293b") -> None:
             row = tk.Frame(self._room_info_frame, bg=C_SURFACE)
             row.pack(fill="x", pady=4)
             tk.Label(row, text=icon, bg=C_SURFACE,
@@ -205,7 +209,7 @@ class BookingFormFrame(tk.Frame):
                      relief="solid", bd=1).pack(fill="x", pady=(4, 0),
                                                 padx=2, ipadx=6, ipady=4)
 
-    def _on_room_selected(self, _event=None) -> None:
+    def _on_room_selected(self, _event: Any = None) -> None:
         display = self.room_var.get()
         room_id = self._room_display_map.get(display, display.split(" – ")[0])
         room = self.room_ctrl.get_room(room_id)
@@ -247,7 +251,7 @@ class BookingFormFrame(tk.Frame):
             self._build_suggestion_panel(suggestions, date)
 
     # ── Suggestion panel builder ──────────────────────────────────────────────
-    def _build_suggestion_panel(self, suggestions: dict, base_date: str) -> None:
+    def _build_suggestion_panel(self, suggestions: dict[str, Any], base_date: str) -> None:
         """Rebuild and show the suggestion panel inside _suggest_outer."""
         outer = self._suggest_outer
         for w in outer.winfo_children():
