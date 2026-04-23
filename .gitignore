@@ -14,3 +14,7 @@ src/back end/database/classroom_booking.db
 exports/
 *.pdf
 *.xlsx
+
+# Logs
+src/back end/logs/
+*.log

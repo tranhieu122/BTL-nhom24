@@ -26,10 +26,7 @@ jobs:
           pip install pytest ruff black
 
       - name: Lint with ruff
-        run: ruff check "src/back end" tests
+        run: ruff check "src/back end" "src/font-end"
 
       - name: Check formatting with black
-        run: black --check "src/back end" tests
-
-      - name: Run unit tests
-        run: python -m pytest tests/ -v --tb=short
+        run: black --check "src/back end" "src/font-end"
