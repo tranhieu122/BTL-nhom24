@@ -1,21 +1,22 @@
-# profile_gui.py  –  user profile dialog with password change  (v2.0)
+# profile_gui.py  –  user profile dialog with password change  (v2.1)
 from __future__ import annotations
 import tkinter as tk
 from tkinter import messagebox
-from gui.theme import (C_PRIMARY, C_SURFACE, C_BORDER, C_MUTED, F_INPUT, btn)
+from gui.theme import (C_PRIMARY, C_SURFACE, C_BORDER, C_MUTED, btn,
+                       labeled_entry, pw_strength_bar, eye_toggle, status_badge)
 
 
 class ProfileDialog(tk.Toplevel):
     """Shows current user profile and allows password change."""
 
-    def __init__(self, master, current_user, auth_controller) -> None:
-        super().__init__(master)
+    def __init__(self, master, current_user, auth_controller) -> None: # type: ignore
+        super().__init__(master) # type: ignore
         self.user      = current_user
         self.auth_ctrl = auth_controller
         self.title("Thong tin ca nhan")
         self.resizable(False, False)
         self.configure(bg=C_SURFACE)
-        self.transient(master)
+        self.transient(master) # type: ignore
         self.grab_set()
         self._build()
         self.after(100, self._center)
@@ -30,54 +31,54 @@ class ProfileDialog(tk.Toplevel):
     def _build(self) -> None:
         # Role color
         role_colors = {
-            "Admin":      ("#2255a4", "#dbeafe"),
+            "Admin":      ("#4f46e5", "#eef2ff"),   # Indigo 600
             "Giang vien": ("#15803d", "#dcfce7"),
             "Sinh vien":  ("#854d0e", "#fef9c3"),
         }
-        fg, bg = role_colors.get(self.user.role, ("#475569", "#f1f5f9"))
+        fg, bg = role_colors.get(self.user.role, ("#475569", "#f1f5f9")) # type: ignore
 
         # Header with avatar
         hdr = tk.Frame(self, bg=C_PRIMARY, padx=24, pady=18)
         hdr.pack(fill="x")
 
-        av = tk.Canvas(hdr, width=56, height=56, bg=C_PRIMARY,
+        av = tk.Canvas(hdr, width=60, height=60, bg=C_PRIMARY,
                        highlightthickness=0)
         av.pack(side="left", padx=(0, 14))
-        av.create_oval(2, 2, 54, 54, fill="#4a8ecb", outline="")
-        initials = "".join(p[0] for p in self.user.full_name.split()[:2]).upper()
-        av.create_text(28, 28, text=initials, fill="white",
-                       font=("Segoe UI", 18, "bold"))
+        av.create_oval(2, 2, 58, 58, fill="#4f46e5", outline="#c7d2fe", width=2)
+        initials = "".join(p[0] for p in self.user.full_name.split()[:2]).upper() # type: ignore
+        av.create_text(30, 30, text=initials, fill="white",
+                       font=("Segoe UI", 20, "bold"))
 
         info = tk.Frame(hdr, bg=C_PRIMARY)
         info.pack(side="left", fill="x")
-        tk.Label(info, text=self.user.full_name, bg=C_PRIMARY, fg="white",
+        tk.Label(info, text=self.user.full_name, bg=C_PRIMARY, fg="white", # type: ignore
                  font=("Segoe UI", 14, "bold")).pack(anchor="w")
-        tk.Label(info, text=f"@{self.user.username}", bg=C_PRIMARY, fg="#93c5fd",
+        tk.Label(info, text=f"@{self.user.username}", bg=C_PRIMARY, fg="#c7d2fe", # type: ignore
                  font=("Segoe UI", 10)).pack(anchor="w")
-        tk.Label(info, text=f"  {self.user.role}  ",
-                 bg=bg, fg=fg,
-                 font=("Segoe UI", 9, "bold")).pack(anchor="w", pady=(4, 0))
+        badge = status_badge(info, self.user.role, bg=C_PRIMARY) # type: ignore
+        badge.config(bg=bg, fg=fg)
+        badge.pack(anchor="w", pady=(4, 0))
 
         # Profile info
         body = tk.Frame(self, bg=C_SURFACE, padx=26, pady=18)
         body.pack(fill="x")
 
-        def info_row(icon, label, value):
+        def info_row(icon, label, value): # type: ignore
             row = tk.Frame(body, bg=C_SURFACE)
             row.pack(fill="x", pady=5)
-            tk.Label(row, text=icon, bg=C_SURFACE,
+            tk.Label(row, text=icon, bg=C_SURFACE, # type: ignore
                      font=("Segoe UI", 13), width=2).pack(side="left")
             tk.Label(row, text=f"{label}:", bg=C_SURFACE, fg=C_MUTED,
                      font=("Segoe UI", 9), width=14, anchor="w").pack(side="left")
-            tk.Label(row, text=value, bg=C_SURFACE, fg="#1e293b",
+            tk.Label(row, text=value, bg=C_SURFACE, fg="#1e293b", # type: ignore
                      font=("Segoe UI", 9, "bold")).pack(side="left")
 
-        info_row("🔑", "Ma tai khoan", self.user.user_id)
-        info_row("👤", "Ten dang nhap", self.user.username)
-        info_row("📛", "Ho va ten",    self.user.full_name)
-        info_row("📧", "Email",        self.user.email)
-        info_row("📱", "So dien thoai", self.user.phone)
-        info_row("🔒", "Trang thai",   self.user.status)
+        info_row("🔑", "Ma tai khoan", self.user.user_id) # type: ignore
+        info_row("👤", "Ten dang nhap", self.user.username) # type: ignore
+        info_row("📛", "Ho va ten",    self.user.full_name) # type: ignore
+        info_row("📧", "Email",        self.user.email) # type: ignore
+        info_row("📱", "So dien thoai", self.user.phone) # type: ignore
+        info_row("🔒", "Trang thai",   self.user.status) # type: ignore
 
         # Divider
         tk.Frame(self, bg=C_BORDER, height=1).pack(fill="x", padx=24)
@@ -87,33 +88,29 @@ class ProfileDialog(tk.Toplevel):
         pw_frame.pack(fill="x")
 
         tk.Label(pw_frame, text="🔐  Doi mat khau",
-                 bg=C_SURFACE, fg="#1a2f5e",
+                 bg=C_SURFACE, fg="#1e1b4b",
                  font=("Segoe UI", 11, "bold")).pack(anchor="w", pady=(0, 12))
 
         self._old_pw  = tk.StringVar()
         self._new_pw  = tk.StringVar()
         self._conf_pw = tk.StringVar()
 
-        for label, var in [
-            ("Mat khau hien tai",     self._old_pw),
-            ("Mat khau moi (min 6)",  self._new_pw),
-            ("Xac nhan mat khau moi", self._conf_pw),
-        ]:
-            tk.Label(pw_frame, text=label, bg=C_SURFACE, fg=C_MUTED,
-                     font=("Segoe UI", 9, "bold")).pack(anchor="w", pady=(6, 0))
-            wrap = tk.Frame(pw_frame, bg=C_SURFACE, highlightthickness=1,
-                            highlightbackground=C_BORDER)
-            wrap.pack(fill="x", pady=(3, 0))
-            e = tk.Entry(wrap, textvariable=var, show="*", width=34,
-                         font=("Segoe UI", 10), relief="flat", bg=C_SURFACE)
-            e.pack(padx=10, pady=7)
+        # Old password
+        _, e_old = labeled_entry(pw_frame, "MAT KHAU HIEN TAI",
+                                 self._old_pw, icon="🔒", show="*", width=30)
+        eye_toggle(e_old.master, e_old, bg=C_SURFACE).pack(side="right", padx=(0, 8))
 
-            def _in(_, w=wrap):
-                w.config(highlightbackground="#2255a4", highlightthickness=2)
-            def _out(_, w=wrap):
-                w.config(highlightbackground=C_BORDER, highlightthickness=1)
-            e.bind("<FocusIn>",  _in)
-            e.bind("<FocusOut>", _out)
+        # New password + strength bar
+        _, e_new = labeled_entry(pw_frame, "MAT KHAU MOI (min 6 ky tu)",
+                                 self._new_pw, icon="🔑", show="*", width=30)
+        eye_toggle(e_new.master, e_new, bg=C_SURFACE).pack(side="right", padx=(0, 8))
+        pw_strength_bar(pw_frame, self._new_pw, bg=C_SURFACE).pack(
+            fill="x", pady=(2, 0))
+
+        # Confirm password
+        _, e_conf = labeled_entry(pw_frame, "XAC NHAN MAT KHAU MOI",
+                                  self._conf_pw, icon="✅", show="*", width=30)
+        eye_toggle(e_conf.master, e_conf, bg=C_SURFACE).pack(side="right", padx=(0, 8))
 
         # Buttons
         btn_row = tk.Frame(self, bg=C_SURFACE, padx=26)
@@ -144,19 +141,11 @@ class ProfileDialog(tk.Toplevel):
                                    parent=self)
             return
 
-        # Verify current password
-        user_check = self.auth_ctrl.authenticate(self.user.username, old)
-        if user_check is None:
-            messagebox.showerror("Sai mat khau",
-                                 "Mat khau hien tai khong dung.",
-                                 parent=self)
-            return
-
-        # Apply reset
+        # Apply change via controller (verifies old password, logs action)
         try:
-            self.auth_ctrl.reset_password(
-                username=self.user.username,
-                email=self.user.email,
+            self.auth_ctrl.change_password(
+                username=self.user.username,  # type: ignore
+                old_password=old,
                 new_password=new,
             )
         except ValueError as exc:

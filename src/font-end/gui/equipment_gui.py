@@ -4,8 +4,8 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from typing import Any
 from gui.theme import (C_BG, C_PRIMARY, C_SURFACE, C_BORDER, C_MUTED,
-                       F_INPUT, make_tree, fill_tree, with_scrollbar,
-                       page_header, btn, search_box)
+                       F_INPUT, make_tree, fill_tree, with_scrollbar, # type: ignore
+                       page_header, btn, search_box, labeled_entry)
 
 
 class EquipmentDialog(tk.Toplevel):
@@ -51,41 +51,43 @@ class EquipmentDialog(tk.Toplevel):
         frm = tk.Frame(self, bg=C_SURFACE, padx=26, pady=18)
         frm.pack()
 
-        fields = [
-            ("equipment_id",   "Ma thiet bi *",         False),
-            ("name",           "Ten thiet bi *",         False),
-            ("equipment_type", "Loai thiet bi *",        False),
-            ("purchase_date",  "Ngay mua (YYYY-MM-DD) *", False),
-        ]
-        for i, (key, lbl, _) in enumerate(fields):
-            tk.Label(frm, text=lbl, bg=C_SURFACE, fg=C_MUTED,
-                     font=("Segoe UI", 9, "bold")).grid(
-                row=i * 2, column=0, columnspan=2,
-                sticky="w", pady=(10 if i else 0, 2))
-            tk.Entry(frm, textvariable=self.vars[key], width=36,
-                     font=F_INPUT, relief="solid", bd=1).grid(
-                row=i * 2 + 1, column=0, columnspan=2, sticky="ew")
+        icons = {"equipment_id": "🔑", "name": "🔧",
+                 "equipment_type": "📦", "purchase_date": "📅"}
+        labels_map = {"equipment_id": "MA THIET BI *", "name": "TEN THIET BI *",
+                      "equipment_type": "LOAI THIET BI *",
+                      "purchase_date": "NGAY MUA (YYYY-MM-DD) *"}
+        r = 0
+        for key in ("equipment_id", "name", "equipment_type", "purchase_date"):
+            outer, _ = labeled_entry(
+                frm, labels_map[key], self.vars[key],
+                icon=icons[key], width=32)
+            outer.grid(row=r, column=0, columnspan=2, sticky="ew", pady=(6, 0))
+            r += 1
 
         # Room combobox
-        tk.Label(frm, text="Phong *", bg=C_SURFACE, fg=C_MUTED,
-                 font=("Segoe UI", 9, "bold")).grid(
-            row=8, column=0, columnspan=2, sticky="w", pady=(10, 2))
-        room_ids = [r.room_id for r in self.room_ctrl.list_rooms()]
+        tk.Label(frm, text="PHONG *", bg=C_SURFACE, fg=C_MUTED,
+                 font=("Segoe UI", 8, "bold")).grid(
+            row=r, column=0, columnspan=2, sticky="w", pady=(10, 2))
+        r += 1
+        room_ids = [r2.room_id for r2 in self.room_ctrl.list_rooms()]
         ttk.Combobox(frm, textvariable=self.vars["room_id"],
                      values=room_ids, state="readonly", width=33).grid(
-            row=9, column=0, columnspan=2, sticky="ew")
+            row=r, column=0, columnspan=2, sticky="ew")
+        r += 1
 
         # Status combobox
-        tk.Label(frm, text="Trang thai", bg=C_SURFACE, fg=C_MUTED,
-                 font=("Segoe UI", 9, "bold")).grid(
-            row=10, column=0, columnspan=2, sticky="w", pady=(10, 2))
+        tk.Label(frm, text="TRANG THAI", bg=C_SURFACE, fg=C_MUTED,
+                 font=("Segoe UI", 8, "bold")).grid(
+            row=r, column=0, columnspan=2, sticky="w", pady=(10, 2))
+        r += 1
         ttk.Combobox(frm, textvariable=self.vars["status"],
                      values=["Hoat dong", "Bao tri", "Hong"],
                      state="readonly", width=33).grid(
-            row=11, column=0, columnspan=2, sticky="ew")
+            row=r, column=0, columnspan=2, sticky="ew")
+        r += 1
 
         btn_row = tk.Frame(frm, bg=C_SURFACE)
-        btn_row.grid(row=12, column=0, columnspan=2,
+        btn_row.grid(row=r, column=0, columnspan=2,
                      sticky="e", pady=(20, 0))
         btn(btn_row, "Luu lai", self._save, icon="💾").pack(side="left", padx=6)
         btn(btn_row, "Huy",     self.destroy, variant="ghost").pack(side="left")

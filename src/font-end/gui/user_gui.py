@@ -2,30 +2,34 @@
 from __future__ import annotations
 import tkinter as tk
 from tkinter import messagebox, ttk
+from typing import Optional
 from gui.theme import (C_BG, C_PRIMARY, C_SURFACE, C_BORDER, C_MUTED,
-                       F_INPUT, make_tree, fill_tree, with_scrollbar,
-                       page_header, btn, search_box)
+                       make_tree, fill_tree, with_scrollbar,
+                       page_header, btn, search_box,
+                       labeled_entry, eye_toggle)
 
 
 class UserDialog(tk.Toplevel):
-    def __init__(self, master, user=None) -> None:
+    def __init__(self, master: tk.Misc, user: Optional['User'] = None) -> None: # type: ignore
         super().__init__(master)
         self.title("Thong tin nguoi dung")
         self.resizable(False, False)
         self.configure(bg=C_SURFACE)
         self.result = None
         self.vars = {
-            "user_id":   tk.StringVar(value=getattr(user, "user_id",   "")),
-            "username":  tk.StringVar(value=getattr(user, "username",  "")),
-            "full_name": tk.StringVar(value=getattr(user, "full_name", "")),
-            "role":      tk.StringVar(value=getattr(user, "role",      "Giang vien")),
-            "email":     tk.StringVar(value=getattr(user, "email",     "")),
-            "phone":     tk.StringVar(value=getattr(user, "phone",     "")),
+            "user_id":   tk.StringVar(value=user.user_id if user else ""), # type: ignore
+            "username":  tk.StringVar(value=user.username if user else ""), # type: ignore
+            "full_name": tk.StringVar(value=user.full_name if user else ""), # type: ignore
+            "role":      tk.StringVar(value=user.role if user else "Giang vien"), # type: ignore
+            "email":     tk.StringVar(value=user.email if user else ""), # type: ignore
+            "phone":     tk.StringVar(value=user.phone if user else ""), # type: ignore
             "password":  tk.StringVar(),
-            "status":    tk.StringVar(value=getattr(user, "status",    "Hoat dong")),
+            "status":    tk.StringVar(value=user.status if user else "Hoat dong"), # type: ignore
         }
         self._build()
-        self.transient(master)
+        # For static checkers, cast master to tk.Tk for transient
+        if isinstance(master, (tk.Tk, tk.Toplevel)):
+            self.transient(master)
         self.grab_set()
 
     def _build(self) -> None:
@@ -38,40 +42,48 @@ class UserDialog(tk.Toplevel):
         frm = tk.Frame(self, bg=C_SURFACE, padx=24, pady=20)
         frm.pack()
 
-        text_fields = [("user_id",   "Ma nguoi dung"),
-                       ("username",  "Ten dang nhap"),
-                       ("full_name", "Ho va ten"),
-                       ("email",     "Email"),
-                       ("phone",     "So dien thoai"),
-                       ("password",  "Mat khau moi (bo trong neu khong doi)")]
-        for i, (key, lbl) in enumerate(text_fields):
-            tk.Label(frm, text=lbl, bg=C_SURFACE, fg=C_MUTED,
-                     font=("Segoe UI", 9, "bold")).grid(
-                row=i * 2, column=0, columnspan=2,
-                sticky="w", pady=(10 if i else 0, 2))
+        # --- styled labeled entries ---
+        icons = {"user_id": "🔑", "username": "👤", "full_name": "📛",
+                 "email": "📧", "phone": "📱", "password": "🔒"}
+        labels = {"user_id": "MA NGUOI DUNG", "username": "TEN DANG NHAP",
+                  "full_name": "HO VA TEN", "email": "EMAIL",
+                  "phone": "SO DIEN THOAI",
+                  "password": "MAT KHAU MOI (BO TRONG NEU KHONG DOI)"}
+        r = 0
+        for key in ("user_id", "username", "full_name", "email", "phone", "password"):
             show = "*" if key == "password" else ""
-            tk.Entry(frm, textvariable=self.vars[key], width=36,
-                     font=F_INPUT, show=show, relief="solid", bd=1).grid(
-                row=i * 2 + 1, column=0, columnspan=2, sticky="ew")
+            outer, entry = labeled_entry(
+                frm, labels[key], self.vars[key],
+                icon=icons[key], show=show, width=32)
+            outer.grid(row=r, column=0, columnspan=2, sticky="ew",
+                       pady=(6, 0))
+            if key == "password":
+                eye_toggle(entry.master, entry, bg=C_SURFACE).pack(
+                    side="right", padx=(0, 6))
+            r += 1
 
-        tk.Label(frm, text="Vai tro", bg=C_SURFACE, fg=C_MUTED,
-                 font=("Segoe UI", 9, "bold")).grid(
-            row=12, column=0, columnspan=2, sticky="w", pady=(10, 2))
+        tk.Label(frm, text="VAI TRO", bg=C_SURFACE, fg=C_MUTED,
+                 font=("Segoe UI", 8, "bold")).grid(
+            row=r, column=0, columnspan=2, sticky="w", pady=(10, 2))
+        r += 1
         ttk.Combobox(frm, textvariable=self.vars["role"],
                      values=["Admin", "Giang vien", "Sinh vien"],
                      state="readonly", width=33).grid(
-            row=13, column=0, columnspan=2, sticky="ew")
+            row=r, column=0, columnspan=2, sticky="ew")
+        r += 1
 
-        tk.Label(frm, text="Trang thai", bg=C_SURFACE, fg=C_MUTED,
-                 font=("Segoe UI", 9, "bold")).grid(
-            row=14, column=0, columnspan=2, sticky="w", pady=(10, 2))
+        tk.Label(frm, text="TRANG THAI", bg=C_SURFACE, fg=C_MUTED,
+                 font=("Segoe UI", 8, "bold")).grid(
+            row=r, column=0, columnspan=2, sticky="w", pady=(10, 2))
+        r += 1
         ttk.Combobox(frm, textvariable=self.vars["status"],
                      values=["Hoat dong", "Khoa"],
                      state="readonly", width=33).grid(
-            row=15, column=0, columnspan=2, sticky="ew")
+            row=r, column=0, columnspan=2, sticky="ew")
+        r += 1
 
         btn_row = tk.Frame(frm, bg=C_SURFACE)
-        btn_row.grid(row=16, column=0, columnspan=2, sticky="e", pady=(20, 0))
+        btn_row.grid(row=r, column=0, columnspan=2, sticky="e", pady=(20, 0))
         btn(btn_row, "Luu lai", self._save,
             icon="💾").pack(side="left", padx=6)
         btn(btn_row, "Huy", self.destroy,
@@ -83,11 +95,11 @@ class UserDialog(tk.Toplevel):
 
 
 class UserManagementFrame(tk.Frame):
-    def __init__(self, master, user_controller) -> None:
+    def __init__(self, master: tk.Misc, user_controller: 'UserController') -> None: # type: ignore
         super().__init__(master, bg=C_BG)
-        self.user_ctrl  = user_controller
+        self.user_ctrl: 'user_controller' = user_controller # type: ignore
         self.search_var = tk.StringVar()
-        self.tree: ttk.Treeview | None = None
+        self.tree: Optional[ttk.Treeview] = None
         self._build()
         self.refresh()
 
@@ -117,21 +129,25 @@ class UserManagementFrame(tk.Frame):
         with_scrollbar(wrap, self.tree)
 
     def refresh(self) -> None:
-        rows = [(u.user_id, u.username, u.full_name,
-                 u.role, u.email, u.phone, u.status)
-                for u in self.user_ctrl.list_users(self.search_var.get())]
-        fill_tree(self.tree, rows)
+        users = self.user_ctrl.list_users(self.search_var.get()) # type: ignore
+        rows = [(u.user_id, u.username, u.full_name, u.role, u.email, u.phone, u.status) for u in users] # type: ignore
+        if self.tree is not None:
+            fill_tree(self.tree, rows) # type: ignore
 
-    def _selected_user_id(self) -> str | None:
+    def _selected_user_id(self) -> Optional[str]:
+        if self.tree is None:
+            return None
         sel = self.tree.selection()
         return str(self.tree.item(sel[0], "values")[0]) if sel else None
 
-    def _get_user(self):
+    def _get_user(self) -> Optional['User']: # type: ignore
         uid = self._selected_user_id()
         if uid is None:
             return None
-        return next((u for u in self.user_ctrl.list_users()
-                     if u.user_id == uid), None)
+        for u in self.user_ctrl.list_users(): # type: ignore
+            if u.user_id == uid: # type: ignore
+                return u # type: ignore
+        return None
 
     def _add(self) -> None:
         dlg = UserDialog(self)
@@ -139,24 +155,24 @@ class UserManagementFrame(tk.Frame):
         if dlg.result is None:
             return
         try:
-            self.user_ctrl.save_user(dlg.result)
-        except ValueError as err:
+            self.user_ctrl.save_user(dlg.result) # type: ignore
+        except Exception as err:
             messagebox.showerror("Du lieu khong hop le", str(err))
             return
         self.refresh()
 
     def _edit(self) -> None:
-        user = self._get_user()
+        user = self._get_user() # type: ignore
         if user is None:
             messagebox.showwarning("Chua chon", "Hay chon nguoi dung de sua.")
             return
-        dlg = UserDialog(self, user=user)
+        dlg = UserDialog(self, user=user) # type: ignore
         self.wait_window(dlg)
         if dlg.result is None:
             return
         try:
-            self.user_ctrl.save_user(dlg.result)
-        except ValueError as err:
+            self.user_ctrl.save_user(dlg.result) # type: ignore
+        except Exception as err:
             messagebox.showerror("Du lieu khong hop le", str(err))
             return
         self.refresh()
@@ -168,5 +184,9 @@ class UserManagementFrame(tk.Frame):
             return
         if not messagebox.askyesno("Xac nhan xoa", f"Xoa nguoi dung {uid}?"):
             return
-        self.user_ctrl.delete_user(uid)
+        try:
+            self.user_ctrl.delete_user(uid) # type: ignore
+        except Exception as err:
+            messagebox.showerror("Loi xoa", str(err))
+            return
         self.refresh()

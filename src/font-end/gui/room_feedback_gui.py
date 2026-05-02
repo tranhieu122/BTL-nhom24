@@ -47,12 +47,16 @@ class RoomRatingDialog(tk.Toplevel):
         self._star_btns: list[tk.Label] = []
         for i in range(1, 6):
             lbl = tk.Label(star_row, text="☆", bg=C_BG,
-                           font=("Segoe UI", 24), cursor="hand2", fg="#f59e0b")
-            lbl.pack(side="left", padx=4)
+                           font=("Segoe UI", 28), cursor="hand2", fg="#fbbf24")
+            lbl.pack(side="left", padx=2)
             lbl.bind("<Button-1>", lambda e, v=i: self._set_stars(v))
             lbl.bind("<Enter>",    lambda e, v=i: self._hover_stars(v))
             lbl.bind("<Leave>",    lambda e: self._render_stars(self._stars.get()))
             self._star_btns.append(lbl)
+
+        self._rating_label = tk.Label(self, text="Chưa chọn sao", bg=C_BG,
+                                      fg=C_MUTED, font=F_BODY)
+        self._rating_label.pack(pady=(0, 6))
 
         # ── comment ───────────────────────────────────────────────────────────
         tk.Label(self, text="Nhan xet (tuy chon):", bg=C_BG,
@@ -62,12 +66,12 @@ class RoomRatingDialog(tk.Toplevel):
         self._comment.pack(padx=20, pady=(0, 10))
 
         # ── existing rating ───────────────────────────────────────────────────
-        existing = self.feedback_ctrl.rating_dao.user_rating(
+        existing = self.feedback_ctrl.get_user_rating(
             self.room_id, self.current_user.user_id)
         if existing:
             self._set_stars(existing.stars)
             self._comment.insert("1.0", existing.comment)
-            tk.Label(self, text="(Ban da danh gia phong nay truoc do)",
+            tk.Label(self, text="(Bạn đã đánh giá phòng này trước đó)",
                      bg=C_BG, fg=C_MUTED, font=F_SMALL).pack()
 
         # ── buttons ───────────────────────────────────────────────────────────
@@ -83,13 +87,19 @@ class RoomRatingDialog(tk.Toplevel):
     def _set_stars(self, v: int) -> None:
         self._stars.set(v)
         self._render_stars(v)
+        self._update_rating_label(v)
 
     def _hover_stars(self, v: int) -> None:
         self._render_stars(v)
+        self._update_rating_label(v)
 
     def _render_stars(self, n: int) -> None:
         for i, lbl in enumerate(self._star_btns):
             lbl.config(text="★" if i < n else "☆")
+
+    def _update_rating_label(self, stars: int) -> None:
+        labels = ["", "Rất tệ", "Tệ", "Bình thường", "Tốt", "Rất tốt"]
+        self._rating_label.config(text=labels[stars] if stars > 0 else "Chưa chọn sao")
 
     def _submit(self) -> None:
         stars = self._stars.get()

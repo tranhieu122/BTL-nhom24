@@ -35,17 +35,17 @@ class BookingFormFrame(tk.Frame):
         page_header(self, "Dat phong hoc", "📝").pack(fill="x")
 
         # User info banner
-        info = tk.Frame(self, bg="#eef4fc", highlightthickness=1,
-                        highlightbackground=C_BORDER)
+        info = tk.Frame(self, bg="#eef2ff", highlightthickness=1,
+                        highlightbackground="#c7d2fe")
         info.pack(fill="x", padx=20, pady=(0, 14))
         tk.Label(info, text=f"👤  {self.current_user.full_name}",
-                 bg="#eef4fc", fg="#1a2f5e",
+                 bg="#eef2ff", fg="#4f46e5",
                  font=("Segoe UI", 11, "bold")).pack(side="left", padx=16, pady=8)
         tk.Label(info, text=f"  │  Vai tro: {self.current_user.role}",
-                 bg="#eef4fc", fg=C_MUTED,
+                 bg="#eef2ff", fg=C_MUTED,
                  font=("Segoe UI", 10)).pack(side="left")
         tk.Label(info, text="📌 Dat phong se duoc admin duyet truoc khi co hieu luc",
-                 bg="#eef4fc", fg="#475569",
+                 bg="#eef2ff", fg="#4338ca",
                  font=("Segoe UI", 9)).pack(side="right", padx=16)
 
         # Main form + room info card side by side
@@ -98,15 +98,46 @@ class BookingFormFrame(tk.Frame):
             date_e.grid(row=1, column=1, sticky="w", padx=(12, 0))
             date_e.bind("<FocusOut>", lambda _: self._refresh_slots())
 
-        lbl(2, 0, "CA HOC")
+        lbl(2, 0, "CA HOC  (click de chon)")
         lbl(2, 1, "CA CON TRONG")
 
-        slot_cb_form = ttk.Combobox(card, textvariable=self.slot_var,
-                                    values=self.booking_ctrl.SLOT_OPTIONS,
-                                    state="readonly", width=28)
-        slot_cb_form.grid(row=3, column=0, sticky="w")
-        slot_cb_form.bind("<<ComboboxSelected>>",
-                          lambda _: self._refresh_room_suggestions())
+        # ── Visual slot picker ──────────────────────────────────────────────
+        self._slot_btns: dict[str, tk.Button] = {}
+        slot_grid = tk.Frame(card, bg=C_SURFACE)
+        slot_grid.grid(row=3, column=0, sticky="w")
+
+        SLOT_INFO = [
+            ("Ca 1", "7:00-9:00"),
+            ("Ca 2", "9:15-11:15"),
+            ("Ca 3", "13:00-15:00"),
+            ("Ca 4", "15:15-17:15"),
+            ("Ca 5", "17:30-19:30"),
+        ]
+
+        def _select_slot(slot_name: str) -> None:
+            self.slot_var.set(slot_name)
+            for sn, sb in self._slot_btns.items():
+                if sn == slot_name:
+                    sb.config(bg=C_PRIMARY, fg="white",
+                              relief="sunken", font=("Segoe UI", 9, "bold"))
+                else:
+                    sb.config(bg="#f1f5f9", fg="#334155",
+                              relief="flat", font=("Segoe UI", 9))
+            self._refresh_room_suggestions()
+
+        for i, (slot_name, slot_time) in enumerate(SLOT_INFO):
+            sb = tk.Button(
+                slot_grid,
+                text=f"{slot_name}\n{slot_time}",
+                bg="#f1f5f9", fg="#334155",
+                font=("Segoe UI", 9), relief="flat",
+                cursor="hand2", padx=8, pady=6, bd=1,
+                activebackground=C_PRIMARY, activeforeground="white",
+                command=lambda s=slot_name: _select_slot(s))
+            sb.grid(row=0, column=i, padx=2)
+            self._slot_btns[slot_name] = sb
+            sb.bind("<Enter>", lambda e, s=sb: s.config(bg="#e0e7ff") if s.cget("bg") != C_PRIMARY else None)
+            sb.bind("<Leave>", lambda e, s=sb: s.config(bg="#f1f5f9") if s.cget("bg") != C_PRIMARY else None)
 
         avail_lbl = tk.Label(card, textvariable=self.avail_var, bg="#f0fdf4",
                              fg="#15803d", font=("Segoe UI", 9), width=32,
@@ -126,6 +157,9 @@ class BookingFormFrame(tk.Frame):
         self._suggest_outer.grid(row=5, column=0, columnspan=2,
                                  sticky="ew", pady=(10, 0))
         self._suggest_outer.grid_remove()   # hidden by default
+
+        # Select default slot (must be after _room_suggest_frame is created)
+        _select_slot(self.slot_var.get() or "Ca 1")
 
         lbl(6, 0, "MUC DICH SU DUNG")
         self.purpose_text = tk.Text(card, width=64, height=5,
@@ -166,7 +200,7 @@ class BookingFormFrame(tk.Frame):
         status_fg = "#15803d" if room.status == "Hoat dong" else "#dc2626"
 
         tk.Label(self._room_info_frame, text="🏫  Thong tin phong",
-                 bg=C_SURFACE, fg="#1a2f5e",
+                 bg=C_SURFACE, fg="#4f46e5",
                  font=("Segoe UI", 12, "bold")).pack(anchor="w", pady=(0, 12))
 
         def info_row(icon: str, label: str, value: str,
@@ -388,6 +422,8 @@ class BookingFormFrame(tk.Frame):
 
     def _refresh_room_suggestions(self) -> None:
         """Hien thi tat ca phong con trong theo ngay & ca hoc da chon."""
+        if not hasattr(self, '_room_suggest_frame'):
+            return
         frame = self._room_suggest_frame
         for w in frame.winfo_children():
             w.destroy()
@@ -507,7 +543,16 @@ class BookingFormFrame(tk.Frame):
         messagebox.showinfo("Dat phong thanh cong!",
                             "Yeu cau da duoc gui.\n"
                             "Vui long cho admin duyet de co hieu luc.")
+        # Reset form fields to prevent accidental duplicate submission
         self.purpose_text.delete("1.0", "end")
+        self.room_var.set("")
+        self.date_var.set(dt.date.today().isoformat())
+        self.slot_var.set("Ca 1")
+        self._draw_room_placeholder()
+        self._suggest_outer.grid_remove()
+        self._room_suggest_frame.grid_remove()
+        self.avail_var.set("Chon phong va ngay de xem")
+        self._avail_lbl.config(bg="#f0fdf4", fg="#15803d")
         self._refresh_slots()
         if self.on_booking_created:
             self.on_booking_created()

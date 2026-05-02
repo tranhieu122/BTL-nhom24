@@ -9,7 +9,8 @@ from gui.room_feedback_gui import RoomRatingDialog, RoomIssueDialog
 from gui.theme import (C_BG, C_SURFACE, C_BORDER, C_PRIMARY,
                        C_TEXT, C_MUTED, F_BODY_B,
                        make_tree, fill_tree, with_scrollbar,
-                       page_header, btn, search_box)
+                       page_header, btn, search_box,
+                       toast, confirm_dialog)
 
 
 class RoomManagementFrame(tk.Frame):
@@ -61,10 +62,10 @@ class RoomManagementFrame(tk.Frame):
                         highlightbackground=C_BORDER, padx=14, pady=14)
         wrap.pack(fill="both", expand=True, padx=20, pady=(0, 16))
 
-        cols = ("ma", "ten", "suc_chua", "loai", "thiet_bi", "trang_thai")
+        cols = ("ma", "ten", "suc_chua", "loai", "thiet_bi", "danh_gia", "trang_thai")
         hdrs = ("Ma phong", "Ten phong", "Suc chua", "Loai phong",
-                "Trang thiet bi", "Trang thai")
-        wids = (100, 160, 90, 140, 260, 120)
+                "Trang thiet bi", "Danh gia", "Trang thai")
+        wids = (100, 160, 90, 140, 260, 90, 110)
         self.tree = make_tree(wrap, cols, hdrs, wids)
         with_scrollbar(wrap, self.tree)
 
@@ -80,8 +81,8 @@ class RoomManagementFrame(tk.Frame):
         header_bar = tk.Frame(suggest_wrap, bg=C_PRIMARY, pady=0)
         header_bar.pack(fill="x")
 
-        # Accent stripe trên cùng header
-        tk.Frame(header_bar, bg="#3b82f6", height=3).pack(fill="x")
+        # Accent stripe on header: Indigo 400
+        tk.Frame(header_bar, bg="#818cf8", height=3).pack(fill="x")
 
         header_content = tk.Frame(header_bar, bg=C_PRIMARY, padx=16, pady=10)
         header_content.pack(fill="x")
@@ -92,7 +93,7 @@ class RoomManagementFrame(tk.Frame):
                  font=("Segoe UI", 13, "bold")).pack(side="left")
         tk.Label(header_content,
                  text="Chon ngay va ca hoc de tim phong trong nhanh",
-                 bg=C_PRIMARY, fg="#bfdbfe",
+                 bg=C_PRIMARY, fg="#c7d2fe",
                  font=("Segoe UI", 9)).pack(side="right")
 
         # Body
@@ -148,9 +149,14 @@ class RoomManagementFrame(tk.Frame):
         with_scrollbar(body, self._suggest_tree)
 
     def refresh(self) -> None:
-        rows = [(r.room_id, r.name, r.capacity,
-                 r.room_type, r.equipment, r.status)
-                for r in self.room_ctrl.list_rooms(self.search_var.get())]
+        rows = []
+        for r in self.room_ctrl.list_rooms(self.search_var.get()):
+            rating = "N/A"
+            if self.feedback_ctrl:
+                avg = self.feedback_ctrl.rating_dao.average_stars(r.room_id)
+                rating = f"{avg} ⭐" if avg > 0 else "Chua co"
+            rows.append((r.room_id, r.name, r.capacity,
+                         r.room_type, r.equipment, rating, r.status))
         assert self.tree is not None
         fill_tree(self.tree, rows)
 
@@ -170,6 +176,7 @@ class RoomManagementFrame(tk.Frame):
             messagebox.showerror("Du lieu khong hop le", str(err))
             return
         self.refresh()
+        toast(self, "Da them phong hoc moi.", kind="success")
 
     def _edit(self) -> None:
         rid = self._selected_room_id()
@@ -186,16 +193,21 @@ class RoomManagementFrame(tk.Frame):
             messagebox.showerror("Du lieu khong hop le", str(err))
             return
         self.refresh()
+        toast(self, "Da cap nhat thong tin phong.", kind="success")
 
     def _delete(self) -> None:
         rid = self._selected_room_id()
         if rid is None:
             messagebox.showwarning("Chua chon phong", "Hay chon phong can xoa.")
             return
-        if not messagebox.askyesno("Xac nhan xoa", f"Xoa phong {rid}?"):
+        if not confirm_dialog(self, "Xac nhan xoa phong",
+                              f"Ban chac chan muon xoa phong {rid}?\n"
+                              "Du lieu lien quan se bi anh huong.",
+                              ok_text="Xoa phong", kind="danger"):
             return
         self.room_ctrl.delete_room(rid)
         self.refresh()
+        toast(self, f"Da xoa phong {rid}.", kind="success")
 
     def _get_selected_room(self) -> tuple[str | None, str | None]:
         """Return (room_id, room_name) of selected row, or (None, None)."""

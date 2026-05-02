@@ -25,7 +25,9 @@ class UserDAO:
 
     def list_all(self) -> list[User]:
         conn = get_connection()
-        rows = conn.execute("SELECT * FROM users ORDER BY id").fetchall()
+        rows = conn.execute(
+            "SELECT * FROM users WHERE status != 'Da xoa' ORDER BY id"
+        ).fetchall()
         return [_row_to_user(r) for r in rows]
 
     def find_by_id(self, user_id: str) -> User | None:
@@ -67,6 +69,7 @@ class UserDAO:
         return user
 
     def delete(self, user_id: str) -> None:
+        """Soft-delete: mark status as 'Da xoa' instead of hard DELETE."""
         conn = get_connection()
-        conn.execute("DELETE FROM users WHERE id=?", (user_id,))
+        conn.execute("UPDATE users SET status='Da xoa' WHERE id=?", (user_id,))
         conn.commit()

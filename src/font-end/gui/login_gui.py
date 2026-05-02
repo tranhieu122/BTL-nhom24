@@ -7,6 +7,13 @@ from typing import Any
 from gui.theme import (C_DARK, C_PRIMARY, C_SURFACE, C_BORDER,
                        C_TEXT, C_MUTED, F_INPUT, btn)
 
+# ── Login screen branding colours (Indigo/Violet) ─────────────────────────────
+_LG_BG    = "#1e1b4b"    # Indigo 950
+_LG_MID   = "#312e81"    # Indigo 900
+_LG_GLOW  = "#4f46e5"    # Indigo 600
+_LG_TEXT  = "#e0e7ff"    # Indigo 100
+_LG_MUTED = "#818cf8"    # Indigo 400
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _labeled_entry(parent: tk.Misc, label: str, var: tk.StringVar,
@@ -22,7 +29,7 @@ def _labeled_entry(parent: tk.Misc, label: str, var: tk.StringVar,
     e.pack(padx=12, pady=8)
 
     def on_in(_: object) -> None:
-        wrap.config(highlightbackground="#2255a4", highlightthickness=2)
+        wrap.config(highlightbackground="#4f46e5", highlightthickness=2)
     def on_out(_: object) -> None:
         wrap.config(highlightbackground=C_BORDER,  highlightthickness=1)
     e.bind("<FocusIn>",  on_in)  # type: ignore[arg-type]
@@ -56,14 +63,14 @@ class RegisterDialog(tk.Toplevel):
         self.geometry(f"+{pw - w//2}+{ph - h//2}")
 
     def _build(self) -> None:
-        # Header
-        hdr = tk.Frame(self, bg=C_PRIMARY, padx=24, pady=14)
+        # ── Register dialog header (Indigo) ───────────────────────────────────
+        hdr = tk.Frame(self, bg="#4f46e5", padx=24, pady=14)
         hdr.pack(fill="x")
         tk.Label(hdr, text="📝  Dang ky tai khoan moi",
-                 bg=C_PRIMARY, fg="white",
+                 bg="#4f46e5", fg="white",
                  font=("Segoe UI", 13, "bold")).pack(anchor="w")
         tk.Label(hdr, text="Tao tai khoan de dat phong hoc",
-                 bg=C_PRIMARY, fg="#93c5fd",
+                 bg="#4f46e5", fg="#c7d2fe",
                  font=("Segoe UI", 9)).pack(anchor="w")
 
         body = tk.Frame(self, bg=C_SURFACE, padx=28, pady=20)
@@ -84,11 +91,11 @@ class RegisterDialog(tk.Toplevel):
                      font=("Segoe UI", 10)).pack(fill="x", pady=(4, 0))
 
         # Notice
-        notice = tk.Frame(body, bg="#eff6ff",
-                          highlightthickness=1, highlightbackground="#bfdbfe")
+        notice = tk.Frame(body, bg="#eef2ff",
+                          highlightthickness=1, highlightbackground="#c7d2fe")
         notice.pack(fill="x", pady=(16, 0))
-        tk.Label(notice, text="ℹ  Tai khoan 'Admin' chi duoc tao boi quan tri vien.",
-                 bg="#eff6ff", fg="#1d4ed8",
+        tk.Label(notice, text="ⓘ  Tai khoan 'Admin' chi duoc tao boi quan tri vien.",
+                 bg="#eef2ff", fg="#4f46e5",
                  font=("Segoe UI", 8), anchor="w").pack(
             fill="x", padx=10, pady=6)
 
@@ -288,10 +295,10 @@ class LoginFrame(tk.Frame):
         self.rowconfigure(0, weight=1)
 
         # ── Left animated branding panel ──────────────────────────────────────
-        left = tk.Frame(self, bg=C_DARK)
+        left = tk.Frame(self, bg=_LG_BG)
         left.grid(row=0, column=0, sticky="nsew")
 
-        cv = tk.Canvas(left, bg=C_DARK, highlightthickness=0)
+        cv = tk.Canvas(left, bg=_LG_BG, highlightthickness=0)
         cv.pack(fill="both", expand=True)
 
         _particles: list[dict[str, Any]] = []
@@ -299,15 +306,16 @@ class LoginFrame(tk.Frame):
 
         def _init_particles(w: int, h: int) -> None:
             _particles.clear()
-            _COLORS = ["#243d72", "#1e3560", "#233a6a",
-                       "#1c3260", "#2a4070", "#1e3878", "#16305a"]
-            for _ in range(9):
+            # Indigo / Violet spectrum
+            _COLORS = ["#312e81", "#3730a3", "#4338ca",
+                       "#4c1d95", "#2e1065", "#3b0764", "#1e1b4b"]
+            for _ in range(11):
                 _particles.append({
                     'x':   _rnd.uniform(0, w),
                     'y':   _rnd.uniform(0, h),
-                    'r':   _rnd.uniform(w * 0.05, w * 0.20),
-                    'dy':  _rnd.uniform(0.20, 0.65),
-                    'dx':  _rnd.uniform(-0.20, 0.20),
+                    'r':   _rnd.uniform(w * 0.04, w * 0.18),
+                    'dy':  _rnd.uniform(0.18, 0.60),
+                    'dx':  _rnd.uniform(-0.18, 0.18),
                     'col': _rnd.choice(_COLORS),
                 })
 
@@ -397,34 +405,34 @@ class LoginFrame(tk.Frame):
         right = tk.Frame(self, bg=C_SURFACE)
         right.grid(row=0, column=1, sticky="nsew")
 
-        # Accent top stripe on right side
-        tk.Frame(right, bg=C_PRIMARY, height=4).pack(fill="x")
+        # Indigo accent stripe on right side (thicker for premium feel)
+        tk.Frame(right, bg="#4f46e5", height=4).pack(fill="x")
 
         card = tk.Frame(right, bg=C_SURFACE)
         card.place(relx=0.5, rely=0.5, anchor="center")
 
         # Heading
-        tk.Label(card, text="Chao mung tro lai!", bg=C_SURFACE, fg=C_DARK,
+        tk.Label(card, text="Chao mung tro lai!", bg=C_SURFACE, fg="#0f172a",
                  font=("Segoe UI", 26, "bold")).pack(anchor="w")
         tk.Label(card, text="Dang nhap de quan ly phong hoc",
                  bg=C_SURFACE, fg=C_MUTED,
-                 font=("Segoe UI", 10)).pack(anchor="w", pady=(2, 22))
+                 font=("Segoe UI", 10)).pack(anchor="w", pady=(4, 24))
 
         # ── Username field ────────────────────────────────────────────────────
         tk.Label(card, text="TEN DANG NHAP", bg=C_SURFACE, fg=C_MUTED,
-                 font=("Segoe UI", 9, "bold")).pack(anchor="w")
-        un_wrap = tk.Frame(card, bg=C_SURFACE, highlightthickness=1,
-                           highlightbackground=C_BORDER)
-        un_wrap.pack(fill="x", pady=(4, 16))
+                 font=("Segoe UI", 8, "bold")).pack(anchor="w")
+        un_wrap = tk.Frame(card, bg=C_BORDER, padx=1, pady=1)
+        un_wrap.pack(fill="x", pady=(3, 16))
 
         # Icon + entry
         un_inner = tk.Frame(un_wrap, bg=C_SURFACE)
         un_inner.pack(fill="x")
         tk.Label(un_inner, text="👤", bg=C_SURFACE,
-                 font=("Segoe UI", 12)).pack(side="left", padx=(10, 4), pady=7)
+                 font=("Segoe UI", 13)).pack(side="left", padx=(10, 4), pady=8)
         un_e = tk.Entry(un_inner, textvariable=self.username_var, width=28,
-                        font=F_INPUT, relief="flat", bg=C_SURFACE, fg=C_TEXT)
-        un_e.pack(side="left", padx=(0, 10), pady=7, fill="x", expand=True)
+                        font=F_INPUT, relief="flat", bg=C_SURFACE, fg=C_TEXT,
+                        insertbackground=C_PRIMARY)
+        un_e.pack(side="left", padx=(0, 10), pady=9, fill="x", expand=True)
         un_e.focus_set()
         self._bind_focus(un_e, un_wrap)
 
@@ -432,26 +440,26 @@ class LoginFrame(tk.Frame):
         pw_hdr = tk.Frame(card, bg=C_SURFACE)
         pw_hdr.pack(fill="x")
         tk.Label(pw_hdr, text="MAT KHAU", bg=C_SURFACE, fg=C_MUTED,
-                 font=("Segoe UI", 9, "bold")).pack(side="left")
+                 font=("Segoe UI", 8, "bold")).pack(side="left")
         forgot_lbl = tk.Label(pw_hdr, text="Quen mat khau?",
-                              bg=C_SURFACE, fg=C_PRIMARY,
+                              bg=C_SURFACE, fg="#4f46e5",
                               font=("Segoe UI", 9, "underline"),
                               cursor="hand2")
         forgot_lbl.pack(side="right")
         forgot_lbl.bind("<Button-1>", lambda _: self._open_forgot())
 
-        pw_wrap = tk.Frame(card, bg=C_SURFACE, highlightthickness=1,
-                           highlightbackground=C_BORDER)
-        pw_wrap.pack(fill="x", pady=(4, 22))
+        pw_wrap = tk.Frame(card, bg=C_BORDER, padx=1, pady=1)
+        pw_wrap.pack(fill="x", pady=(3, 24))
 
         pw_inner = tk.Frame(pw_wrap, bg=C_SURFACE)
         pw_inner.pack(fill="x")
         tk.Label(pw_inner, text="🔒", bg=C_SURFACE,
-                 font=("Segoe UI", 12)).pack(side="left", padx=(10, 4), pady=7)
+                 font=("Segoe UI", 13)).pack(side="left", padx=(10, 4), pady=8)
         pw_e = tk.Entry(pw_inner, textvariable=self.password_var, show="*",
                         width=24, font=F_INPUT, relief="flat",
-                        bg=C_SURFACE, fg=C_TEXT)
-        pw_e.pack(side="left", padx=(0, 4), pady=7, fill="x", expand=True)
+                        bg=C_SURFACE, fg=C_TEXT,
+                        insertbackground=C_PRIMARY)
+        pw_e.pack(side="left", padx=(0, 4), pady=9, fill="x", expand=True)
 
         # Eye toggle
         _show_pw = [False]
@@ -467,32 +475,40 @@ class LoginFrame(tk.Frame):
 
         self._bind_focus(pw_e, pw_wrap)
 
+        # ── Inline error label ───────────────────────────────────────────────
+        self._err_lbl = tk.Label(card, text="", bg=C_SURFACE, fg="#dc2626",
+                                  font=("Segoe UI", 9, "bold"),
+                                  wraplength=320, justify="left")
+        self._err_lbl.pack(fill="x", pady=(0, 6))
+
         # ── Login button ──────────────────────────────────────────────────────
-        b = btn(card, "  DANG NHAP  →", self._submit)
-        b.config(width=30, pady=11, font=("Segoe UI", 12, "bold"))
-        b.pack(fill="x")
+        self._login_btn = btn(card, "  DANG NHAP  →", self._submit)
+        self._login_btn.config(width=30, pady=12, font=("Segoe UI", 12, "bold"),
+                 bg="#4f46e5", activebackground="#4338ca")
+        self._login_btn.pack(fill="x")
 
         # ── Register link ─────────────────────────────────────────────────────
         reg_row = tk.Frame(card, bg=C_SURFACE)
-        reg_row.pack(pady=(16, 0))
+        reg_row.pack(pady=(18, 0))
         tk.Label(reg_row, text="Chua co tai khoan?  ",
                  bg=C_SURFACE, fg=C_MUTED,
                  font=("Segoe UI", 10)).pack(side="left")
         reg_lbl = tk.Label(reg_row, text="Dang ky ngay →",
-                           bg=C_SURFACE, fg=C_PRIMARY,
+                           bg=C_SURFACE, fg="#4f46e5",
                            font=("Segoe UI", 10, "bold", "underline"),
                            cursor="hand2")
         reg_lbl.pack(side="left")
         reg_lbl.bind("<Button-1>", lambda _: self._open_register())
 
-        self.bind("<Return>", lambda _: self._submit())
+        un_e.bind("<Return>", lambda _: self._submit())
+        pw_e.bind("<Return>", lambda _: self._submit())
 
     @staticmethod
     def _bind_focus(entry: tk.Entry, frame: tk.Frame) -> None:
         def on_in(_: Any) -> None:
-            frame.config(highlightbackground=C_PRIMARY, highlightthickness=2)
+            frame.config(bg="#4f46e5")   # Indigo focus ring
         def on_out(_: Any) -> None:
-            frame.config(highlightbackground=C_BORDER,  highlightthickness=1)
+            frame.config(bg=C_BORDER)
         entry.bind("<FocusIn>",  on_in)   # type: ignore[arg-type]
         entry.bind("<FocusOut>", on_out)  # type: ignore[arg-type]
 
@@ -510,11 +526,30 @@ class LoginFrame(tk.Frame):
             return
         ForgotPasswordDialog(self, self.auth_ctrl)
 
+    def _set_error(self, msg: str) -> None:
+        if hasattr(self, "_err_lbl") and self._err_lbl.winfo_exists():
+            self._err_lbl.config(text=msg)
+
     def _submit(self) -> None:
         username = self.username_var.get().strip()
         password = self.password_var.get().strip()
         if not username or not password:
-            messagebox.showwarning("Thieu thong tin",
-                                   "Vui long nhap ten dang nhap va mat khau.")
+            self._set_error("⚠  Vui long nhap ten dang nhap va mat khau.")
             return
-        self.on_login(username, password)
+        self._set_error("")
+        # Show loading state
+        if hasattr(self, "_login_btn") and self._login_btn.winfo_exists():
+            self._login_btn.config(text="  Dang kiem tra...  ", state="disabled",
+                                    bg="#6366f1")
+            self.update_idletasks()
+        try:
+            self.on_login(username, password)
+        finally:
+            # Restore button if frame still exists (= login failed / frame not destroyed)
+            try:
+                if self._login_btn.winfo_exists():
+                    self._login_btn.config(text="  DANG NHAP  →", state="normal",
+                                            bg="#4f46e5")
+                    self._set_error("✖  Sai ten dang nhap hoac mat khau, hoac tai khoan bi khoa.")
+            except Exception:
+                pass

@@ -4,7 +4,9 @@ The database file is stored at:
     <project>/src/back end/database/classroom_booking.db
 """
 from __future__ import annotations
+import shutil
 import sqlite3
+from datetime import datetime
 from pathlib import Path
 from utils.logger import get_logger
 
@@ -89,7 +91,41 @@ CREATE TABLE IF NOT EXISTS room_issues (
     FOREIGN KEY (room_id) REFERENCES rooms(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+-- Performance indexes
+CREATE INDEX IF NOT EXISTS idx_bookings_user_id    ON bookings(user_id);
+CREATE INDEX IF NOT EXISTS idx_bookings_room_id    ON bookings(room_id);
+CREATE INDEX IF NOT EXISTS idx_bookings_date       ON bookings(booking_date);
+CREATE INDEX IF NOT EXISTS idx_bookings_status     ON bookings(status);
+CREATE INDEX IF NOT EXISTS idx_equipment_room_id   ON equipment(room_id);
+CREATE INDEX IF NOT EXISTS idx_equipment_status    ON equipment(status);
+CREATE INDEX IF NOT EXISTS idx_room_ratings_room   ON room_ratings(room_id);
+CREATE INDEX IF NOT EXISTS idx_room_issues_room    ON room_issues(room_id);
 """
+
+# ── auto-backup ──────────────────────────────────────────────────────────────
+
+_BACKUP_KEEP = 7  # number of backups to retain
+
+
+def backup_database() -> None:
+    """Copy DB file to <db_dir>/backups/ with a timestamp.  Keep last N copies."""
+    if not _DB_PATH.exists():
+        return
+    backup_dir = _DB_PATH.parent / "backups"
+    backup_dir.mkdir(exist_ok=True)
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    dest = backup_dir / f"classroom_booking_{ts}.db"
+    shutil.copy2(str(_DB_PATH), str(dest))
+    _log.info("Database backed up → %s", dest)
+    # Prune old backups
+    all_backups = sorted(backup_dir.glob("classroom_booking_*.db"))
+    for old in all_backups[:-_BACKUP_KEEP]:
+        try:
+            old.unlink()
+        except OSError:
+            pass
+
 
 # ── singleton connection ──────────────────────────────────────────────────────
 

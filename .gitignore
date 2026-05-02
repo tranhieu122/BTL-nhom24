@@ -9,6 +9,7 @@ __pycache__/
 
 # Database sinh ra khi chay – khong can track
 src/back end/database/classroom_booking.db
+src/back end/database/backups/
 
 # Bao cao xuat ra
 exports/

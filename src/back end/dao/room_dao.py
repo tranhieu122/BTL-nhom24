@@ -19,7 +19,9 @@ def _row_to_room(row: sqlite3.Row) -> Room:
 class RoomDAO:
     def list_all(self) -> list[Room]:
         conn = get_connection()
-        rows = conn.execute("SELECT * FROM rooms ORDER BY id").fetchall()
+        rows = conn.execute(
+            "SELECT * FROM rooms WHERE status != 'Da xoa' ORDER BY id"
+        ).fetchall()
         return [_row_to_room(r) for r in rows]
 
     def find_by_id(self, room_id: str) -> Room | None:
@@ -47,6 +49,7 @@ class RoomDAO:
         return room
 
     def delete(self, room_id: str) -> None:
+        """Soft-delete: mark status as 'Da xoa' instead of hard DELETE."""
         conn = get_connection()
-        conn.execute("DELETE FROM rooms WHERE id=?", (room_id,))
+        conn.execute("UPDATE rooms SET status='Da xoa' WHERE id=?", (room_id,))
         conn.commit()

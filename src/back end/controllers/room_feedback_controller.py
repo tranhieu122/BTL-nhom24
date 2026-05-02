@@ -25,6 +25,10 @@ class RoomFeedbackController:
     def get_ratings(self, room_id: str) -> list[RoomRating]:
         return self.rating_dao.list_by_room(room_id)
 
+    def get_user_rating(self, room_id: str, user_id: str) -> RoomRating | None:
+        """Return the rating a specific user gave for a room, or None."""
+        return self.rating_dao.user_rating(room_id, user_id)
+
     def average_stars(self, room_id: str) -> float:
         return self.rating_dao.average_stars(room_id)
 

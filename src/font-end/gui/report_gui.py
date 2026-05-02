@@ -1,24 +1,24 @@
-# report_gui.py  –  statistics / report screen
+# report_gui.py  –  statistics / report screen  (v2.1 – date filter)
 from __future__ import annotations
 import datetime as dt
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from typing import Any
-from gui.theme import (C_BG, C_DARK, C_SURFACE, C_BORDER,
-                       F_SECTION, make_tree, fill_tree, with_scrollbar,
+from gui.theme import (C_BG, C_DARK, C_PRIMARY, C_SURFACE, C_BORDER, C_MUTED,
+                       F_SECTION, F_BODY_B, make_tree, fill_tree, with_scrollbar,
                        page_header)
 
 CARD_PALETTE = [
-    ("#dbeafe", "#2255a4", "📚"),
-    ("#dcfce7", "#16a34a", "📅"),
-    ("#fef3c7", "#b45309", "📋"),
-    ("#fee2e2", "#dc2626", "🚫"),
-    ("#e0f2fe", "#0369a1", "👤"),
-    ("#ede9fe", "#6d28d9", "🛠"),
+    ("#eef2ff", "#4f46e5", "📚"),   # Indigo
+    ("#dcfce7", "#16a34a", "📅"),   # Green
+    ("#fef3c7", "#b45309", "📋"),   # Amber
+    ("#fee2e2", "#dc2626", "🚫"),   # Red
+    ("#e0f2fe", "#0369a1", "👤"),   # Sky
+    ("#ede9fe", "#6d28d9", "🛠"),   # Violet
 ]
 
 BAR_COLORS = [
-    "#2255a4", "#4a8ecb", "#16a34a", "#f59e0b",
+    "#4f46e5", "#6366f1", "#16a34a", "#f59e0b",
     "#9333ea", "#06b6d4", "#ef4444", "#84cc16",
 ]
 
@@ -27,6 +27,10 @@ class ReportFrame(tk.Frame):
     def __init__(self, master: tk.Misc, report_controller: Any) -> None:
         super().__init__(master, bg=C_BG)
         self.report_ctrl = report_controller
+        # Date filter state
+        self._date_from = tk.StringVar()
+        self._date_to   = tk.StringVar()
+        self._body_ref: tk.Frame | None = None
         self._build()
 
     def _build(self) -> None:
@@ -55,21 +59,141 @@ class ReportFrame(tk.Frame):
         )
         pdf_btn.pack(side="left")
 
-        # ── Scrollable body ──────────────────────────────────────────────────
-        canvas = tk.Canvas(self, bg=C_BG, highlightthickness=0)
-        vsb = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)  # type: ignore[arg-type]
-        body = tk.Frame(canvas, bg=C_BG)
-        body.bind("<Configure>",
-                  lambda _e: canvas.configure(scrollregion=canvas.bbox("all")))
-        canvas.create_window((0, 0), window=body, anchor="nw")
-        canvas.configure(yscrollcommand=vsb.set)
-        canvas.pack(side="left", fill="both", expand=True)
-        vsb.pack(side="right", fill="y")
-        canvas.bind("<MouseWheel>",
-                        lambda e: canvas.yview_scroll(-1*(e.delta//120), "units"))
+        # ── Date range filter panel ───────────────────────────────────────────
+        filter_panel = tk.Frame(self, bg="#eef2ff", highlightthickness=1,
+                                highlightbackground="#c7d2fe", padx=16, pady=10)
+        filter_panel.pack(fill="x", padx=20, pady=(6, 0))
 
-        self._draw_stat_cards(body)
-        self._draw_detail_section(body)
+        tk.Label(filter_panel, text="🗓  Loc theo khoang thoi gian:",
+                 bg="#eef2ff", fg="#4f46e5",
+                 font=("Segoe UI", 10, "bold")).pack(side="left")
+
+        def _date_entry(parent: tk.Frame, var: tk.StringVar,
+                        placeholder: str) -> tk.Entry:
+            wrap = tk.Frame(parent, bg="#ffffff", highlightthickness=1,
+                            highlightbackground="#c7d2fe")
+            wrap.pack(side="left", padx=(8, 0))
+            e = tk.Entry(wrap, textvariable=var, width=12,
+                         font=("Segoe UI", 10), relief="flat",
+                         bg="#ffffff", fg="#1e293b", insertbackground=C_PRIMARY)
+            e.insert(0, placeholder)
+            e.pack(padx=6, pady=4)
+            def _on_focus_in(event: Any, entry=e, ph=placeholder) -> None:
+                if entry.get() == ph:
+                    entry.delete(0, "end")
+                    entry.config(fg="#1e293b")
+                wrap.config(highlightbackground=C_PRIMARY)
+            def _on_focus_out(event: Any, entry=e, ph=placeholder) -> None:
+                if not entry.get().strip():
+                    entry.insert(0, ph)
+                    entry.config(fg=C_MUTED)
+                wrap.config(highlightbackground="#c7d2fe")
+            e.bind("<FocusIn>",  _on_focus_in)
+            e.bind("<FocusOut>", _on_focus_out)
+            e.config(fg=C_MUTED)
+            return e
+
+        tk.Label(filter_panel, text="Tu:", bg="#eef2ff", fg="#4f46e5",
+                 font=F_BODY_B).pack(side="left", padx=(10, 0))
+        self._from_entry = _date_entry(filter_panel, self._date_from, "YYYY-MM-DD")
+        tk.Label(filter_panel, text="Den:", bg="#eef2ff", fg="#4f46e5",
+                 font=F_BODY_B).pack(side="left", padx=(8, 0))
+        self._to_entry = _date_entry(filter_panel, self._date_to, "YYYY-MM-DD")
+
+        loc_btn = tk.Button(
+            filter_panel, text="🔍  Loc",
+            bg=C_PRIMARY, fg="white", font=("Segoe UI", 9, "bold"),
+            relief="flat", cursor="hand2", padx=10, pady=4,
+            command=self._apply_filter,
+        )
+        loc_btn.pack(side="left", padx=(12, 0))
+        loc_btn.bind("<Enter>", lambda _: loc_btn.config(bg="#4338ca"))
+        loc_btn.bind("<Leave>", lambda _: loc_btn.config(bg=C_PRIMARY))
+
+        reset_btn = tk.Button(
+            filter_panel, text="✖  Xoa loc",
+            bg="#f1f5f9", fg="#475569", font=("Segoe UI", 9),
+            relief="flat", cursor="hand2", padx=8, pady=4,
+            command=self._reset_filter,
+        )
+        reset_btn.pack(side="left", padx=(6, 0))
+
+        self._filter_info = tk.Label(filter_panel, text="",
+                                     bg="#eef2ff", fg="#6d28d9",
+                                     font=("Segoe UI", 8, "bold"))
+        self._filter_info.pack(side="right", padx=8)
+
+        # ── Scrollable body ──────────────────────────────────────────────────
+        self._canvas = tk.Canvas(self, bg=C_BG, highlightthickness=0)
+        vsb = ttk.Scrollbar(self, orient="vertical",
+                            command=self._canvas.yview)  # type: ignore[arg-type]
+        self._body_ref = tk.Frame(self._canvas, bg=C_BG)
+        self._body_ref.bind(
+            "<Configure>",
+            lambda _e: self._canvas.configure(
+                scrollregion=self._canvas.bbox("all")))
+        self._canvas.create_window((0, 0), window=self._body_ref, anchor="nw")
+        self._canvas.configure(yscrollcommand=vsb.set)
+        self._canvas.pack(side="left", fill="both", expand=True)
+        vsb.pack(side="right", fill="y")
+        self._canvas.bind(
+            "<MouseWheel>",
+            lambda e: self._canvas.yview_scroll(-1*(e.delta//120), "units"))
+
+        self._render_body()
+
+    def _apply_filter(self) -> None:
+        from_val = self._from_entry.get().strip()
+        to_val   = self._to_entry.get().strip()
+        placeholder = "YYYY-MM-DD"
+        df = from_val if from_val != placeholder else ""
+        dt_ = to_val  if to_val   != placeholder else ""
+        # Validate
+        for v, label in ((df, "Tu ngay"), (dt_, "Den ngay")):
+            if v:
+                try:
+                    dt.date.fromisoformat(v)
+                except ValueError:
+                    messagebox.showerror(
+                        "Ngay khong hop le",
+                        f"{label} phai theo dinh dang YYYY-MM-DD.",
+                        parent=self)
+                    return
+        self._date_from.set(df)
+        self._date_to.set(dt_)
+        if df or dt_:
+            label_parts = []
+            if df:
+                label_parts.append(f"Tu {df}")
+            if dt_:
+                label_parts.append(f"Den {dt_}")
+            self._filter_info.config(text="  🔵 " + "  –  ".join(label_parts))
+        else:
+            self._filter_info.config(text="")
+        self._render_body()
+
+    def _reset_filter(self) -> None:
+        self._date_from.set("")
+        self._date_to.set("")
+        self._from_entry.delete(0, "end")
+        self._from_entry.insert(0, "YYYY-MM-DD")
+        self._from_entry.config(fg=C_MUTED)
+        self._to_entry.delete(0, "end")
+        self._to_entry.insert(0, "YYYY-MM-DD")
+        self._to_entry.config(fg=C_MUTED)
+        self._filter_info.config(text="")
+        self._render_body()
+
+    def _render_body(self) -> None:
+        """Clear and redraw the scrollable body with current filter."""
+        if self._body_ref is None:
+            return
+        for w in self._body_ref.winfo_children():
+            w.destroy()
+        df = self._date_from.get()
+        dt_ = self._date_to.get()
+        self._draw_stat_cards(self._body_ref, df, dt_)
+        self._draw_detail_section(self._body_ref, df, dt_)
 
     # ── Export helpers ────────────────────────────────────────────────────────
 
@@ -83,7 +207,8 @@ class ReportFrame(tk.Frame):
         )
         if not path:
             return
-        rows: list[tuple[object, object, object, object, object]] = self.report_ctrl.room_stats_table()
+        rows: list[tuple[object, object, object, object, object]] = self.report_ctrl.room_stats_table(
+            date_from=self._date_from.get(), date_to=self._date_to.get())
         try:
             export_rows_to_excel(
                 headers=["Phong", "Tong dat", "Da duyet", "Tu choi", "Ty le SD (%)"],
@@ -116,8 +241,12 @@ class ReportFrame(tk.Frame):
             export_report_pdf(
                 output_path=path,
                 title="BAO CAO SU DUNG PHONG HOC",
-                stat_rows=self.report_ctrl.room_stats_table(),
-                summary=self.report_ctrl.build_dashboard(),
+                stat_rows=self.report_ctrl.room_stats_table(
+                    date_from=self._date_from.get(),
+                    date_to=self._date_to.get()),
+                summary=self.report_ctrl.build_dashboard(
+                    date_from=self._date_from.get(),
+                    date_to=self._date_to.get()),
             )
             messagebox.showinfo("Xuat PDF thanh cong",
                                 f"Da luu tai:\n{path}")
@@ -126,35 +255,50 @@ class ReportFrame(tk.Frame):
 
     # ── Stat cards ────────────────────────────────────────────────────────────
 
-    def _draw_stat_cards(self, body: tk.Frame) -> None:
+    def _draw_stat_cards(self, body: tk.Frame,
+                         date_from: str = "", date_to: str = "") -> None:
         panel = tk.Frame(body, bg=C_BG)
         panel.pack(fill="x", padx=20, pady=(10, 4))
-        summary: dict[str, object] = self.report_ctrl.build_dashboard()
+        summary: dict[str, object] = self.report_ctrl.build_dashboard(
+            date_from=date_from, date_to=date_to)
         for idx, (label, value) in enumerate(summary.items()):
             bg, fg, icon = CARD_PALETTE[idx % len(CARD_PALETTE)]
-            card = tk.Frame(panel, bg=bg, padx=18, pady=14,
-                            highlightthickness=1, highlightbackground="#c7d8f5")
-            card.grid(row=idx // 3, column=idx % 3,
-                      sticky="nsew", padx=6, pady=6)
+
+            # Indigo-tinted shadow wrapper
+            shadow = tk.Frame(panel, bg="#c7d2fe")
+            shadow.grid(row=idx // 3, column=idx % 3,
+                        sticky="nsew", padx=6, pady=6)
+            card = tk.Frame(shadow, bg=bg, padx=18, pady=16)
+            card.pack(fill="both", expand=True, padx=(0, 3), pady=(0, 4))
+
             top = tk.Frame(card, bg=bg)
             top.pack(fill="x")
-            tk.Label(top, text=icon, bg=bg,
-                     font=("Segoe UI", 22)).pack(side="left")
+
+            # Icon circle
+            ic = tk.Canvas(top, width=46, height=46, bg=bg,
+                           highlightthickness=0)
+            ic.pack(side="left")
+            ic.create_oval(2, 2, 44, 44, fill=fg, outline="")
+            ic.create_text(23, 23, text=icon, font=("Segoe UI", 18),
+                           fill="white")
+
             tk.Label(top, text=str(value), bg=bg, fg=fg,
-                     font=("Segoe UI", 26, "bold")).pack(side="right")
+                     font=("Segoe UI", 30, "bold")).pack(side="right", anchor="s")
             tk.Label(card, text=label, bg=bg, fg="#475569",
-                     font=("Segoe UI", 10)).pack(anchor="w", pady=(4, 0))
+                     font=("Segoe UI", 9, "bold")).pack(anchor="w", pady=(8, 0))
         for col in range(3):
             panel.grid_columnconfigure(col, weight=1)
 
     # ── Detail section (table + chart) ───────────────────────────────────────
 
-    def _draw_detail_section(self, body: tk.Frame) -> None:
+    def _draw_detail_section(self, body: tk.Frame,
+                             date_from: str = "", date_to: str = "") -> None:
         tk.Label(body, text="Tan suat su dung phong",
                  bg=C_BG, fg=C_DARK, font=F_SECTION).pack(
             anchor="w", padx=20, pady=(12, 6))
 
-        row_data: list[tuple[object, object, object, object, str]] = self.report_ctrl.room_stats_table()
+        row_data: list[tuple[object, object, object, object, str]] = self.report_ctrl.room_stats_table(
+            date_from=date_from, date_to=date_to)
 
         # Two-column layout
         two_col = tk.Frame(body, bg=C_BG)

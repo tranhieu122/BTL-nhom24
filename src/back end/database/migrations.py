@@ -39,6 +39,24 @@ MIGRATIONS: list[tuple[int, str]] = [
         -- v2: add notes column to room_issues
         ALTER TABLE room_issues ADD COLUMN notes TEXT NOT NULL DEFAULT '';
     """),
+    (3, """
+        -- v3: internal notification system
+        CREATE TABLE IF NOT EXISTS notifications (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            sender_id    TEXT NOT NULL,
+            sender_name  TEXT NOT NULL,
+            recipient_id TEXT NOT NULL,
+            title        TEXT NOT NULL,
+            message      TEXT NOT NULL,
+            is_read      INTEGER NOT NULL DEFAULT 0,
+            created_at   TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+    """),
+    (4, """
+        -- v4: performance indexes for notifications
+        CREATE INDEX IF NOT EXISTS idx_notif_recipient ON notifications(recipient_id);
+        CREATE INDEX IF NOT EXISTS idx_notif_read      ON notifications(is_read);
+    """),
 ]
 
 

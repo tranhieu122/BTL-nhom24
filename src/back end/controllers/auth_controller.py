@@ -95,3 +95,18 @@ class AuthController:
                 "Khong tim thay tai khoan voi ten dang nhap va email nay.")
         user.password_hash = hash_password(new_password.strip())
         self.user_dao.save(user)
+
+    def change_password(self, username: str, old_password: str,
+                        new_password: str) -> None:
+        """Change password for a logged-in user after verifying old password."""
+        new_password = new_password.strip()
+        if len(new_password) < 6:
+            raise ValueError("Mat khau moi phai co it nhat 6 ky tu.")
+        user = self.authenticate(username, old_password)
+        if user is None:
+            raise ValueError("Mat khau hien tai khong dung.")
+        if old_password.strip() == new_password:
+            raise ValueError("Mat khau moi phai khac mat khau cu.")
+        user.password_hash = hash_password(new_password)
+        self.user_dao.save(user)
+        _log.info("Password changed via profile for user '%s'", username)

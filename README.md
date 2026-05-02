@@ -12,21 +12,24 @@ Hệ thống **Quản lý đặt phòng học** là ứng dụng desktop xây d�
 
 ### 🛠️ Quản trị viên (Admin)
 - **Quản lý người dùng:** Thêm, sửa, xóa và phân quyền tài khoản.
-- **Quản lý phòng học:** CRUD thông tin phòng, tình trạng, sức chứa.
+- **Quản lý phòng học:** CRUD thông tin phòng, tình trạng, sức chứa, **đánh giá trung bình**.
 - **Quản lý thiết bị:** Theo dõi thiết bị theo từng phòng, tình trạng bảo trì.
 - **Phê duyệt yêu cầu:** Duyệt/từ chối yêu cầu đặt phòng, gửi email thông báo tự động.
 - **Báo cáo thống kê:** Dashboard tổng hợp, xuất Excel/PDF.
 - **Quản lý sự cố:** Xem & xử lý báo cáo lỗi phòng học.
+- **Xem đánh giá phòng:** Danh sách đánh giá gần nhất từ người dùng.
 
 ### 👨‍🏫 Giảng viên
 - Đặt phòng học, theo dõi trạng thái phê duyệt.
 - Xem lịch biểu phòng, tìm phòng trống.
-- Đánh giá & báo lỗi phòng học.
+- **Đánh giá phòng học** với hệ thống sao 1-5 và nhận xét.
+- Báo lỗi phòng học.
 
 ### 🎓 Sinh viên
 - Yêu cầu mượn phòng (cần Admin duyệt).
 - Xem lịch sử đặt phòng cá nhân.
-- Đánh giá & báo lỗi phòng học.
+- **Đánh giá phòng học** với hệ thống sao 1-5 và nhận xét.
+- Báo lỗi phòng học.
 
 ---
 
@@ -35,7 +38,7 @@ Hệ thống **Quản lý đặt phòng học** là ứng dụng desktop xây d�
 | Thành phần | Công nghệ |
 |---|---|
 | Ngôn ngữ | Python 3.10+ |
-| Giao diện | Tkinter + ttk (có theme tùy chỉnh) |
+| Giao diện | Tkinter + ttk (có theme tùy chỉnh, **hệ thống helper UI nâng cao**) |
 | Cơ sở dữ liệu | SQLite (tự khởi tạo, không cần cài đặt riêng) |
 | Bảo mật | PBKDF2-HMAC-SHA256 (100 000 iterations) cho mật khẩu |
 | Email | SMTP (Gmail App Password, tùy chọn) |
@@ -43,6 +46,7 @@ Hệ thống **Quản lý đặt phòng học** là ứng dụng desktop xây d�
 | Lịch | tkcalendar |
 | Testing | pytest |
 | Logging | Rotating file handler → `logs/app.log` |
+| **Đánh giá phòng** | Hệ thống sao 1-5 với hover effect và nhãn mô tả |
 
 ---
 
