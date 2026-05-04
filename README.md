@@ -176,7 +176,7 @@ python -m pytest tests/ -v
 
 ---
 
-## 👥 Nhóm phát triển (Nhóm 24)
+## 👥 Nhóm phát triển (Nhóm 24).
 
 | STT | Họ và Tên | Vai trò |
 |:---:|:---|:---|
