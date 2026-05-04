@@ -408,8 +408,35 @@ class LoginFrame(tk.Frame):
         # Indigo accent stripe on right side (thicker for premium feel)
         tk.Frame(right, bg="#4f46e5", height=4).pack(fill="x")
 
+        # Subtle decorative background canvas (soft geometric shapes)
+        _decor_cv = tk.Canvas(right, bg=C_SURFACE, highlightthickness=0)
+        _decor_cv.place(relx=0, rely=0, relwidth=1, relheight=1)
+
+        def _draw_decor(_e: Any = None) -> None:
+            if not _decor_cv.winfo_exists():
+                return
+            _decor_cv.delete("all")
+            W = _decor_cv.winfo_width() or 480
+            H = _decor_cv.winfo_height() or 640
+            # Large soft circle top-right
+            _decor_cv.create_oval(W - 120, -60, W + 60, 120,
+                                   fill="#eef2ff", outline="")
+            # Medium circle bottom-left
+            _decor_cv.create_oval(-80, H - 120, 80, H + 40,
+                                   fill="#f0f9ff", outline="")
+            # Small accent dot
+            _decor_cv.create_oval(W - 55, H - 55, W - 35, H - 35,
+                                   fill="#e0e7ff", outline="")
+            # Horizontal subtle stripe near bottom
+            _decor_cv.create_rectangle(0, H - 8, W, H,
+                                        fill="#eef2ff", outline="")
+
+        _decor_cv.bind("<Configure>", _draw_decor)
+        _decor_cv.after(30, _draw_decor)
+
         card = tk.Frame(right, bg=C_SURFACE)
         card.place(relx=0.5, rely=0.5, anchor="center")
+        self._login_card = card
 
         # Heading
         tk.Label(card, text="Chao mung tro lai!", bg=C_SURFACE, fg="#0f172a",
@@ -526,9 +553,24 @@ class LoginFrame(tk.Frame):
             return
         ForgotPasswordDialog(self, self.auth_ctrl)
 
+    def _shake(self) -> None:
+        """Briefly shake the login card horizontally to signal an error."""
+        if not (hasattr(self, "_login_card") and self._login_card.winfo_exists()):
+            return
+        card = self._login_card
+        offsets = [10, -10, 8, -8, 5, -5, 2, -2, 0]
+        delay = 0
+        for ox in offsets:
+            self.after(delay, lambda o=ox, c=card: (
+                c.winfo_exists() and c.place(relx=0.5, rely=0.5, anchor="center", x=o)
+            ))
+            delay += 45
+
     def _set_error(self, msg: str) -> None:
         if hasattr(self, "_err_lbl") and self._err_lbl.winfo_exists():
             self._err_lbl.config(text=msg)
+        if msg:
+            self._shake()
 
     def _submit(self) -> None:
         username = self.username_var.get().strip()

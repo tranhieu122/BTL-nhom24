@@ -50,9 +50,12 @@ def sha256_hash(raw_text: str) -> str:
 def _verify_pbkdf2(raw_text: str, stored: str) -> bool:
     try:
         _, iters_s, salt_hex, hash_hex = stored.split(":")
+        iters = int(iters_s)
+        if iters < 10_000 or iters > 10_000_000:
+            return False  # Reject implausible iteration count
         salt = bytes.fromhex(salt_hex)
         dk = hashlib.pbkdf2_hmac(_ALGO, raw_text.encode("utf-8"),
-                                 salt, int(iters_s))
+                                 salt, iters)
         return hmac.compare_digest(dk.hex(), hash_hex)
     except (ValueError, TypeError):
         return False

@@ -6,7 +6,7 @@ from utils.logger import get_logger
 
 _log = get_logger(__name__)
 
-VALID_STATUSES = {"Hoat dong", "Hong", "Dang sua", "Da thanh ly"}
+VALID_STATUSES = {"Hoat dong", "Bao tri", "Hong", "Dang sua", "Da thanh ly"}
 
 
 class EquipmentController:

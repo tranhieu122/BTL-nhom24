@@ -16,6 +16,9 @@ exports/
 *.pdf
 *.xlsx
 
+# Backup files
+*.bkp
+
 # Logs
 src/back end/logs/
 *.log

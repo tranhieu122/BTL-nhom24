@@ -12,7 +12,8 @@ from gui.theme import (C_BG, C_PRIMARY, C_SURFACE, C_BORDER, C_MUTED,
 class UserDialog(tk.Toplevel):
     def __init__(self, master: tk.Misc, user: Optional['User'] = None) -> None: # type: ignore
         super().__init__(master)
-        self.title("Thong tin nguoi dung")
+        self._is_edit = user is not None
+        self.title("Chinh sua nguoi dung" if self._is_edit else "Them nguoi dung moi")
         self.resizable(False, False)
         self.configure(bg=C_SURFACE)
         self.result = None
@@ -27,17 +28,39 @@ class UserDialog(tk.Toplevel):
             "status":    tk.StringVar(value=user.status if user else "Hoat dong"), # type: ignore
         }
         self._build()
-        # For static checkers, cast master to tk.Tk for transient
         if isinstance(master, (tk.Tk, tk.Toplevel)):
             self.transient(master)
         self.grab_set()
+        self.after(80, self._center)
+
+    def _center(self) -> None:
+        self.update_idletasks()
+        pw = self.master.winfo_rootx() + self.master.winfo_width()  // 2
+        ph = self.master.winfo_rooty() + self.master.winfo_height() // 2
+        self.geometry(f"+{pw - self.winfo_width()//2}+{ph - self.winfo_height()//2}")
 
     def _build(self) -> None:
-        hdr = tk.Frame(self, bg=C_PRIMARY, padx=20, pady=14)
+        # ── Header ────────────────────────────────────────────────────────────
+        hdr = tk.Frame(self, bg="#1e1b4b")
         hdr.pack(fill="x")
-        tk.Label(hdr, text="👤  Thong tin nguoi dung",
-                 bg=C_PRIMARY, fg="white",
+        tk.Frame(hdr, bg="#4f46e5", height=3).pack(fill="x")
+        hdr_inner = tk.Frame(hdr, bg="#1e1b4b", padx=22, pady=14)
+        hdr_inner.pack(fill="x")
+        icon_lbl = tk.Label(hdr_inner,
+                            text="✏️" if self._is_edit else "➕",
+                            bg="#1e1b4b", font=("Segoe UI", 18))
+        icon_lbl.pack(side="left", padx=(0, 12))
+        title_f = tk.Frame(hdr_inner, bg="#1e1b4b")
+        title_f.pack(side="left")
+        tk.Label(title_f,
+                 text="Chinh sua nguoi dung" if self._is_edit else "Them nguoi dung moi",
+                 bg="#1e1b4b", fg="#e0e7ff",
                  font=("Segoe UI", 13, "bold")).pack(anchor="w")
+        tk.Label(title_f,
+                 text="Cap nhat thong tin tai khoan" if self._is_edit
+                      else "Dien day du thong tin nguoi dung moi",
+                 bg="#1e1b4b", fg="#818cf8",
+                 font=("Segoe UI", 9)).pack(anchor="w")
 
         frm = tk.Frame(self, bg=C_SURFACE, padx=24, pady=20)
         frm.pack()
@@ -83,11 +106,16 @@ class UserDialog(tk.Toplevel):
         r += 1
 
         btn_row = tk.Frame(frm, bg=C_SURFACE)
-        btn_row.grid(row=r, column=0, columnspan=2, sticky="e", pady=(20, 0))
+        btn_row.grid(row=r, column=0, columnspan=2, sticky="ew", pady=(20, 0))
+        # Left: hint
+        tk.Label(btn_row, text="* De trong mat khau de giu nguyen",
+                 bg=C_SURFACE, fg="#94a3b8",
+                 font=("Segoe UI", 8, "italic")).pack(side="left")
+        # Right: action buttons
         btn(btn_row, "Luu lai", self._save,
-            icon="💾").pack(side="left", padx=6)
+            icon="💾").pack(side="right", padx=(6, 0))
         btn(btn_row, "Huy", self.destroy,
-            variant="ghost").pack(side="left")
+            variant="ghost").pack(side="right")
 
     def _save(self) -> None:
         self.result = {k: v.get().strip() for k, v in self.vars.items()}
@@ -100,12 +128,40 @@ class UserManagementFrame(tk.Frame):
         self.user_ctrl: 'user_controller' = user_controller # type: ignore
         self.search_var = tk.StringVar()
         self.tree: Optional[ttk.Treeview] = None
+        self._stat_labels: dict[str, tk.Label] = {}
         self._build()
         self.refresh()
 
     def _build(self) -> None:
         page_header(self, "Quan ly nguoi dung", "👥").pack(fill="x")
 
+        # ── Stat summary bar ─────────────────────────────────────────────────
+        stats_outer = tk.Frame(self, bg=C_BG)
+        stats_outer.pack(fill="x", padx=20, pady=(0, 12))
+
+        stat_defs = [
+            ("total",    "👥", "Tong nguoi dung", "#eef2ff", "#4f46e5"),
+            ("admin",    "🛡️", "Admin",           "#faf5ff", "#7c3aed"),
+            ("gv",       "🎓", "Giang vien",      "#dcfce7", "#15803d"),
+            ("sv",       "🧑‍🎓","Sinh vien",       "#fef9c3", "#854d0e"),
+            ("locked",   "🔒", "Bi khoa",         "#fee2e2", "#dc2626"),
+        ]
+        for key, icon, label, bg, fg in stat_defs:
+            chip = tk.Frame(stats_outer, bg=bg, highlightthickness=1,
+                            highlightbackground="#e2e8f0", padx=16, pady=10)
+            chip.pack(side="left", padx=(0, 8))
+            top_f = tk.Frame(chip, bg=bg)
+            top_f.pack(anchor="w")
+            tk.Label(top_f, text=icon, bg=bg,
+                     font=("Segoe UI", 16)).pack(side="left", padx=(0, 6))
+            val_lbl = tk.Label(top_f, text="–", bg=bg, fg=fg,
+                               font=("Segoe UI", 20, "bold"))
+            val_lbl.pack(side="left")
+            tk.Label(chip, text=label, bg=bg, fg="#64748b",
+                     font=("Segoe UI", 9)).pack(anchor="w")
+            self._stat_labels[key] = val_lbl
+
+        # ── Toolbar ──────────────────────────────────────────────────────────
         toolbar = tk.Frame(self, bg=C_BG)
         toolbar.pack(fill="x", padx=20, pady=(0, 10))
         search_box(toolbar, self.search_var).pack(side="left")
@@ -117,6 +173,11 @@ class UserManagementFrame(tk.Frame):
             variant="outline", icon="✏️").pack(side="left", padx=4)
         btn(toolbar, "Xoa",   self._delete,
             variant="danger",  icon="🗑").pack(side="left", padx=4)
+
+        # Status hint
+        self._status_lbl = tk.Label(toolbar, text="", bg=C_BG, fg="#64748b",
+                                    font=("Segoe UI", 9))
+        self._status_lbl.pack(side="right", padx=8)
 
         wrap = tk.Frame(self, bg=C_SURFACE, highlightthickness=1,
                         highlightbackground=C_BORDER, padx=14, pady=14)
@@ -133,6 +194,23 @@ class UserManagementFrame(tk.Frame):
         rows = [(u.user_id, u.username, u.full_name, u.role, u.email, u.phone, u.status) for u in users] # type: ignore
         if self.tree is not None:
             fill_tree(self.tree, rows) # type: ignore
+
+        # Update stat chips
+        all_users = self.user_ctrl.list_users("") # type: ignore
+        total   = len(all_users)
+        admins  = sum(1 for u in all_users if u.role == "Admin")
+        gv      = sum(1 for u in all_users if u.role == "Giang vien")
+        sv      = sum(1 for u in all_users if u.role == "Sinh vien")
+        locked  = sum(1 for u in all_users if u.status == "Khoa")
+        for key, val in (("total", total), ("admin", admins),
+                         ("gv", gv), ("sv", sv), ("locked", locked)):
+            if key in self._stat_labels:
+                self._stat_labels[key].config(text=str(val))
+
+        shown = len(rows)
+        self._status_lbl.config(
+            text=f"Hien thi {shown}/{total} nguoi dung"
+            if shown < total else f"Tong: {total} nguoi dung")
 
     def _selected_user_id(self) -> Optional[str]:
         if self.tree is None:

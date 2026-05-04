@@ -8,7 +8,8 @@ from gui.theme import (C_BG, C_DARK, C_PRIMARY, C_SURFACE, C_BORDER,
                        C_MUTED,
                        F_SECTION,
                        make_tree, fill_tree, with_scrollbar,
-                       page_header, MiniProgressBar, btn, toast)
+                       page_header, MiniProgressBar, btn, toast,
+                       animate_count)
 
 # Card colour palette: (bg, accent_fg, icon, label)
 CARD_PALETTE = [
@@ -124,10 +125,12 @@ class DashboardFrame(tk.Frame):
                            fill="white")
             ic.bind("<Button-1>", _on_click)
 
-            tk.Label(top, text=str(value), bg=bg, fg=fg,
-                     font=("Segoe UI", 32, "bold"),
-                     cursor="hand2").pack(
-                side="right", anchor="s", pady=(0, 2))
+            val_lbl = tk.Label(top, text="0", bg=bg, fg=fg,
+                               font=("Segoe UI", 32, "bold"),
+                               cursor="hand2")
+            val_lbl.pack(side="right", anchor="s", pady=(0, 2))
+            val_lbl.bind("<Button-1>", _on_click)
+            animate_count(val_lbl, int(value))
 
             _, lbl = CARD_PALETTE[idx][:2], CARD_PALETTE[idx][3]
             tk.Label(card, text=lbl, bg=bg, fg="#475569",
@@ -200,7 +203,7 @@ class DashboardFrame(tk.Frame):
     def _draw_today_panel(self, body: tk.Frame) -> None:
         today_str = dt.date.today().isoformat()
         today_bookings = [
-            b for b in self.booking_ctrl.list_bookings(from_today=False)
+            b for b in (self.booking_ctrl.list_bookings(from_today=False) or [])
             if b.booking_date == today_str
         ]
 
@@ -210,8 +213,8 @@ class DashboardFrame(tk.Frame):
         card.pack(fill="both", expand=True, padx=(0, 3), pady=(0, 4))
 
         hdr = tk.Frame(card, bg=C_SURFACE)
-        hdr.pack(fill="x", pady=(0, 8))
-        today_disp = dt.date.today().strftime("%d/%m/%Y")
+        hdr.pack(fill="x", pady=(0, 10))
+        today_disp = dt.date.today().strftime("%A, %d/%m/%Y")
         tk.Label(hdr, text=f"📅  Lich hom nay  —  {today_disp}",
                  bg=C_SURFACE, fg=C_DARK, font=F_SECTION).pack(side="left")
         count_bg = "#dcfce7" if today_bookings else "#f1f5f9"
@@ -221,19 +224,63 @@ class DashboardFrame(tk.Frame):
                  font=("Segoe UI", 9, "bold")).pack(side="left", padx=8)
 
         if not today_bookings:
-            tk.Label(card, text="Khong co lich dat phong nao hom nay.",
-                     bg=C_SURFACE, fg=C_MUTED,
-                     font=("Segoe UI", 10)).pack(anchor="w")
+            empty = tk.Frame(card, bg="#f8fafc", highlightthickness=1,
+                             highlightbackground=C_BORDER)
+            empty.pack(fill="x", pady=(0, 4))
+            tk.Label(empty,
+                     text="Khong co lich dat phong nao hom nay 🎉",
+                     bg="#f8fafc", fg=C_MUTED,
+                     font=("Segoe UI", 10, "italic")).pack(pady=14)
             return
 
-        cols = ("phong", "nguoi_dat", "ca", "trang_thai")
-        hdrs = ("Phong", "Nguoi dat", "Ca hoc", "Trang thai")
-        wids = (90, 180, 120, 120)
-        tree = make_tree(card, cols, hdrs, wids, height=min(len(today_bookings), 5))
-        with_scrollbar(card, tree)
-        rows = [(b.room_id, b.user_name, b.slot, b.status)
-                for b in today_bookings]
-        fill_tree(tree, rows)
+        # Slot-based compact chip row
+        SLOT_TIMES = {
+            "Ca 1": "7:00-9:00",  "Ca 2": "9:15-11:15",
+            "Ca 3": "13:00-15:00","Ca 4": "15:15-17:15",
+            "Ca 5": "17:30-19:30",
+        }
+        STATUS_CHIP: dict[str, tuple[str, str]] = {
+            "Da duyet":  ("#dcfce7", "#15803d"),
+            "Cho duyet": ("#fef3c7", "#b45309"),
+            "Tu choi":   ("#fee2e2", "#dc2626"),
+        }
+        slots_wrap = tk.Frame(card, bg=C_SURFACE)
+        slots_wrap.pack(fill="x")
+        for b in today_bookings[:8]:
+            chip_bg, chip_fg = STATUS_CHIP.get(b.status, ("#f1f5f9", C_MUTED))
+            slot_time = SLOT_TIMES.get(b.slot, b.slot)
+            row = tk.Frame(slots_wrap, bg=C_SURFACE,
+                           highlightthickness=1, highlightbackground=C_BORDER)
+            row.pack(fill="x", pady=3)
+            # Slot pill
+            slot_pill = tk.Frame(row, bg=C_PRIMARY, padx=10, pady=6)
+            slot_pill.pack(side="left")
+            tk.Label(slot_pill, text=b.slot,
+                     bg=C_PRIMARY, fg="white",
+                     font=("Segoe UI", 9, "bold")).pack()
+            tk.Label(slot_pill, text=slot_time,
+                     bg=C_PRIMARY, fg="#c7d2fe",
+                     font=("Segoe UI", 7)).pack()
+            # Room chip
+            room_chip = tk.Frame(row, bg="#eef2ff", padx=8, pady=6)
+            room_chip.pack(side="left", padx=(0, 1))
+            tk.Label(room_chip, text=f"🏫 {b.room_id}",
+                     bg="#eef2ff", fg="#4f46e5",
+                     font=("Segoe UI", 9, "bold")).pack()
+            # User name
+            tk.Label(row, text=f"👤 {b.user_name}",
+                     bg=C_SURFACE, fg=C_DARK,
+                     font=("Segoe UI", 9)).pack(side="left", padx=10)
+            # Status
+            status_chip = tk.Frame(row, bg=chip_bg, padx=8, pady=4)
+            status_chip.pack(side="right", padx=8)
+            tk.Label(status_chip, text=b.status,
+                     bg=chip_bg, fg=chip_fg,
+                     font=("Segoe UI", 8, "bold")).pack()
+        if len(today_bookings) > 8:
+            tk.Label(card, text=f"  + {len(today_bookings) - 8} lich khac...",
+                     bg=C_SURFACE, fg=C_MUTED,
+                     font=("Segoe UI", 8, "italic")).pack(anchor="w", pady=(4, 0))
 
     # ── Main area: recent bookings + donut chart ──────────────────────────────
     def _draw_main_area(self, body: tk.Frame) -> None:

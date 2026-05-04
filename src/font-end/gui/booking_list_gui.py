@@ -113,8 +113,8 @@ class BookingListFrame(tk.Frame):
         items = [(self.tree.set(k, col), k) for k in self.tree.get_children("")]
         try:
             items.sort(key=lambda t: float(t[0]), reverse=self._sort_rev)
-        except ValueError:
-            items.sort(key=lambda t: t[0].lower(), reverse=self._sort_rev)
+        except (ValueError, TypeError):
+            items.sort(key=lambda t: str(t[0] or "").lower(), reverse=self._sort_rev)
         for index, (_, k) in enumerate(items):
             self.tree.move(k, "", index)
         arrow = " ▲" if not self._sort_rev else " ▼"

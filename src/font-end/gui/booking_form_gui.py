@@ -183,13 +183,36 @@ class BookingFormFrame(tk.Frame):
     def _draw_room_placeholder(self) -> None:
         for w in self._room_info_frame.winfo_children():
             w.destroy()
-        tk.Label(self._room_info_frame,
-                 text="🏫", bg=C_SURFACE,
-                 font=("Segoe UI", 40)).pack(pady=(30, 8))
-        tk.Label(self._room_info_frame,
-                 text="Chon phong hoc\nde xem thong tin chi tiet",
-                 bg=C_SURFACE, fg=C_MUTED,
-                 font=("Segoe UI", 11), justify="center").pack()
+        # Subtle canvas background for the placeholder area
+        cv = tk.Canvas(self._room_info_frame, bg="#f8fafc",
+                       highlightthickness=0, height=200)
+        cv.pack(fill="both", expand=True)
+
+        def _draw(_e: Any = None) -> None:
+            if not cv.winfo_exists():
+                return
+            cv.delete("all")
+            W = cv.winfo_width() or 260
+            H = cv.winfo_height() or 200
+            cv.create_oval(W - 80, -30, W + 20, 70, fill="#eef2ff", outline="")
+            cv.create_oval(-20, H - 70, 60, H + 10, fill="#f0f9ff", outline="")
+            # Icon circle
+            cx, cy = W // 2, H // 2 - 20
+            cv.create_oval(cx - 36, cy - 36, cx + 36, cy + 36,
+                           fill="#e0e7ff", outline="#c7d2fe", width=1)
+            cv.create_text(cx, cy, text="🏫",
+                           font=("Segoe UI", 22))
+            cv.create_text(W // 2, cy + 54,
+                           text="Chon phong hoc",
+                           font=("Segoe UI", 11, "bold"),
+                           fill="#4f46e5")
+            cv.create_text(W // 2, cy + 76,
+                           text="de xem thong tin chi tiet",
+                           font=("Segoe UI", 9),
+                           fill="#94a3b8")
+
+        cv.bind("<Configure>", _draw)
+        cv.after(30, _draw)
 
     def _draw_room_info(self, room: Any) -> None:
         for w in self._room_info_frame.winfo_children():

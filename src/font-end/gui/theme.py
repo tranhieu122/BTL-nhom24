@@ -1,5 +1,6 @@
 # gui/theme.py  –  shared palette, fonts, widget factories
 from __future__ import annotations
+import datetime as _dt
 import tkinter as tk
 from tkinter import ttk
 from typing import Any
@@ -23,8 +24,8 @@ C_WARNING_BG = "#fef3c7"
 C_DANGER     = "#dc2626"
 C_DANGER_BG  = "#fee2e2"
 C_INFO_BG    = "#eef2ff"     # Indigo 50
-ROW_ODD      = "#fafafa"
-ROW_EVEN     = "#ffffff"
+ROW_ODD      = "#f1f5f9"   # Slate 100
+ROW_EVEN     = "#f8fafc"   # Slate 50 (= C_BG)
 
 # ── Typography Scale (8pt base, 4px grid) ────────────────────────────────────
 # Heading  : 20 bold  → page titles
@@ -55,7 +56,7 @@ def apply_theme(style: ttk.Style) -> None:
               background=[("active", C_PRIMARY_H)])
     style.configure("TV.Treeview",
                     rowheight=36, font=F_BODY,
-                    fieldbackground=C_SURFACE, background=C_SURFACE,
+                    fieldbackground=C_BG, background=C_BG,
                     borderwidth=0, relief="flat")
     style.map("TV.Treeview",
               background=[("selected", "#e0e7ff")],
@@ -199,6 +200,7 @@ def make_tree(parent: tk.Misc, columns: tuple[str, ...] | list[str],
 def _tag_cfg(tree: ttk.Treeview) -> None:
     tree.tag_configure("odd",       background=ROW_ODD)
     tree.tag_configure("even",      background=ROW_EVEN)
+    tree.tag_configure("empty",     foreground=C_MUTED, font=("Segoe UI", 10, "italic"))
     tree.tag_configure("Da duyet",  background=C_SUCCESS_BG, foreground=C_SUCCESS)
     tree.tag_configure("Cho duyet", background=C_WARNING_BG, foreground=C_WARNING)
     tree.tag_configure("Tu choi",   background=C_DANGER_BG,  foreground=C_DANGER)
@@ -207,9 +209,15 @@ def _tag_cfg(tree: ttk.Treeview) -> None:
     tree.tag_configure("Khoa",      background=C_DANGER_BG,  foreground=C_DANGER)
 
 
-def fill_tree(tree: ttk.Treeview, rows: list[tuple[object, ...]]) -> None:
+def fill_tree(tree: ttk.Treeview, rows: list[tuple[object, ...]],
+              empty_msg: str = "  Khong co du lieu") -> None:
     for item in tree.get_children():
         tree.delete(item)
+    if not rows:
+        cols = tree["columns"]
+        placeholder = tuple([empty_msg] + [""] * (len(cols) - 1))
+        tree.insert("", "end", values=placeholder, tags=["empty"])
+        return
     for i, values in enumerate(rows):
         tags = ["odd" if i % 2 == 0 else "even"]
         status = str(values[-1]) if values else ""
@@ -493,3 +501,56 @@ def confirm_dialog(parent: tk.Misc, title: str, message: str,
     dlg.bind("<Escape>", lambda _: _cancel())
     dlg.wait_window()
     return result[0]
+
+
+# ── Utility helpers ────────────────────────────────────────────────────────
+
+def relative_time(dt_str: str) -> str:
+    """Convert ISO datetime string to Vietnamese relative time.
+    E.g. '2 phut truoc', '3 gio truoc', '1 ngay truoc'.
+    """
+    try:
+        then = _dt.datetime.fromisoformat(str(dt_str))
+        now  = _dt.datetime.now()
+        secs = int((now - then).total_seconds())
+        if secs < 60:
+            return "Vua xong"
+        elif secs < 3600:
+            m = secs // 60
+            return f"{m} phut truoc"
+        elif secs < 86400:
+            h = secs // 3600
+            return f"{h} gio truoc"
+        elif secs < 604800:
+            d = secs // 86400
+            return f"{d} ngay truoc"
+        else:
+            return then.strftime("%d/%m/%Y")
+    except Exception:
+        return str(dt_str)
+
+
+def animate_count(label: tk.Label, end_value: int,
+                  duration_ms: int = 700, steps: int = 24) -> None:
+    """Animate a label's text from 0 up to end_value over duration_ms."""
+    if end_value <= 0:
+        label.config(text="0")
+        return
+    interval = max(1, duration_ms // steps)
+    step_size = max(1, end_value // steps)
+
+    def _tick(current: int) -> None:
+        if not label.winfo_exists():
+            return
+        label.config(text=str(current))
+        if current < end_value:
+            nxt = min(current + step_size, end_value)
+            label.after(interval, lambda: _tick(nxt))
+
+    label.after(60, lambda: _tick(0))
+
+
+def section_label(parent: tk.Misc, text: str, bg: str = C_BG) -> tk.Label:
+    """Small section separator label styled like a tab header."""
+    return tk.Label(parent, text=text, bg=bg, fg=C_MUTED,
+                    font=("Segoe UI", 8, "bold"), anchor="w")

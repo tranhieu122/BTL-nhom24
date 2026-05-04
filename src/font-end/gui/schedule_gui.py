@@ -20,6 +20,11 @@ CELL_COLORS = {
     "Cho duyet": ("#fef3c7", "#b45309"),
     "Tu choi":   ("#fee2e2", "#dc2626"),
 }
+CELL_ACCENT = {
+    "Da duyet":  "#16a34a",
+    "Cho duyet": "#f59e0b",
+    "Tu choi":   "#ef4444",
+}
 
 LEGEND = [
     ("Da duyet",  "#dcfce7", "#15803d"),
@@ -27,6 +32,74 @@ LEGEND = [
     ("Tu choi",   "#fee2e2", "#dc2626"),
     ("Trong",     "#f8fafc", "#94a3b8"),
 ]
+
+
+def _cell_tooltip(cell: tk.Label, entries: list,
+                   date_str: str, slot_key: str) -> None:
+    """Attach a rich hover tooltip to a busy schedule cell."""
+    tip: list[tk.Toplevel | None] = [None]
+
+    def _show(_: object = None) -> None:
+        if tip[0] or not cell.winfo_exists():
+            return
+        x = cell.winfo_rootx() + cell.winfo_width() + 4
+        y = cell.winfo_rooty()
+        popup = tk.Toplevel(cell)
+        popup.overrideredirect(True)
+        popup.attributes("-topmost", True)  # type: ignore[arg-type]
+        popup.configure(bg="#1e1b4b")
+
+        frame = tk.Frame(popup, bg="#1e1b4b", padx=12, pady=10,
+                         highlightthickness=1, highlightbackground="#4f46e5")
+        frame.pack()
+
+        tk.Label(frame, text=f"📅  {date_str}  •  {slot_key}",
+                 bg="#1e1b4b", fg="#818cf8",
+                 font=("Segoe UI", 8, "bold")).pack(anchor="w", pady=(0, 6))
+
+        STATUS_CHIP: dict[str, tuple[str, str]] = {
+            "Da duyet":  ("#dcfce7", "#15803d"),
+            "Cho duyet": ("#fef3c7", "#b45309"),
+            "Tu choi":   ("#fee2e2", "#dc2626"),
+        }
+        for label, status in entries[:5]:
+            chip_bg, chip_fg = STATUS_CHIP.get(status, ("#f1f5f9", "#475569"))
+            row_f = tk.Frame(frame, bg="#272165")
+            row_f.pack(fill="x", pady=1)
+            tk.Label(row_f, text=f"  {label[:28]}",
+                     bg="#272165", fg="#e0e7ff",
+                     font=("Segoe UI", 9)).pack(side="left")
+            tk.Label(row_f, text=f"  {status}  ",
+                     bg=chip_bg, fg=chip_fg,
+                     font=("Segoe UI", 7, "bold")).pack(side="right", padx=4)
+
+        if len(entries) > 5:
+            tk.Label(frame, text=f"  + {len(entries) - 5} lich khac...",
+                     bg="#1e1b4b", fg="#6366f1",
+                     font=("Segoe UI", 7, "italic")).pack(anchor="w", pady=(4, 0))
+
+        popup.update_idletasks()
+        pw = popup.winfo_width()
+        try:
+            sw = cell.winfo_screenwidth()
+            if x + pw > sw - 10:
+                x = cell.winfo_rootx() - pw - 4
+        except Exception:
+            pass
+        popup.geometry(f"+{x}+{y}")
+        tip[0] = popup
+
+    def _hide(_: object = None) -> None:
+        if tip[0]:
+            try:
+                tip[0].destroy()
+            except Exception:
+                pass
+            tip[0] = None
+
+    cell.bind("<Enter>", _show, add="+")
+    cell.bind("<Leave>", _hide, add="+")
+    cell.bind("<Destroy>", _hide, add="+")
 
 VN_MONTHS = ["", "Thang 1", "Thang 2", "Thang 3", "Thang 4", "Thang 5",
              "Thang 6", "Thang 7", "Thang 8", "Thang 9", "Thang 10",
@@ -101,8 +174,16 @@ class ScheduleFrame(tk.Frame):
                                       padx=8, pady=3)
         self._offset_badge.pack(side="left", padx=10)
 
+        # ── Week summary stats bar — packed FIRST so it anchors to the bottom ─
+        self._stats_bar = tk.Frame(self, bg=C_SURFACE,
+                                   highlightthickness=1,
+                                   highlightbackground=C_BORDER)
+        self._stats_bar.pack(side="bottom", fill="x", padx=20, pady=(0, 16))
+
+        # ── Scrollable grid canvas — expands to fill all remaining space ──────
         outer = tk.Frame(self, bg=C_BG)
-        outer.pack(fill="both", expand=True, padx=20, pady=(4, 16))
+        outer.pack(side="top", fill="both", expand=True, padx=20, pady=(4, 4))
+
         canvas = tk.Canvas(outer, bg=C_BG, highlightthickness=0)
         hsb = ttk.Scrollbar(outer, orient="horizontal", command=canvas.xview) # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
         vsb = ttk.Scrollbar(outer, orient="vertical",   command=canvas.yview) # type: ignore
@@ -211,7 +292,6 @@ class ScheduleFrame(tk.Frame):
         self._update_week_label()
         for w in self._grid_frame.winfo_children():
             w.destroy()
-
         room_filter = self._v_room.get()
         schedule_rows = self.booking_ctrl.build_schedule(self._week_offset) # type: ignore
 
@@ -282,7 +362,17 @@ class ScheduleFrame(tk.Frame):
                          justify="center", wraplength=128)
                 cell_lbl.grid(row=ri + 1, column=ci + 1, padx=1, pady=1)
 
-                # Click to show details popup
+                # Hover highlight for empty cells
+                if not entries:
+                    _orig_bg = bg
+                    cell_lbl.bind("<Enter>",
+                        lambda _e, c=cell_lbl, ob=_orig_bg:
+                            c.config(bg="#f1f5f9") if ob == "#f8fafc" else None)
+                    cell_lbl.bind("<Leave>",
+                        lambda _e, c=cell_lbl, ob=_orig_bg:
+                            c.config(bg=ob))
+
+                # Click + hover tooltip for busy cells
                 if entries:
                     date_for_cell = mon + dt.timedelta(days=ci) # type: ignore
                     date_str = date_for_cell.strftime("%d/%m/%Y") # type: ignore
@@ -296,3 +386,83 @@ class ScheduleFrame(tk.Frame):
                         self._show_cell_detail(info, ds, dn, sl)
 
                     cell_lbl.bind("<Button-1>", _show_detail)
+
+                    # Rich hover tooltip
+                    _cell_tooltip(cell_lbl, cell_info, date_str, SLOT_KEYS[ri])
+
+        # ── Tally row at bottom of grid ──────────────────────────────────────
+        tk.Label(gf, text="Tong / ngay", bg="#0f172a", fg="#94a3b8",
+                 font=("Segoe UI", 8, "bold"),
+                 width=13, height=2, relief="flat").grid(
+                     row=len(SLOT_KEYS) + 1, column=0, padx=1, pady=1)
+        for ci, day in enumerate(DAYS):
+            day_total = sum(1 for (d, _s), entries in lookup.items()
+                            if d == day and entries)
+            lbl_bg = "#1e1b4b" if day_total > 0 else "#f1f5f9"
+            lbl_fg = "#e0e7ff" if day_total > 0 else "#94a3b8"
+            count_text = f"{day_total} lich" if day_total > 0 else "–"
+            tk.Label(gf, text=count_text, bg=lbl_bg, fg=lbl_fg,
+                     font=("Segoe UI", 8, "bold"),
+                     width=17, height=2, relief="flat").grid(
+                         row=len(SLOT_KEYS) + 1, column=ci + 1, padx=1, pady=1)
+
+        # ── Stats bar (fills blank space below scroll area) ──────────────────
+        for w in self._stats_bar.winfo_children():
+            w.destroy()
+
+        total_bookings = sum(len(v) for v in lookup.values())
+        approved  = sum(1 for v in lookup.values() for _, s in v if s == "Da duyet")
+        pending   = sum(1 for v in lookup.values() for _, s in v if s == "Cho duyet")
+        rejected  = sum(1 for v in lookup.values() for _, s in v if s == "Tu choi")
+        busy_cells = sum(1 for v in lookup.values() if v)
+        total_cells = len(DAYS) * len(SLOT_KEYS)
+        rate = int(busy_cells * 100 / total_cells) if total_cells else 0
+
+        header_f = tk.Frame(self._stats_bar, bg="#1e1b4b", padx=16, pady=8)
+        header_f.pack(fill="x")
+        tk.Label(header_f, text="📊  Thong ke tuan nay",
+                 bg="#1e1b4b", fg="#e0e7ff",
+                 font=("Segoe UI", 10, "bold")).pack(side="left")
+
+        chips_f = tk.Frame(self._stats_bar, bg=C_SURFACE, padx=14, pady=12)
+        chips_f.pack(fill="both", expand=True)
+
+        def _stat_chip(parent: tk.Frame, icon: str, label: str, value: str,
+                       bg: str, fg: str, bar_color: str | None = None) -> None:
+            chip = tk.Frame(parent, bg="#f8fafc", highlightthickness=1,
+                            highlightbackground="#e2e8f0", padx=14, pady=10)
+            chip.pack(side="left", padx=6, pady=4)
+            top_f = tk.Frame(chip, bg="#f8fafc")
+            top_f.pack(anchor="w")
+            tk.Label(top_f, text=icon, bg="#f8fafc",
+                     font=("Segoe UI", 18)).pack(side="left", padx=(0, 6))
+            tk.Label(top_f, text=value, bg="#f8fafc", fg=fg,
+                     font=("Segoe UI", 18, "bold")).pack(side="left")
+            tk.Label(chip, text=label, bg="#f8fafc", fg="#64748b",
+                     font=("Segoe UI", 9)).pack(anchor="w")
+            if bar_color and total_bookings > 0:
+                cnt_int = int(value) if value.isdigit() else 0
+                bar_frame = tk.Frame(chip, bg="#e2e8f0", height=3)
+                bar_frame.pack(fill="x", pady=(4, 0))
+                fill_pct = cnt_int / max(total_bookings, 1)
+                if fill_pct > 0:
+                    tk.Frame(chip, bg=bar_color, height=3).place(
+                        relx=0, rely=0, relwidth=fill_pct)
+
+        _stat_chip(chips_f, "📅", "Tong so lich",  str(total_bookings), "#eef2ff", "#4f46e5")
+        _stat_chip(chips_f, "✅", "Da duyet",       str(approved),       "#dcfce7", "#15803d", "#16a34a")
+        _stat_chip(chips_f, "⏳", "Cho duyet",      str(pending),        "#fef3c7", "#b45309", "#f59e0b")
+        _stat_chip(chips_f, "❌", "Tu choi",        str(rejected),       "#fee2e2", "#dc2626", "#ef4444")
+        _stat_chip(chips_f, "📈", "Ty le su dung",  f"{rate}%",          "#f0f9ff", "#0369a1")
+
+        # Tips row
+        tip_f = tk.Frame(self._stats_bar, bg="#f8fafc",
+                         highlightthickness=1, highlightbackground="#e2e8f0",
+                         padx=14, pady=7)
+        tip_f.pack(fill="x", padx=14, pady=(0, 10))
+        tk.Label(tip_f,
+                 text="💡  Click vao o lich de xem chi tiet  •  "
+                      "Hover de xem nhanh  •  "
+                      "Dung bo loc 'Phong' de thu hep ket qua",
+                 bg="#f8fafc", fg="#94a3b8",
+                 font=("Segoe UI", 8)).pack(anchor="w")

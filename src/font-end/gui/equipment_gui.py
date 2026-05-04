@@ -42,11 +42,27 @@ class EquipmentDialog(tk.Toplevel):
 
     def _build(self) -> None:
         # Header
-        hdr = tk.Frame(self, bg=C_PRIMARY, padx=22, pady=14)
+        hdr = tk.Frame(self, bg="#1e1b4b")
         hdr.pack(fill="x")
-        tk.Label(hdr, text="🔧  Thong tin thiet bi",
-                 bg=C_PRIMARY, fg="white",
+        tk.Frame(hdr, bg="#4f46e5", height=3).pack(fill="x")
+        hdr_inner = tk.Frame(hdr, bg="#1e1b4b", padx=22, pady=14)
+        hdr_inner.pack(fill="x")
+        is_edit = bool(getattr(self, "result", None) is None
+                       and self.title() != "Them thiet bi")
+        icon_lbl = tk.Label(hdr_inner,
+                            text="✏️" if "Sua" in self.title() else "🔧",
+                            bg="#1e1b4b", font=("Segoe UI", 18))
+        icon_lbl.pack(side="left", padx=(0, 12))
+        title_f = tk.Frame(hdr_inner, bg="#1e1b4b")
+        title_f.pack(side="left")
+        tk.Label(title_f, text=self.title(),
+                 bg="#1e1b4b", fg="#e0e7ff",
                  font=("Segoe UI", 13, "bold")).pack(anchor="w")
+        tk.Label(title_f,
+                 text="Cap nhat thong tin thiet bi" if "Sua" in self.title()
+                      else "Dien day du thong tin thiet bi moi (*)",
+                 bg="#1e1b4b", fg="#818cf8",
+                 font=("Segoe UI", 9)).pack(anchor="w")
 
         frm = tk.Frame(self, bg=C_SURFACE, padx=26, pady=18)
         frm.pack()
@@ -113,12 +129,40 @@ class EquipmentManagementFrame(tk.Frame):
         self.room_var    = tk.StringVar()
         self.search_var  = tk.StringVar()
         self.tree: ttk.Treeview | None = None
+        self._stat_labels: dict[str, tk.Label] = {}
         self._build()
         self.refresh()
 
     def _build(self) -> None:
         page_header(self, "Quan ly thiet bi", "🔧").pack(fill="x")
 
+        # ── Stat summary bar ─────────────────────────────────────────────────
+        stats_outer = tk.Frame(self, bg=C_BG)
+        stats_outer.pack(fill="x", padx=20, pady=(0, 12))
+
+        stat_defs = [
+            ("total",    "🔧", "Tong thiet bi",  "#eef2ff", "#4f46e5"),
+            ("active",   "✅", "Hoat dong",       "#dcfce7", "#15803d"),
+            ("maintain", "⚙️", "Bao tri",         "#fef3c7", "#b45309"),
+            ("broken",   "❌", "Hong",            "#fee2e2", "#dc2626"),
+            ("rooms",    "🏫", "Phong co TB",     "#f0f9ff", "#0369a1"),
+        ]
+        for key, icon, label, bg, fg in stat_defs:
+            chip = tk.Frame(stats_outer, bg=bg, highlightthickness=1,
+                            highlightbackground="#e2e8f0", padx=16, pady=10)
+            chip.pack(side="left", padx=(0, 8))
+            top_f = tk.Frame(chip, bg=bg)
+            top_f.pack(anchor="w")
+            tk.Label(top_f, text=icon, bg=bg,
+                     font=("Segoe UI", 16)).pack(side="left", padx=(0, 6))
+            val_lbl = tk.Label(top_f, text="–", bg=bg, fg=fg,
+                               font=("Segoe UI", 20, "bold"))
+            val_lbl.pack(side="left")
+            tk.Label(chip, text=label, bg=bg, fg="#64748b",
+                     font=("Segoe UI", 9)).pack(anchor="w")
+            self._stat_labels[key] = val_lbl
+
+        # ── Toolbar ──────────────────────────────────────────────────────────
         toolbar = tk.Frame(self, bg=C_BG)
         toolbar.pack(fill="x", padx=20, pady=(0, 10))
 
@@ -145,6 +189,11 @@ class EquipmentManagementFrame(tk.Frame):
         btn(toolbar, "Xoa",   self._delete,
             variant="danger",  icon="🗑").pack(side="left", padx=4)
 
+        # Status bar
+        self._status_lbl = tk.Label(toolbar, text="", bg=C_BG, fg="#64748b",
+                                    font=("Segoe UI", 9))
+        self._status_lbl.pack(side="right", padx=8)
+
         wrap = tk.Frame(self, bg=C_SURFACE, highlightthickness=1,
                         highlightbackground=C_BORDER, padx=14, pady=14)
         wrap.pack(fill="both", expand=True, padx=20, pady=(0, 16))
@@ -154,11 +203,6 @@ class EquipmentManagementFrame(tk.Frame):
         wids = (90, 220, 140, 90, 120, 120)
         self.tree = make_tree(wrap, cols, hdrs, wids)
         with_scrollbar(wrap, self.tree)
-
-        # Status bar
-        self._status_lbl = tk.Label(self, text="", bg=C_BG, fg="#64748b",
-                                    font=("Segoe UI", 9))
-        self._status_lbl.pack(anchor="w", padx=22, pady=(0, 6))
 
     def refresh(self) -> None:
         selected = self.room_var.get().strip()
@@ -174,7 +218,24 @@ class EquipmentManagementFrame(tk.Frame):
                 for e in all_eq]
         assert self.tree is not None
         fill_tree(self.tree, rows)  # type: ignore[arg-type]
-        self._status_lbl.config(text=f"Hien thi {len(rows)} thiet bi")
+
+        # Update stat chips (always from full dataset)
+        all_eq_full = self.equip_ctrl.list_equipment("")
+        total    = len(all_eq_full)
+        active   = sum(1 for e in all_eq_full if e.status == "Hoat dong")
+        maintain = sum(1 for e in all_eq_full if e.status == "Bao tri")
+        broken   = sum(1 for e in all_eq_full if e.status == "Hong")
+        rooms_with = len({e.room_id for e in all_eq_full if e.room_id})
+        for key, val in (("total", total), ("active", active),
+                         ("maintain", maintain), ("broken", broken),
+                         ("rooms", rooms_with)):
+            if key in self._stat_labels:
+                self._stat_labels[key].config(text=str(val))
+
+        shown = len(rows)
+        self._status_lbl.config(
+            text=f"Hien thi {shown}/{total} thiet bi"
+            if shown < total else f"Tong: {total} thiet bi")
 
     def _selected_id(self) -> str | None:
         assert self.tree is not None

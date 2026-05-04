@@ -7,7 +7,26 @@ from typing import Any
 
 from gui.theme import (C_BG, C_BORDER, C_DARK, C_MUTED, C_SURFACE, C_TEXT,
                        F_BODY, F_BODY_B, F_SECTION,
-                       page_header, btn)
+                       page_header, btn, relative_time)
+
+# ── Category detection helpers ────────────────────────────────────────────────
+_CATEGORY_RULES: list[tuple[list[str], str, str, str]] = [
+    # keywords,              icon, badge_bg,  badge_fg
+    (["dat phong", "booking", "phong"], "📅", "#eef2ff", "#4f46e5"),
+    (["duyet", "phe duyet"],             "✅", "#dcfce7", "#15803d"),
+    (["tu choi", "huy"],                 "❌", "#fee2e2", "#dc2626"),
+    (["thiet bi", "equipment"],          "🔧", "#ede9fe", "#6d28d9"),
+    (["bao tri", "sua chua"],            "🛠", "#fef3c7", "#b45309"),
+    (["he thong", "system"],             "⚙",  "#f1f5f9", "#475569"),
+]
+
+def _categorise(title: str, message: str) -> tuple[str, str, str]:
+    """Return (icon, badge_bg, badge_fg) for a notification."""
+    combined = (title + " " + message).lower()
+    for keywords, icon, bg, fg in _CATEGORY_RULES:
+        if any(k in combined for k in keywords):
+            return icon, bg, fg
+    return "🔔", "#eef2ff", "#4f46e5"
 
 
 class NotificationFrame(tk.Frame):
@@ -157,9 +176,18 @@ class NotificationFrame(tk.Frame):
             self._badge_lbl.pack(side="right", padx=16, pady=10)
 
         if not notifs:
-            tk.Label(self._list_frame, text="Khong co thong bao nao.",
+            empty_frame = tk.Frame(self._list_frame, bg=C_SURFACE, pady=40)
+            empty_frame.pack(fill="x")
+            tk.Label(empty_frame, text="🔔", bg=C_SURFACE,
+                     font=("Segoe UI", 36)).pack()
+            tk.Label(empty_frame,
+                     text="Khong co thong bao nao",
+                     bg=C_SURFACE, fg=C_DARK,
+                     font=("Segoe UI", 12, "bold")).pack(pady=(8, 2))
+            tk.Label(empty_frame,
+                     text="Cac thong bao moi se hien thi o day",
                      bg=C_SURFACE, fg=C_MUTED,
-                     font=("Segoe UI", 11, "italic")).pack(pady=30)
+                     font=("Segoe UI", 10)).pack()
             return
 
         for n in notifs:
@@ -167,51 +195,111 @@ class NotificationFrame(tk.Frame):
 
     def _draw_row(self, n: dict) -> None:
         is_unread = not n["is_read"]
-        row_bg = "#eef2ff" if is_unread else C_SURFACE
-        row = tk.Frame(self._list_frame, bg=row_bg, padx=16, pady=10,
-                       cursor="hand2")
-        row.pack(fill="x")
-        tk.Frame(self._list_frame, bg=C_BORDER, height=1).pack(fill="x")
+        row_bg    = "#eef2ff" if is_unread else C_SURFACE
+        icon, cat_bg, cat_fg = _categorise(n.get("title", ""), n.get("message", ""))
 
-        # Top: dot + title + timestamp
-        top = tk.Frame(row, bg=row_bg)
+        # ── Outer card wrapper ────────────────────────────────────────────────
+        card_wrap = tk.Frame(self._list_frame, bg=C_BG, padx=8, pady=4)
+        card_wrap.pack(fill="x")
+
+        card = tk.Frame(card_wrap, bg=row_bg, padx=14, pady=12,
+                        highlightthickness=1,
+                        highlightbackground="#c7d2fe" if is_unread else C_BORDER,
+                        cursor="hand2")
+        card.pack(fill="x")
+
+        # Hover effect
+        def _enter(_: Any, c=card, bg=row_bg) -> None:
+            darken = "#dde6ff" if bg == "#eef2ff" else "#f8fafc"
+            c.config(bg=darken)
+            for ch in c.winfo_children():
+                try:
+                    ch.config(bg=darken)
+                except Exception:
+                    pass
+
+        def _leave(_: Any, c=card, bg=row_bg) -> None:
+            c.config(bg=bg)
+            for ch in c.winfo_children():
+                try:
+                    ch.config(bg=bg)
+                except Exception:
+                    pass
+
+        card.bind("<Enter>", _enter)
+        card.bind("<Leave>", _leave)
+
+        # ── Left accent bar (unread = indigo, read = transparent) ────────────
+        accent_color = "#4f46e5" if is_unread else row_bg
+        accent = tk.Frame(card, bg=accent_color, width=3)
+        accent.pack(side="left", fill="y", padx=(0, 10))
+
+        # ── Icon bubble ───────────────────────────────────────────────────────
+        ic_frame = tk.Frame(card, bg=cat_bg, padx=6, pady=6)
+        ic_frame.pack(side="left", padx=(0, 12))
+        tk.Label(ic_frame, text=icon, bg=cat_bg,
+                 font=("Segoe UI", 16)).pack()
+
+        # ── Main content ──────────────────────────────────────────────────────
+        content = tk.Frame(card, bg=row_bg)
+        content.pack(side="left", fill="both", expand=True)
+
+        # Top row: title + relative time + unread dot
+        top = tk.Frame(content, bg=row_bg)
         top.pack(fill="x")
-        dot_color = "#4f46e5" if is_unread else C_MUTED
-        tk.Label(top, text="●  " if is_unread else "○  ",
-                 bg=row_bg, fg=dot_color,
-                 font=("Segoe UI", 9)).pack(side="left")
-        tk.Label(top, text=n["title"], bg=row_bg, fg=C_DARK,
+
+        if is_unread:
+            tk.Label(top, text="●", bg=row_bg, fg="#4f46e5",
+                     font=("Segoe UI", 8)).pack(side="left", padx=(0, 4))
+
+        tk.Label(top, text=n.get("title", "Thong bao"),
+                 bg=row_bg, fg=C_DARK,
                  font=("Segoe UI", 10, "bold")).pack(side="left")
 
-        try:
-            ts_str = dt.datetime.fromisoformat(n["created_at"]).strftime("%d/%m/%Y %H:%M")
-        except Exception:
-            ts_str = str(n["created_at"])
-        tk.Label(top, text=ts_str, bg=row_bg, fg=C_MUTED,
-                 font=("Segoe UI", 8)).pack(side="right")
+        rel = relative_time(n.get("created_at", ""))
+        tk.Label(top, text=rel, bg=row_bg, fg=C_MUTED,
+                 font=("Segoe UI", 8, "italic")).pack(side="right")
 
-        # Message body
-        tk.Label(row, text=n["message"], bg=row_bg, fg=C_TEXT,
-                 font=F_BODY, wraplength=760, justify="left",
-                 anchor="w").pack(fill="x", pady=(4, 2))
+        # Message preview (max 2 lines)
+        msg = n.get("message", "")
+        tk.Label(content, text=msg, bg=row_bg, fg=C_TEXT,
+                 font=F_BODY, wraplength=700,
+                 justify="left", anchor="w").pack(fill="x", pady=(3, 0))
 
-        # Sender
-        tk.Label(row, text=f"Tu: {n['sender_name']}",
-                 bg=row_bg, fg=C_MUTED,
-                 font=("Segoe UI", 8)).pack(anchor="w")
+        # Bottom row: sender chip + "Danh dau da doc" action
+        bottom = tk.Frame(content, bg=row_bg)
+        bottom.pack(fill="x", pady=(5, 0))
 
-        def _on_click(event=None, nid=n["id"], item=n):
-            self.notif_ctrl.mark_read(nid)
-            self.refresh()
+        sender = n.get("sender_name", "He thong")
+        sender_chip = tk.Frame(bottom, bg=cat_bg, padx=6, pady=2)
+        sender_chip.pack(side="left")
+        tk.Label(sender_chip, text=f"Tu: {sender}",
+                 bg=cat_bg, fg=cat_fg,
+                 font=("Segoe UI", 8, "bold")).pack()
+
+        if is_unread:
+            def _mark_read(event: Any = None, nid: int = n["id"]) -> str:
+                self.notif_ctrl.mark_read(nid)
+                self.refresh()
+                return "break"  # Stop event propagating to card click handler
+
+            read_btn = tk.Label(bottom, text="✓ Danh dau da doc",
+                                bg=row_bg, fg="#4f46e5",
+                                font=("Segoe UI", 8, "underline"),
+                                cursor="hand2")
+            read_btn.pack(side="right")
+            read_btn.bind("<Button-1>", _mark_read)
+
+        # ── Click to view detail ──────────────────────────────────────────────
+        def _on_click(_: Any = None, nid: int = n["id"], item: dict = n) -> None:
+            if not n["is_read"]:
+                self.notif_ctrl.mark_read(nid)
             self._show_notification_detail(item)
+            self.refresh()
 
-        row.bind("<Button-1>", _on_click)
-        # Bind all descendants recursively so clicking on any child triggers mark-as-read
-        def _bind_children(widget: tk.Misc) -> None:
-            for child in widget.winfo_children():
-                child.bind("<Button-1>", _on_click)
-                _bind_children(child)
-        _bind_children(row)
+        for widget in (card, content, top, bottom):
+            widget.bind("<Button-1>", _on_click)
+
 
     def _show_notification_detail(self, n: dict) -> None:
         dlg = tk.Toplevel(self)
@@ -220,29 +308,53 @@ class NotificationFrame(tk.Frame):
         dlg.resizable(False, False)
         dlg.transient(self.winfo_toplevel())
 
-        card = tk.Frame(dlg, bg=C_SURFACE, padx=18, pady=14,
-                        highlightthickness=1, highlightbackground=C_BORDER)
+        icon, cat_bg, cat_fg = _categorise(n.get("title", ""), n.get("message", ""))
+
+        # Header
+        hdr = tk.Frame(dlg, bg="#4f46e5", padx=18, pady=14)
+        hdr.pack(fill="x")
+        hdr_inner = tk.Frame(hdr, bg="#4f46e5")
+        hdr_inner.pack(fill="x")
+        ic_bg = tk.Frame(hdr_inner, bg=cat_bg, padx=8, pady=8)
+        ic_bg.pack(side="left", padx=(0, 12))
+        tk.Label(ic_bg, text=icon, bg=cat_bg,
+                 font=("Segoe UI", 18)).pack()
+        info = tk.Frame(hdr_inner, bg="#4f46e5")
+        info.pack(side="left")
+        tk.Label(info, text=n.get("title", "Thong bao"),
+                 bg="#4f46e5", fg="white",
+                 font=("Segoe UI", 13, "bold")).pack(anchor="w")
+        sender = n.get("sender_name", "He thong")
+        tk.Label(info, text=f"Tu: {sender}",
+                 bg="#4f46e5", fg="#c7d2fe",
+                 font=("Segoe UI", 9)).pack(anchor="w")
+
+        card = tk.Frame(dlg, bg=C_SURFACE, padx=18, pady=14)
         card.pack(fill="both", expand=True, padx=14, pady=14)
 
-        tk.Label(card, text=n.get("title", "Thong bao"),
-                 bg=C_SURFACE, fg=C_DARK,
-                 font=("Segoe UI", 11, "bold")).pack(anchor="w")
-
+        # Time row
         created = n.get("created_at", "")
-        sender = n.get("sender_name", "He thong")
-        tk.Label(card, text=f"Tu: {sender}   |   {created}",
-                 bg=C_SURFACE, fg=C_MUTED,
-                 font=("Segoe UI", 8)).pack(anchor="w", pady=(4, 10))
+        rel = relative_time(created)
+        try:
+            abs_time = dt.datetime.fromisoformat(str(created)).strftime("%d/%m/%Y %H:%M")
+        except Exception:
+            abs_time = str(created)
+        time_row = tk.Frame(card, bg="#f8fafc", highlightthickness=1,
+                            highlightbackground=C_BORDER, padx=10, pady=6)
+        time_row.pack(fill="x", pady=(0, 12))
+        tk.Label(time_row, text=f"🕐  {rel}  ({abs_time})",
+                 bg="#f8fafc", fg=C_MUTED,
+                 font=("Segoe UI", 9)).pack(anchor="w")
 
         msg_box = tk.Frame(card, bg="#f8fafc",
                            highlightthickness=1, highlightbackground=C_BORDER)
         msg_box.pack(fill="x")
         tk.Label(msg_box, text=n.get("message", ""),
                  bg="#f8fafc", fg=C_TEXT,
-                 font=F_BODY, wraplength=520,
-                 justify="left", anchor="w").pack(fill="x", padx=10, pady=10)
+                 font=("Segoe UI", 11), wraplength=520,
+                 justify="left", anchor="w").pack(fill="x", padx=12, pady=12)
 
-        btn(card, "Dong", dlg.destroy, variant="ghost").pack(anchor="e", pady=(10, 0))
+        btn(card, "Dong", dlg.destroy, variant="ghost").pack(anchor="e", pady=(14, 0))
 
         dlg.update_idletasks()
         pw = self.winfo_rootx() + self.winfo_width() // 2
