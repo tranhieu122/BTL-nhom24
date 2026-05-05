@@ -57,6 +57,24 @@ MIGRATIONS: list[tuple[int, str]] = [
         CREATE INDEX IF NOT EXISTS idx_notif_recipient ON notifications(recipient_id);
         CREATE INDEX IF NOT EXISTS idx_notif_read      ON notifications(is_read);
     """),
+    (5, """
+        -- v5: equipment maintenance request table
+        CREATE TABLE IF NOT EXISTS equipment_reports (
+            id             INTEGER PRIMARY KEY AUTOINCREMENT,
+            equipment_id   TEXT NOT NULL,
+            equipment_name TEXT NOT NULL DEFAULT '',
+            room_id        TEXT NOT NULL,
+            user_id        TEXT NOT NULL,
+            user_name      TEXT NOT NULL,
+            description    TEXT NOT NULL,
+            status         TEXT NOT NULL DEFAULT 'Cho xu ly',
+            created_at     TEXT NOT NULL DEFAULT (datetime('now')),
+            FOREIGN KEY (room_id) REFERENCES rooms(id)
+        );
+        CREATE INDEX IF NOT EXISTS idx_equip_reports_room      ON equipment_reports(room_id);
+        CREATE INDEX IF NOT EXISTS idx_equip_reports_equip     ON equipment_reports(equipment_id);
+        CREATE INDEX IF NOT EXISTS idx_equip_reports_status    ON equipment_reports(status);
+    """),
 ]
 
 

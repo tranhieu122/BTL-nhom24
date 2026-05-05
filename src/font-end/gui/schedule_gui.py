@@ -18,23 +18,25 @@ SLOT_KEYS = ["Ca 1", "Ca 2", "Ca 3", "Ca 4", "Ca 5"]
 CELL_COLORS = {
     "Da duyet":  ("#dcfce7", "#15803d"),
     "Cho duyet": ("#fef3c7", "#b45309"),
-    "Tu choi":   ("#fee2e2", "#dc2626"),
+    "Tu choi":   ("#fdf2f8", "#db2777"),
+    "Lich day":  ("#e0f2fe", "#0369a1"),   # light-blue: recurring schedule
 }
 CELL_ACCENT = {
     "Da duyet":  "#16a34a",
     "Cho duyet": "#f59e0b",
-    "Tu choi":   "#ef4444",
+    "Tu choi":   "#ec4899",
 }
 
 LEGEND = [
     ("Da duyet",  "#dcfce7", "#15803d"),
     ("Cho duyet", "#fef3c7", "#b45309"),
-    ("Tu choi",   "#fee2e2", "#dc2626"),
+    ("Tu choi",   "#fdf2f8", "#db2777"),
+    ("Lich day",  "#e0f2fe", "#0369a1"),
     ("Trong",     "#f8fafc", "#94a3b8"),
 ]
 
 
-def _cell_tooltip(cell: tk.Label, entries: list,
+def _cell_tooltip(cell: tk.Label, entries: "list[tuple[str, str]]",
                    date_str: str, slot_key: str) -> None:
     """Attach a rich hover tooltip to a busy schedule cell."""
     tip: list[tk.Toplevel | None] = [None]
@@ -60,7 +62,7 @@ def _cell_tooltip(cell: tk.Label, entries: list,
         STATUS_CHIP: dict[str, tuple[str, str]] = {
             "Da duyet":  ("#dcfce7", "#15803d"),
             "Cho duyet": ("#fef3c7", "#b45309"),
-            "Tu choi":   ("#fee2e2", "#dc2626"),
+            "Tu choi":   ("#fdf2f8", "#db2777"),
         }
         for label, status in entries[:5]:
             chip_bg, chip_fg = STATUS_CHIP.get(status, ("#f1f5f9", "#475569"))
@@ -234,7 +236,7 @@ class ScheduleFrame(tk.Frame):
             self._offset_badge.config(text=f"+{self._week_offset} tuan",
                                       bg="#dbeafe", fg="#1d4ed8")
 
-    def _show_cell_detail(self, entries: list, date_str: str,
+    def _show_cell_detail(self, entries: "list[tuple[str, str]]", date_str: str,
                           day_name: str, slot_label: str) -> None:
         """Show a popup with booking details for a clicked schedule cell."""
         import tkinter as tk
@@ -262,7 +264,7 @@ class ScheduleFrame(tk.Frame):
         STATUS_COLORS = {
             "Da duyet":  ("#dcfce7", "#15803d"),
             "Cho duyet": ("#fef3c7", "#b45309"),
-            "Tu choi":   ("#fee2e2", "#dc2626"),
+            "Tu choi":   ("#fdf2f8", "#db2777"),
         }
         for label, status in entries:
             sbg, sfg = STATUS_COLORS.get(status, ("#f1f5f9", "#475569"))
@@ -452,7 +454,7 @@ class ScheduleFrame(tk.Frame):
         _stat_chip(chips_f, "📅", "Tong so lich",  str(total_bookings), "#eef2ff", "#4f46e5")
         _stat_chip(chips_f, "✅", "Da duyet",       str(approved),       "#dcfce7", "#15803d", "#16a34a")
         _stat_chip(chips_f, "⏳", "Cho duyet",      str(pending),        "#fef3c7", "#b45309", "#f59e0b")
-        _stat_chip(chips_f, "❌", "Tu choi",        str(rejected),       "#fee2e2", "#dc2626", "#ef4444")
+        _stat_chip(chips_f, "❌", "Tu choi",        str(rejected),       "#fdf2f8", "#db2777", "#ec4899")
         _stat_chip(chips_f, "📈", "Ty le su dung",  f"{rate}%",          "#f0f9ff", "#0369a1")
 
         # Tips row

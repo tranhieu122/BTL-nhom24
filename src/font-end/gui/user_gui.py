@@ -72,41 +72,29 @@ class UserDialog(tk.Toplevel):
                   "full_name": "HO VA TEN", "email": "EMAIL",
                   "phone": "SO DIEN THOAI",
                   "password": "MAT KHAU MOI (BO TRONG NEU KHONG DOI)"}
-        r = 0
         for key in ("user_id", "username", "full_name", "email", "phone", "password"):
             show = "*" if key == "password" else ""
-            outer, entry = labeled_entry(
+            _outer, entry = labeled_entry(
                 frm, labels[key], self.vars[key],
                 icon=icons[key], show=show, width=32)
-            outer.grid(row=r, column=0, columnspan=2, sticky="ew",
-                       pady=(6, 0))
             if key == "password":
                 eye_toggle(entry.master, entry, bg=C_SURFACE).pack(
                     side="right", padx=(0, 6))
-            r += 1
 
         tk.Label(frm, text="VAI TRO", bg=C_SURFACE, fg=C_MUTED,
-                 font=("Segoe UI", 8, "bold")).grid(
-            row=r, column=0, columnspan=2, sticky="w", pady=(10, 2))
-        r += 1
+                 font=("Segoe UI", 8, "bold")).pack(anchor="w", pady=(10, 2))
         ttk.Combobox(frm, textvariable=self.vars["role"],
                      values=["Admin", "Giang vien", "Sinh vien"],
-                     state="readonly", width=33).grid(
-            row=r, column=0, columnspan=2, sticky="ew")
-        r += 1
+                     state="readonly", width=33).pack(fill="x")
 
         tk.Label(frm, text="TRANG THAI", bg=C_SURFACE, fg=C_MUTED,
-                 font=("Segoe UI", 8, "bold")).grid(
-            row=r, column=0, columnspan=2, sticky="w", pady=(10, 2))
-        r += 1
+                 font=("Segoe UI", 8, "bold")).pack(anchor="w", pady=(10, 2))
         ttk.Combobox(frm, textvariable=self.vars["status"],
                      values=["Hoat dong", "Khoa"],
-                     state="readonly", width=33).grid(
-            row=r, column=0, columnspan=2, sticky="ew")
-        r += 1
+                     state="readonly", width=33).pack(fill="x")
 
         btn_row = tk.Frame(frm, bg=C_SURFACE)
-        btn_row.grid(row=r, column=0, columnspan=2, sticky="ew", pady=(20, 0))
+        btn_row.pack(fill="x", pady=(20, 0))
         # Left: hint
         tk.Label(btn_row, text="* De trong mat khau de giu nguyen",
                  bg=C_SURFACE, fg="#94a3b8",
@@ -144,7 +132,7 @@ class UserManagementFrame(tk.Frame):
             ("admin",    "🛡️", "Admin",           "#faf5ff", "#7c3aed"),
             ("gv",       "🎓", "Giang vien",      "#dcfce7", "#15803d"),
             ("sv",       "🧑‍🎓","Sinh vien",       "#fef9c3", "#854d0e"),
-            ("locked",   "🔒", "Bi khoa",         "#fee2e2", "#dc2626"),
+            ("locked",   "🔒", "Bi khoa",         "#fdf2f8", "#db2777"),
         ]
         for key, icon, label, bg, fg in stat_defs:
             chip = tk.Frame(stats_outer, bg=bg, highlightthickness=1,

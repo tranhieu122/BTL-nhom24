@@ -21,8 +21,8 @@ C_SUCCESS    = "#16a34a"
 C_SUCCESS_BG = "#dcfce7"
 C_WARNING    = "#b45309"
 C_WARNING_BG = "#fef3c7"
-C_DANGER     = "#dc2626"
-C_DANGER_BG  = "#fee2e2"
+C_DANGER     = "#db2777"
+C_DANGER_BG  = "#fdf2f8"
 C_INFO_BG    = "#eef2ff"     # Indigo 50
 ROW_ODD      = "#f1f5f9"   # Slate 100
 ROW_EVEN     = "#f8fafc"   # Slate 50 (= C_BG)
@@ -98,7 +98,7 @@ def btn(parent: tk.Misc, text: str, command: Any, variant: str = "primary",
     colours = {
         "primary": (C_PRIMARY,    C_PRIMARY_H,  "white"),
         "success": ("#16a34a",    "#15803d",    "white"),
-        "danger":  (C_DANGER,     "#b91c1c",    "white"),
+        "danger":  (C_DANGER,     "#be185d",    "white"),
         "ghost":   ("#f1f5f9",    "#e2e8f0",    C_TEXT),
         "outline": (C_SURFACE,    C_INFO_BG,    C_PRIMARY),
         "accent":  (C_ACCENT,     C_PRIMARY_H,  "white"),
@@ -299,9 +299,9 @@ def status_badge(parent: tk.Misc, text: str, bg: str = C_SURFACE) -> tk.Label:
         "Da duyet":  ("#dcfce7", "#15803d"),
         "Cho duyet": ("#fef3c7", "#b45309"),
         "Bao tri":   ("#fef3c7", "#b45309"),
-        "Tu choi":   ("#fee2e2", "#dc2626"),
-        "Khoa":      ("#fee2e2", "#dc2626"),
-        "Hong":      ("#fee2e2", "#dc2626"),
+        "Tu choi":   ("#fdf2f8", "#db2777"),
+        "Khoa":      ("#fdf2f8", "#db2777"),
+        "Hong":      ("#fdf2f8", "#db2777"),
         "Admin":     ("#eef2ff", "#4f46e5"),   # Indigo chip for Admin
         "Giang vien":("#dcfce7", "#15803d"),
         "Sinh vien": ("#fef9c3", "#854d0e"),
@@ -337,7 +337,7 @@ def pw_strength_bar(parent: tk.Misc, var: tk.StringVar,
         if re.search(r"[^A-Za-z0-9]", pw): score += 1
         levels = [
             (0,  0.0,  "#e2e8f0", ""),
-            (1,  0.2,  "#ef4444", "Rat yeu"),
+            (1,  0.2,  "#ec4899", "Rat yeu"),
             (2,  0.4,  "#f97316", "Yeu"),
             (3,  0.6,  "#eab308", "Trung binh"),
             (4,  0.8,  "#22c55e", "Manh"),
@@ -375,7 +375,7 @@ def toast(master: tk.Misc, message: str, kind: str = "success",
     """
     COLORS = {
         "success": ("#dcfce7", "#15803d", "✔"),
-        "error":   ("#fee2e2", "#dc2626", "✖"),
+        "error":   ("#fdf2f8", "#db2777", "✖"),
         "info":    ("#dbeafe", "#1d4ed8", "ℹ"),
         "warning": ("#fef3c7", "#b45309", "⚠"),
     }
@@ -448,7 +448,7 @@ def confirm_dialog(parent: tk.Misc, title: str, message: str,
     """Styled modal confirmation dialog. Returns True if user clicks OK."""
     COLORS: dict[str, tuple[str, str, str]] = {
         "warning": ("#fef3c7", "#b45309", "#f59e0b"),
-        "danger":  ("#fee2e2", "#dc2626", "#ef4444"),
+        "danger":  ("#fdf2f8", "#db2777", "#ec4899"),
         "info":    ("#eef2ff", "#4f46e5", "#4f46e5"),
     }
     ICONS: dict[str, str] = {"warning": "⚠", "danger": "🗑", "info": "ℹ"}

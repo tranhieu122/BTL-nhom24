@@ -441,7 +441,7 @@ class LoginFrame(tk.Frame):
         # Heading
         tk.Label(card, text="Chao mung tro lai!", bg=C_SURFACE, fg="#0f172a",
                  font=("Segoe UI", 26, "bold")).pack(anchor="w")
-        tk.Label(card, text="Dang nhap de quan ly phong hoc",
+        tk.Label(card, text="Dang nhap de quan ly dat phong hoc",
                  bg=C_SURFACE, fg=C_MUTED,
                  font=("Segoe UI", 10)).pack(anchor="w", pady=(4, 24))
 
@@ -503,7 +503,7 @@ class LoginFrame(tk.Frame):
         self._bind_focus(pw_e, pw_wrap)
 
         # ── Inline error label ───────────────────────────────────────────────
-        self._err_lbl = tk.Label(card, text="", bg=C_SURFACE, fg="#dc2626",
+        self._err_lbl = tk.Label(card, text="", bg=C_SURFACE, fg="#db2777",
                                   font=("Segoe UI", 9, "bold"),
                                   wraplength=320, justify="left")
         self._err_lbl.pack(fill="x", pady=(0, 6))
@@ -586,10 +586,20 @@ class LoginFrame(tk.Frame):
             self.update_idletasks()
         try:
             self.on_login(username, password)
+        except PermissionError as e:
+            # Lockout message from rate limiter
+            try:
+                if self._login_btn.winfo_exists():
+                    self._login_btn.config(text="  DANG NHAP  →", state="normal",
+                                            bg="#4f46e5")
+                    self._set_error(f"🔒  {e}")
+            except Exception:
+                pass
+            self._shake()
         finally:
             # Restore button if frame still exists (= login failed / frame not destroyed)
             try:
-                if self._login_btn.winfo_exists():
+                if self._login_btn.winfo_exists() and str(self._login_btn["state"]) == "disabled":
                     self._login_btn.config(text="  DANG NHAP  →", state="normal",
                                             bg="#4f46e5")
                     self._set_error("✖  Sai ten dang nhap hoac mat khau, hoac tai khoan bi khoa.")

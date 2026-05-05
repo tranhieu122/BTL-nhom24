@@ -6,17 +6,13 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from typing import Any
 from utils.export_excel import export_rows_to_excel  # type: ignore[import-untyped]
+from utils.export_ics import export_bookings_to_ics  # type: ignore[import-untyped]
 from gui.theme import (C_BG, C_SURFACE, C_BORDER, C_MUTED,
                        make_tree, fill_tree, with_scrollbar,
                        page_header, btn, search_box,
                        toast, confirm_dialog)
 
-_has_calendar = False
-try:
-    from tkcalendar import DateEntry  # type: ignore[import-untyped]
-    _has_calendar = True
-except ImportError:
-    pass
+from tkcalendar import DateEntry  # type: ignore[import-untyped]
 
 
 class BookingListFrame(tk.Frame):
@@ -66,6 +62,8 @@ class BookingListFrame(tk.Frame):
         if self.current_user.role in ("Admin", "Giang vien"):
             btn(toolbar, "Xuat CSV", self._export_csv,
                 variant="ghost", icon="📎").pack(side="left", padx=4)
+        btn(toolbar, "Xuat ICS", self._export_ics,
+            variant="ghost", icon="📅").pack(side="left", padx=4)
 
         # Sửa lịch – chủ lịch hoặc Admin
         btn(toolbar, "Sua lich", self._edit_booking,
@@ -127,13 +125,15 @@ class BookingListFrame(tk.Frame):
 
     def refresh(self) -> None:
         q = self.search_var.get().strip().lower()
+        bookings = self.booking_ctrl.list_bookings(
+            current_user=self.current_user,
+            status=self.status_var.get().strip(),
+            from_today=False)
+        self._last_bookings = bookings  # keep for ICS export
         all_rows = [
             (b.booking_id, b.user_name, b.room_id,
              b.booking_date, b.slot, b.purpose, b.status)
-            for b in self.booking_ctrl.list_bookings(
-                current_user=self.current_user,
-                status=self.status_var.get().strip(),
-                from_today=False)
+            for b in bookings
         ]
         if q:
             all_rows = [
@@ -179,6 +179,24 @@ class BookingListFrame(tk.Frame):
                      "Muc dich", "Trang thai"],
             rows=rows, output_path=path)
         messagebox.showinfo("Thanh cong", "Da xuat file Excel.")
+
+    def _export_ics(self) -> None:
+        bookings = getattr(self, "_last_bookings", None)
+        if not bookings:
+            messagebox.showinfo("Khong co du lieu", "Khong co lich dat de xuat.")
+            return
+        path = filedialog.asksaveasfilename(
+            defaultextension=".ics",
+            filetypes=[("iCalendar file", "*.ics")],
+            initialfile=f"LichDatPhong_{dt.date.today()}.ics")
+        if not path:
+            return
+        try:
+            export_bookings_to_ics(bookings, path)
+            messagebox.showinfo("Thanh cong", "Da xuat file ICS.\n"
+                                "Ban co the mo bang Google Calendar, Outlook...")
+        except OSError as e:
+            messagebox.showerror("Loi", str(e))
 
     def _export_csv(self) -> None:
         assert self.tree is not None
@@ -253,7 +271,7 @@ class _EditBookingDialog(tk.Toplevel):
         self.current_user = current_user
         self.on_done    = on_done
 
-        from gui.theme import C_BG, F_INPUT, btn as theme_btn
+        from gui.theme import C_BG, F_INPUT, btn as theme_btn # type: ignore
 
         self.configure(bg=C_BG)
 
@@ -280,16 +298,14 @@ class _EditBookingDialog(tk.Toplevel):
         # Date
         lbl(3, "NGAY DAT (YYYY-MM-DD)")
         self.date_var = tk.StringVar(value=booking.booking_date)
-        if _has_calendar:
-            de = DateEntry(self, textvariable=self.date_var, width=34,  # type: ignore[possibly-unbound]
-                           date_pattern="yyyy-mm-dd", background="#4f46e5",
-                           foreground="white", borderwidth=1,
-                           font=("Segoe UI", 10))
-            de.grid(row=4, column=0, columnspan=2, padx=20, pady=6)  # type: ignore[attr-defined]
-        else:
-            tk.Entry(self, textvariable=self.date_var, width=36,
-                     font=F_INPUT, relief="solid", bd=1).grid(
-                row=4, column=0, columnspan=2, padx=20, pady=6)
+        de = DateEntry(self, textvariable=self.date_var, width=34,  # type: ignore[possibly-unbound]
+                       date_pattern="yyyy-mm-dd", background="#4f46e5",
+                       foreground="white", weekendbackground="white",
+                       weekendforeground="black",
+                       state="readonly",
+                       borderwidth=1,
+                       font=("Segoe UI", 10))
+        de.grid(row=4, column=0, columnspan=2, padx=20, pady=6)  # type: ignore[attr-defined]
 
         # Slot
         lbl(5, "CA HOC")

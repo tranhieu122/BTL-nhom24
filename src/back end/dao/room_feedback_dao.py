@@ -124,3 +124,73 @@ def _row_to_issue(row: sqlite3.Row) -> RoomIssue:
         status=row["status"],
         created_at=row["created_at"],
     )
+
+
+# ─── Equipment Maintenance Reports ───────────────────────────────────────────
+
+@dataclass
+class EquipmentReport:
+    report_id: int
+    equipment_id: str
+    equipment_name: str
+    room_id: str
+    user_id: str
+    user_name: str
+    description: str
+    status: str = "Cho xu ly"
+    created_at: str = ""
+
+
+class EquipmentReportDAO:
+    def report(self, equipment_id: str, equipment_name: str, room_id: str,
+               user_id: str, user_name: str, description: str) -> EquipmentReport:
+        conn = get_connection()
+        cur = conn.execute(
+            """INSERT INTO equipment_reports
+               (equipment_id, equipment_name, room_id, user_id, user_name, description)
+               VALUES (?, ?, ?, ?, ?, ?)""",
+            (equipment_id, equipment_name, room_id, user_id, user_name, description),
+        )
+        conn.commit()
+        row = conn.execute(
+            "SELECT * FROM equipment_reports WHERE id=?", (cur.lastrowid,)
+        ).fetchone()
+        return _row_to_equip_report(row)
+
+    def list_all(self, room_id: str = "", status: str = "") -> list[EquipmentReport]:
+        conn = get_connection()
+        sql = "SELECT * FROM equipment_reports"
+        params: list[str] = []
+        conditions: list[str] = []
+        if room_id:
+            conditions.append("room_id=?")
+            params.append(room_id)
+        if status:
+            conditions.append("status=?")
+            params.append(status)
+        if conditions:
+            sql += " WHERE " + " AND ".join(conditions)
+        sql += " ORDER BY created_at DESC"
+        rows = conn.execute(sql, params).fetchall()
+        return [_row_to_equip_report(r) for r in rows]
+
+    def update_status(self, report_id: int, status: str) -> None:
+        conn = get_connection()
+        conn.execute(
+            "UPDATE equipment_reports SET status=? WHERE id=?", (status, report_id)
+        )
+        conn.commit()
+
+
+def _row_to_equip_report(row: sqlite3.Row) -> EquipmentReport:
+    return EquipmentReport(
+        report_id=row["id"],
+        equipment_id=row["equipment_id"],
+        equipment_name=row["equipment_name"],
+        room_id=row["room_id"],
+        user_id=row["user_id"],
+        user_name=row["user_name"],
+        description=row["description"],
+        status=row["status"],
+        created_at=row["created_at"],
+    )

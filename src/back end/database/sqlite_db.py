@@ -92,6 +92,36 @@ CREATE TABLE IF NOT EXISTS room_issues (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+CREATE TABLE IF NOT EXISTS schedule_rules (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    subject       TEXT NOT NULL,
+    days_of_week  TEXT NOT NULL,  -- comma-separated ISO weekdays, e.g. "1,3,5"
+    start_time    TEXT NOT NULL,  -- "HH:MM"
+    end_time      TEXT NOT NULL,  -- "HH:MM"
+    start_date    TEXT NOT NULL,  -- "YYYY-MM-DD"
+    end_date      TEXT NOT NULL,  -- "YYYY-MM-DD"
+    room_id       TEXT NOT NULL,
+    lecturer_id   TEXT NOT NULL,
+    lecturer_name TEXT NOT NULL DEFAULT '',
+    status        TEXT NOT NULL DEFAULT 'Hoat dong',
+    created_at    TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (room_id) REFERENCES rooms(id)
+);
+
+CREATE TABLE IF NOT EXISTS schedule_occurrences (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    rule_id         INTEGER NOT NULL,
+    occurrence_date TEXT NOT NULL,  -- "YYYY-MM-DD"
+    day_of_week     INTEGER NOT NULL,  -- 1=Mon..7=Sun
+    subject         TEXT NOT NULL,
+    start_time      TEXT NOT NULL,
+    end_time        TEXT NOT NULL,
+    room_id         TEXT NOT NULL,
+    lecturer_name   TEXT NOT NULL DEFAULT '',
+    status          TEXT NOT NULL DEFAULT 'Du kien',
+    FOREIGN KEY (rule_id) REFERENCES schedule_rules(id) ON DELETE CASCADE
+);
+
 -- Performance indexes
 CREATE INDEX IF NOT EXISTS idx_bookings_user_id    ON bookings(user_id);
 CREATE INDEX IF NOT EXISTS idx_bookings_room_id    ON bookings(room_id);
@@ -101,6 +131,8 @@ CREATE INDEX IF NOT EXISTS idx_equipment_room_id   ON equipment(room_id);
 CREATE INDEX IF NOT EXISTS idx_equipment_status    ON equipment(status);
 CREATE INDEX IF NOT EXISTS idx_room_ratings_room   ON room_ratings(room_id);
 CREATE INDEX IF NOT EXISTS idx_room_issues_room    ON room_issues(room_id);
+CREATE INDEX IF NOT EXISTS idx_occ_rule_id         ON schedule_occurrences(rule_id);
+CREATE INDEX IF NOT EXISTS idx_occ_date            ON schedule_occurrences(occurrence_date);
 """
 
 # ── auto-backup ──────────────────────────────────────────────────────────────
@@ -167,14 +199,9 @@ def _bootstrap_seed(conn: sqlite3.Connection) -> None:
 
     from utils.password_hash import sha256_hash
     
-    # 1. Seed Users
+    # 1. Seed Essential Users (Admin only for clean start)
     seed_users = [
-        ("AD001", "admin", "Nguyen Van A", "Admin",      "admin@btl.local", "0901234567", sha256_hash("admin123"), "Hoat dong"),
-        ("GV001", "gv01",  "Tran Thi B",  "Giang vien", "gv01@btl.local",  "0912345678", sha256_hash("gv123"),    "Hoat dong"),
-        ("GV002", "gv02",  "Nguyen Van C", "Giang vien", "gv02@btl.local",  "0923456789", sha256_hash("gv123"),    "Hoat dong"),
-        ("SV001", "sv01",  "Le Van D",    "Sinh vien",  "sv01@btl.local",  "0934567890", sha256_hash("sv123"),    "Hoat dong"),
-        ("SV002", "sv02",  "Pham Van E",  "Sinh vien",  "sv02@btl.local",  "0945678901", sha256_hash("sv123"),    "Hoat dong"),
-        ("SV003", "sv03",  "Hoang Van F", "Sinh vien",  "sv03@btl.local",  "0956789012", sha256_hash("sv123"),    "Hoat dong"),
+        ("AD001", "admin", "Nguyen Van A", "Admin", "admin@btl.local", "0901234567", sha256_hash("admin123"), "Hoat dong"),
     ]
     conn.executemany(
         "INSERT INTO users (id,username,full_name,role,email,phone,password_hash,status) VALUES (?,?,?,?,?,?,?,?)",
@@ -195,40 +222,6 @@ def _bootstrap_seed(conn: sqlite3.Connection) -> None:
         seed_rooms,
     )
 
-    # 3. Seed Equipment
-    seed_equipment = [
-        ("TB001", "May chieu Epson", "Thiet bi chieu", "P101", "Hoat dong", "01/01/2023"),
-        ("TB002", "Dieu hoa Daikin", "Dieu hoa",       "P101", "Hoat dong", "15/03/2022"),
-        ("TB003", "iMac 24 inch",    "May tinh",       "L101", "Hoat dong", "10/05/2023"),
-        ("TB004", "Loa JBL",         "Am thanh",       "H101", "Hoat dong", "20/08/2022"),
-        ("TB005", "Tivi Samsung 65", "Man hinh",       "S101", "Hoat dong", "01/09/2023"),
-    ]
-    conn.executemany(
-        "INSERT INTO equipment (id,name,equipment_type,room_id,status,purchase_date) VALUES (?,?,?,?,?,?)",
-        seed_equipment,
-    )
-
-    # 4. Seed Bookings
-    seed_bookings = [
-        ("DPH001", "GV001", "Tran Thi B",   "P101", "2026-04-20", "Ca 1", "Giang day Lap trinh", "Da duyet"),
-        ("DPH002", "GV002", "Nguyen Van C", "P202", "2026-04-20", "Ca 2", "Thuc hanh CSDL",       "Cho duyet"),
-        ("DPH003", "SV001", "Le Van D",     "L101", "2026-04-21", "Ca 3", "Lam bai tap lon",      "Da duyet"),
-        ("DPH004", "SV002", "Pham Van E",    "S101", "2026-04-21", "Ca 4", "Hop co cau thanh nien", "Tu choi"),
-    ]
-    conn.executemany(
-        "INSERT INTO bookings (id,user_id,user_name,room_id,booking_date,slot,purpose,status) VALUES (?,?,?,?,?,?,?,?)",
-        seed_bookings,
-    )
-
-    # 5. Seed Schedules (Some recurring classes)
-    seed_schedules = [
-        ("P101", "Thu 2", "Ca 1", "Lap trinh Python", "Da dat"),
-        ("P101", "Thu 3", "Ca 2", "Co so du lieu",    "Da dat"),
-        ("P202", "Thu 4", "Ca 1", "Thuc hanh mang",   "Da dat"),
-    ]
-    conn.executemany(
-        "INSERT INTO schedules (room_id,weekday,slot,label,status) VALUES (?,?,?,?,?)",
-        seed_schedules,
-    )
+    # No mock bookings, equipment or schedules for clean start.
 
     conn.commit()

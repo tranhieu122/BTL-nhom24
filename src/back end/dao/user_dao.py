@@ -30,6 +30,29 @@ class UserDAO:
         ).fetchall()
         return [_row_to_user(r) for r in rows]
 
+    def search(self, keyword: str = "",
+               role: str = "", status: str = "") -> list[User]:
+        """SQL-level search to avoid loading the whole users table."""
+        clauses = ["status != 'Da xoa'"]
+        params: list[object] = []
+        if keyword:
+            kw = f"%{keyword}%"
+            clauses.append(
+                "(username LIKE ? OR full_name LIKE ? OR email LIKE ? OR role LIKE ?)")
+            params.extend([kw, kw, kw, kw])
+        if role:
+            clauses.append("role = ?")
+            params.append(role)
+        if status:
+            clauses.append("status = ?")
+            params.append(status)
+        where = "WHERE " + " AND ".join(clauses)
+        conn = get_connection()
+        rows = conn.execute(
+            f"SELECT * FROM users {where} ORDER BY id", params
+        ).fetchall()
+        return [_row_to_user(r) for r in rows]
+
     def find_by_id(self, user_id: str) -> User | None:
         conn = get_connection()
         row = conn.execute("SELECT * FROM users WHERE id=?", (user_id,)).fetchone()

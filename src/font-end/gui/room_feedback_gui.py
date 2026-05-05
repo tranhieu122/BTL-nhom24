@@ -282,3 +282,191 @@ class RoomIssueManagementFrame(tk.Frame):
         self.feedback_ctrl.resolve_issue(issue_id)
         self.refresh()
         messagebox.showinfo("Thanh cong", "Da cap nhat trang thai 'Da xu ly'.")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# EquipmentReportDialog – báo hỏng thiết bị trong phòng
+# ─────────────────────────────────────────────────────────────────────────────
+
+class EquipmentReportDialog(tk.Toplevel):
+    """Modal: hiển thị danh sách thiết bị của phòng, cho phép đánh dấu hỏng."""
+
+    def __init__(self, parent: tk.Misc, room_id: str, room_name: str,
+                 current_user: Any, equipment_ctrl: Any,
+                 on_done: Any = None) -> None:
+        super().__init__(parent)  # type: ignore[arg-type]
+        self.title(f"Báo hỏng thiết bị – {room_name}")
+        self.geometry("560x520")
+        self.resizable(False, False)
+        self.grab_set()
+        self.room_id        = room_id
+        self.room_name      = room_name
+        self.current_user   = current_user
+        self.equipment_ctrl = equipment_ctrl
+        self.on_done        = on_done
+        self.configure(bg=C_BG)
+        self._check_vars: dict[str, tk.BooleanVar] = {}
+        self._desc_vars:  dict[str, tk.StringVar]  = {}
+        self._desc_widgets: dict[str, tk.Entry] = {}
+        self._build()
+
+    def _build(self) -> None:
+        # Header
+        hdr = tk.Frame(self, bg="#fef3c7", highlightthickness=1,
+                       highlightbackground="#fbbf24")
+        hdr.pack(fill="x")
+        tk.Label(hdr, text=f"🔧  Bao hong thiet bi  –  {self.room_name}",
+                 bg="#fef3c7", fg="#92400e",
+                 font=("Segoe UI", 12, "bold")).pack(side="left", padx=16, pady=10)
+        tk.Label(hdr, text=f"Phong: {self.room_id}",
+                 bg="#fef3c7", fg="#b45309",
+                 font=("Segoe UI", 9)).pack(side="right", padx=16)
+
+        tk.Label(self,
+                 text="Chon thiet bi bi hong, sau do nhap mo ta su co va nhan 'Gui bao cao'.",
+                 bg=C_BG, fg=C_MUTED, font=F_SMALL, wraplength=520).pack(
+            anchor="w", padx=16, pady=(10, 4))
+
+        # Scrollable equipment list
+        list_frame = tk.Frame(self, bg=C_BG)
+        list_frame.pack(fill="both", expand=True, padx=16, pady=(0, 8))
+
+        canvas = tk.Canvas(list_frame, bg=C_BG, highlightthickness=0)
+        vsb = ttk.Scrollbar(list_frame, orient="vertical", command=canvas.yview)  # type: ignore[arg-type]
+        scroll_body = tk.Frame(canvas, bg=C_BG)
+        scroll_body.bind(
+            "<Configure>",
+            lambda _: canvas.configure(scrollregion=canvas.bbox("all")))
+        canvas.create_window((0, 0), window=scroll_body, anchor="nw")
+        canvas.configure(yscrollcommand=vsb.set)
+        canvas.pack(side="left", fill="both", expand=True)
+        vsb.pack(side="right", fill="y")
+        canvas.bind("<MouseWheel>",
+                    lambda e: canvas.yview_scroll(-1 * (e.delta // 120), "units"))
+
+        equipment_list = self.equipment_ctrl.list_equipment(room_id=self.room_id)
+
+        if not equipment_list:
+            tk.Label(scroll_body,
+                     text="ℹ  Phong nay chua co thiet bi nao duoc dang ky trong he thong.",
+                     bg=C_BG, fg=C_MUTED, font=F_BODY).pack(pady=20)
+        else:
+            # Status colour map
+            STATUS_BG = {
+                "Hoat dong": "#dcfce7", "Bao tri": "#fef3c7",
+                "Hong": "#fdf2f8", "Dang sua": "#e0f2fe", "Da thanh ly": "#f1f5f9",
+            }
+            STATUS_FG = {
+                "Hoat dong": "#15803d", "Bao tri": "#b45309",
+                "Hong": "#db2777", "Dang sua": "#0369a1", "Da thanh ly": "#64748b",
+            }
+            for equip in equipment_list:
+                row_bg = "#fffbeb" if equip.status != "Hoat dong" else C_SURFACE
+                row = tk.Frame(scroll_body, bg=row_bg, highlightthickness=1,
+                               highlightbackground=C_BORDER)
+                row.pack(fill="x", pady=3, padx=2, ipadx=6, ipady=4)
+
+                # Checkbox
+                var = tk.BooleanVar(value=False)
+                self._check_vars[equip.equipment_id] = var
+                cb = tk.Checkbutton(row, variable=var, bg=row_bg,
+                                    activebackground=row_bg,
+                                    command=lambda eid=equip.equipment_id:
+                                        self._toggle_desc(eid))
+                cb.pack(side="left", padx=(4, 0))
+
+                # Equipment info
+                info_col = tk.Frame(row, bg=row_bg)
+                info_col.pack(side="left", fill="x", expand=True, padx=6)
+
+                top_row = tk.Frame(info_col, bg=row_bg)
+                top_row.pack(fill="x")
+                tk.Label(top_row, text=equip.name,
+                         bg=row_bg, fg="#1e293b",
+                         font=F_BODY_B).pack(side="left")
+                tk.Label(top_row, text=f"  [{equip.equipment_type}]",
+                         bg=row_bg, fg=C_MUTED, font=F_SMALL).pack(side="left")
+                tk.Label(top_row,
+                         text=f"  {equip.status}  ",
+                         bg=STATUS_BG.get(equip.status, "#f1f5f9"),
+                         fg=STATUS_FG.get(equip.status, "#64748b"),
+                         font=F_SMALL).pack(side="right", padx=(0, 4))
+
+                # Description entry (initially hidden, shown when checkbox ticked)
+                desc_var = tk.StringVar()
+                self._desc_vars[equip.equipment_id] = desc_var
+                desc_entry = tk.Entry(info_col, textvariable=desc_var,
+                                      font=F_INPUT, relief="solid", bd=1,
+                                      bg="white", fg="#1e293b")
+                self._desc_widgets[equip.equipment_id] = desc_entry
+                # Don't pack yet — shown only when checkbox is ticked
+
+        # Footer buttons
+        footer = tk.Frame(self, bg=C_BG)
+        footer.pack(fill="x", padx=16, pady=(4, 16))
+        btn(footer, "📤  Gui bao cao hong", self._submit,
+            variant="danger").pack(side="right", padx=(8, 0))
+        btn(footer, "Huy", self.destroy,
+            variant="ghost").pack(side="right")
+        tk.Label(footer,
+                 text="* Thiet bi duoc chon se tu dong chuyen sang trang thai 'Bao tri'",
+                 bg=C_BG, fg=C_MUTED, font=F_SMALL, wraplength=300).pack(
+            side="left")
+
+    def _toggle_desc(self, equipment_id: str) -> None:
+        """Show/hide description entry when checkbox is toggled."""
+        widget = self._desc_widgets.get(equipment_id)
+        if widget is None:
+            return
+        if self._check_vars[equipment_id].get():
+            widget.pack(fill="x", pady=(3, 0))
+            # Placeholder behaviour
+            if not widget.get():
+                widget.insert(0, "Mo ta su co...")
+                widget.config(fg="#94a3b8")
+            def _on_focus_in(e: Any, w: tk.Entry = widget) -> None:
+                if w.get() == "Mo ta su co...":
+                    w.delete(0, "end")
+                    w.config(fg="#1e293b")
+            def _on_focus_out(e: Any, w: tk.Entry = widget) -> None:
+                if not w.get().strip():
+                    w.insert(0, "Mo ta su co...")
+                    w.config(fg="#94a3b8")
+            widget.bind("<FocusIn>", _on_focus_in)
+            widget.bind("<FocusOut>", _on_focus_out)
+        else:
+            widget.pack_forget()
+
+    def _submit(self) -> None:
+        selected = [eid for eid, var in self._check_vars.items() if var.get()]
+        if not selected:
+            messagebox.showwarning("Chua chon thiet bi",
+                                   "Vui long chon it nhat mot thiet bi bi hong.",
+                                   parent=self)
+            return
+
+        errors: list[str] = []
+        success_count = 0
+        for eid in selected:
+            desc = ""
+            widget = self._desc_widgets.get(eid)
+            if widget:
+                raw = widget.get().strip()
+                desc = raw if raw and raw != "Mo ta su co..." else f"Thiet bi bi hong – bao cao boi {self.current_user.full_name}"
+            try:
+                self.equipment_ctrl.report_broken(eid, self.current_user, desc)
+                success_count += 1
+            except ValueError as e:
+                errors.append(str(e))
+
+        if errors:
+            messagebox.showerror("Co loi xay ra",
+                                 "\n".join(errors), parent=self)
+        if success_count:
+            messagebox.showinfo("Bao cao thanh cong",
+                                f"Da gui {success_count} bao cao hong thiet bi.\n"
+                                "Bo phan ky thuat se xu ly som.",
+                                parent=self)
+            if self.on_done:
+                self.on_done()
+            self.destroy()

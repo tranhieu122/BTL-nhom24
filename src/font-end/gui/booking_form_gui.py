@@ -1,33 +1,31 @@
-# booking_form_gui.py  –  room booking form  (v2.0 - DatePicker + room info card + suggestions)
+# booking_form_gui.py  –  room booking form  (v3.0 - capacity filter + equipment report)
 from __future__ import annotations
 import datetime as dt
 import tkinter as tk
 from tkinter import messagebox, ttk
 from typing import Any
 from gui.theme import (C_BG, C_PRIMARY, C_SURFACE, C_BORDER,
-                       C_MUTED, F_INPUT, page_header, btn)
+                       C_MUTED, page_header, btn)
 
-_has_calendar = False
-try:
-    from tkcalendar import DateEntry  # type: ignore[import-untyped]
-    _has_calendar = True
-except ImportError:
-    pass
+from tkcalendar import DateEntry  # type: ignore[import-untyped]
 
 
 class BookingFormFrame(tk.Frame):
     def __init__(self, master: tk.Misc, booking_controller: Any,
                  room_controller: Any, current_user: Any,
-                 on_booking_created: Any = None) -> None:
+                 on_booking_created: Any = None,
+                 equipment_controller: Any = None) -> None:
         super().__init__(master, bg=C_BG)
         self.booking_ctrl = booking_controller
         self.room_ctrl    = room_controller
         self.current_user = current_user
         self.on_booking_created = on_booking_created
-        self.room_var  = tk.StringVar()
-        self.date_var  = tk.StringVar(value=dt.date.today().isoformat())
-        self.slot_var  = tk.StringVar(value="Ca 1")
-        self.avail_var = tk.StringVar()
+        self.equip_ctrl   = equipment_controller
+        self.room_var     = tk.StringVar()
+        self.date_var     = tk.StringVar(value=dt.date.today().isoformat())
+        self.slot_var     = tk.StringVar(value="Ca 1")
+        self.avail_var    = tk.StringVar()
+        self.capacity_var = tk.StringVar(value="0")
         self._build()
         self._refresh_slots()
 
@@ -59,6 +57,8 @@ class BookingFormFrame(tk.Frame):
         card = tk.Frame(body, bg=C_SURFACE, highlightthickness=1,
                         highlightbackground=C_BORDER, padx=24, pady=20)
         card.grid(row=0, column=0, sticky="nsew", padx=(0, 10))
+        card.columnconfigure(0, weight=1)
+        card.columnconfigure(1, weight=1, minsize=200)
 
         def lbl(row: int, col: int, text: str) -> None:
             tk.Label(card, text=text, bg=C_SURFACE, fg=C_MUTED,
@@ -82,29 +82,52 @@ class BookingFormFrame(tk.Frame):
         room_cb.bind("<<ComboboxSelected>>", self._on_room_selected)  # type: ignore[arg-type]
 
         # Date picker
-        if _has_calendar:
-            date_frame = tk.Frame(card, bg=C_SURFACE)
-            date_frame.grid(row=1, column=1, sticky="w", padx=(12, 0))
-            de = DateEntry(date_frame, textvariable=self.date_var,  # type: ignore[possibly-unbound]
-                           width=26, date_pattern="yyyy-mm-dd",
-                           background=C_PRIMARY, foreground="white",
-                           borderwidth=1, font=("Segoe UI", 10))
-            de.pack()  # type: ignore[attr-defined]
-            de.bind("<<DateEntrySelected>>",  # type: ignore[attr-defined]
-                    lambda _: self.after(100, self._refresh_slots))  # type: ignore[misc]
-        else:
-            date_e = tk.Entry(card, textvariable=self.date_var, width=30,
-                              font=F_INPUT, relief="solid", bd=1)
-            date_e.grid(row=1, column=1, sticky="w", padx=(12, 0))
-            date_e.bind("<FocusOut>", lambda _: self._refresh_slots())
+        date_frame = tk.Frame(card, bg=C_SURFACE)
+        date_frame.grid(row=1, column=1, sticky="ew", padx=(12, 0))
+        de = DateEntry(date_frame,  # type: ignore[possibly-unbound]
+                       width=28, date_pattern="yyyy-mm-dd",
+                       background=C_PRIMARY, foreground="white",
+                       headersbackground=C_PRIMARY, headersforeground="white",
+                       selectbackground=C_PRIMARY, selectforeground="white",
+                       weekendbackground="white", weekendforeground="black",
+                       borderwidth=2, font=("Segoe UI", 10))
+        de.set_date(dt.date.today()) # type: ignore
+        de.pack(fill="x", expand=True)  # type: ignore[attr-defined]
+        self._date_entry = de
 
-        lbl(2, 0, "CA HOC  (click de chon)")
-        lbl(2, 1, "CA CON TRONG")
+        def _on_date_selected() -> None:
+            self.date_var.set(de.get_date().isoformat())  # type: ignore[attr-defined]
+            self._refresh_slots()
+
+        de.bind("<<DateEntrySelected>>",  # type: ignore[attr-defined]
+                lambda _: self.after(100, _on_date_selected))  # type: ignore[misc]
+
+        # ── Capacity filter row ───────────────────────────────────────────────
+        lbl(2, 0, "SO NGUOI DU KIEN (de loc phong)")
+        cap_frame = tk.Frame(card, bg=C_SURFACE)
+        cap_frame.grid(row=3, column=0, sticky="w", pady=(0, 4))
+        tk.Label(cap_frame, text="Toi thieu:", bg=C_SURFACE, fg=C_MUTED,
+                 font=("Segoe UI", 9)).pack(side="left")
+        cap_spin = tk.Spinbox(cap_frame, from_=0, to=500, increment=5,
+                              textvariable=self.capacity_var,
+                              width=6, font=("Segoe UI", 10),
+                              relief="solid", bd=1)
+        cap_spin.pack(side="left", padx=6)
+        cap_spin.bind("<FocusOut>", lambda _: self._refresh_room_suggestions())
+        cap_spin.bind("<Return>", lambda _: self._refresh_room_suggestions())
+        cap_spin.bind("<ButtonRelease-1>", lambda _: self.after(50, self._refresh_room_suggestions))
+        cap_spin.bind("<<Increment>>", lambda _: self.after(50, self._refresh_room_suggestions))
+        cap_spin.bind("<<Decrement>>", lambda _: self.after(50, self._refresh_room_suggestions))
+        tk.Label(cap_frame, text="nguoi  (0 = hien thi tat ca)",
+                 bg=C_SURFACE, fg=C_MUTED, font=("Segoe UI", 8)).pack(side="left")
+
+        lbl(4, 0, "CA HOC  (click de chon)")
+        lbl(4, 1, "CA CON TRONG")
 
         # ── Visual slot picker ──────────────────────────────────────────────
         self._slot_btns: dict[str, tk.Button] = {}
         slot_grid = tk.Frame(card, bg=C_SURFACE)
-        slot_grid.grid(row=3, column=0, sticky="w")
+        slot_grid.grid(row=5, column=0, sticky="w")
 
         SLOT_INFO = [
             ("Ca 1", "7:00-9:00"),
@@ -143,33 +166,33 @@ class BookingFormFrame(tk.Frame):
                              fg="#15803d", font=("Segoe UI", 9), width=32,
                              anchor="w", relief="solid", bd=1,
                              wraplength=300)
-        avail_lbl.grid(row=3, column=1, sticky="w", padx=(12, 0))
+        avail_lbl.grid(row=5, column=1, sticky="w", padx=(12, 0))
         self._avail_lbl = avail_lbl
 
         # ── Panel goi y phong con trong chu dong (hien khi chon ngay & ca) ───
         self._room_suggest_frame = tk.Frame(card, bg=C_SURFACE)
-        self._room_suggest_frame.grid(row=4, column=0, columnspan=2,
+        self._room_suggest_frame.grid(row=6, column=0, columnspan=2,
                                       sticky="ew", pady=(6, 0))
         self._room_suggest_frame.grid_remove()  # hidden until date+slot selected
 
         # ── Suggestion panel (shown when selected room is fully booked) ────────
         self._suggest_outer = tk.Frame(card, bg=C_SURFACE)
-        self._suggest_outer.grid(row=5, column=0, columnspan=2,
+        self._suggest_outer.grid(row=7, column=0, columnspan=2,
                                  sticky="ew", pady=(10, 0))
         self._suggest_outer.grid_remove()   # hidden by default
 
         # Select default slot (must be after _room_suggest_frame is created)
         _select_slot(self.slot_var.get() or "Ca 1")
 
-        lbl(6, 0, "MUC DICH SU DUNG")
+        lbl(8, 0, "MUC DICH SU DUNG")
         self.purpose_text = tk.Text(card, width=64, height=5,
                                     relief="solid", bd=1,
                                     font=("Segoe UI", 10))
-        self.purpose_text.grid(row=7, column=0, columnspan=2,
+        self.purpose_text.grid(row=9, column=0, columnspan=2,
                                sticky="ew", pady=(0, 16))
 
         btn_f = tk.Frame(card, bg=C_SURFACE)
-        btn_f.grid(row=8, column=1, sticky="e")
+        btn_f.grid(row=10, column=1, sticky="e")
         btn(btn_f, "📤  Gui yeu cau dat phong", self._submit).pack()
 
         # ── Right: room info card ─────────────────────────────────────────────
@@ -219,8 +242,8 @@ class BookingFormFrame(tk.Frame):
             w.destroy()
 
         # Status badge color
-        status_bg = "#dcfce7" if room.status == "Hoat dong" else "#fee2e2"
-        status_fg = "#15803d" if room.status == "Hoat dong" else "#dc2626"
+        status_bg = "#dcfce7" if room.status == "Hoat dong" else "#fdf2f8"
+        status_fg = "#15803d" if room.status == "Hoat dong" else "#db2777"
 
         tk.Label(self._room_info_frame, text="🏫  Thong tin phong",
                  bg=C_SURFACE, fg="#4f46e5",
@@ -253,18 +276,75 @@ class BookingFormFrame(tk.Frame):
                  bg=status_bg, fg=status_fg,
                  font=("Segoe UI", 9, "bold")).pack(side="left")
 
-        if room.equipment:
-            tk.Frame(self._room_info_frame, bg=C_BORDER,
-                     height=1).pack(fill="x", pady=8)
-            tk.Label(self._room_info_frame, text="🔧  Trang thiet bi:",
-                     bg=C_SURFACE, fg=C_MUTED,
-                     font=("Segoe UI", 9, "bold")).pack(anchor="w")
+        tk.Frame(self._room_info_frame, bg=C_BORDER, height=1).pack(fill="x", pady=8)
+
+        # ── Real equipment list from database ────────────────────────────────
+        eq_hdr = tk.Frame(self._room_info_frame, bg=C_SURFACE)
+        eq_hdr.pack(fill="x", pady=(0, 4))
+        tk.Label(eq_hdr, text="🔧  Thiet bi trong phong:",
+                 bg=C_SURFACE, fg=C_MUTED,
+                 font=("Segoe UI", 9, "bold")).pack(side="left", anchor="w")
+
+        # Fetch real equipment list
+        equip_items: list[Any] = []
+        if self.equip_ctrl is not None:
+            try:
+                equip_items = self.equip_ctrl.list_equipment(room_id=room.room_id)
+            except Exception:
+                equip_items = []
+
+        STATUS_ICON = {
+            "Hoat dong": ("✅", "#15803d"),
+            "Bao tri":   ("⚠️", "#b45309"),
+            "Hong":      ("❌", "#db2777"),
+            "Dang sua":  ("🔨", "#0369a1"),
+            "Da thanh ly": ("🗑", "#64748b"),
+        }
+
+        if equip_items:
+            eq_scroll = tk.Frame(self._room_info_frame, bg="#f8fafc",
+                                 highlightthickness=1,
+                                 highlightbackground=C_BORDER)
+            eq_scroll.pack(fill="x", pady=(0, 6), ipadx=4, ipady=2)
+            for eq in equip_items:
+                icon, fg = STATUS_ICON.get(eq.status, ("•", "#64748b"))
+                eq_row = tk.Frame(eq_scroll, bg="#f8fafc")
+                eq_row.pack(fill="x", padx=6, pady=1)
+                tk.Label(eq_row, text=icon, bg="#f8fafc",
+                         font=("Segoe UI", 10), width=2).pack(side="left")
+                tk.Label(eq_row, text=eq.name,
+                         bg="#f8fafc", fg="#1e293b",
+                         font=("Segoe UI", 9)).pack(side="left")
+                tk.Label(eq_row, text=f"  [{eq.equipment_type}]",
+                         bg="#f8fafc", fg="#94a3b8",
+                         font=("Segoe UI", 8)).pack(side="left")
+                tk.Label(eq_row, text=eq.status,
+                         bg="#f8fafc", fg=fg,
+                         font=("Segoe UI", 8, "bold")).pack(side="right", padx=4)
+        elif room.equipment:
+            # Fallback: show the text description from rooms table
             tk.Label(self._room_info_frame, text=room.equipment,
                      bg="#f8fafc", fg="#334155",
                      font=("Segoe UI", 9), wraplength=200,
                      justify="left", anchor="w",
                      relief="solid", bd=1).pack(fill="x", pady=(4, 0),
                                                 padx=2, ipadx=6, ipady=4)
+        else:
+            tk.Label(self._room_info_frame, text="(Chua co thiet bi nao duoc dang ky)",
+                     bg=C_SURFACE, fg="#94a3b8", font=("Segoe UI", 9)).pack(anchor="w")
+
+        # ── "Báo hỏng thiết bị" button ───────────────────────────────────────
+        if self.equip_ctrl is not None:
+            tk.Frame(self._room_info_frame, bg=C_BORDER, height=1).pack(fill="x", pady=(8, 4))
+            report_btn = tk.Button(
+                self._room_info_frame,
+                text="🔧  Bao hong thiet bi",
+                bg="#fef3c7", fg="#92400e",
+                font=("Segoe UI", 9, "bold"),
+                relief="flat", bd=1, cursor="hand2",
+                activebackground="#fde68a",
+                command=lambda r=room: self._open_equipment_report(r))
+            report_btn.pack(fill="x", pady=(0, 4), ipadx=4, ipady=4)
 
     def _on_room_selected(self, _event: Any = None) -> None:
         display = self.room_var.get()
@@ -273,6 +353,18 @@ class BookingFormFrame(tk.Frame):
         if room:
             self._draw_room_info(room)
         self._refresh_slots()
+
+    def _open_equipment_report(self, room: Any) -> None:
+        """Open the equipment report dialog for the selected room."""
+        from gui.room_feedback_gui import EquipmentReportDialog
+        EquipmentReportDialog(
+            self,
+            room_id=room.room_id,
+            room_name=room.name,
+            current_user=self.current_user,
+            equipment_ctrl=self.equip_ctrl,
+            on_done=lambda: self._draw_room_info(room),
+        )
 
     def _refresh_slots(self) -> None:
         display = self.room_var.get().strip()
@@ -293,7 +385,7 @@ class BookingFormFrame(tk.Frame):
             self._avail_lbl.config(bg="#f0fdf4", fg="#15803d")
         else:
             self.avail_var.set("❌  Phong da duoc dat kin ca nay")
-            self._avail_lbl.config(bg="#fef2f2", fg="#dc2626")
+            self._avail_lbl.config(bg="#fdf2f8", fg="#db2777")
 
             # Build and show suggestions
             all_room_ids = [r.room_id for r in self.room_ctrl.list_rooms()
@@ -356,7 +448,7 @@ class BookingFormFrame(tk.Frame):
 
             chips = tk.Frame(sec1, bg="#eff6ff")
             chips.pack(anchor="w")
-            for room_id, slot in other_rooms[:8]:   # cap at 8 chips
+            for room_id, slot in other_rooms:   # hien thi tat ca
                 # Look up display name
                 display_name = next(
                     (k for k, v in self._room_display_map.items()
@@ -401,13 +493,13 @@ class BookingFormFrame(tk.Frame):
             # Group by date for readability
             from collections import defaultdict
             by_date: dict[str, list[str]] = defaultdict(list)
-            for date_str, s in other_slots[:35]:   # limit to ~5 days × 5 slots
+            for date_str, s in other_slots:   # tat ca slot con trong
                 by_date[date_str].append(s)
 
             grid_f = tk.Frame(sec2, bg="#eff6ff")
             grid_f.pack(anchor="w")
             for col, (date_str, slots_list) in enumerate(
-                    sorted(by_date.items())[:7]):
+                    sorted(by_date.items())):
                 try:
                     d = dt.date.fromisoformat(date_str)
                     day_label = d.strftime("%d/%m\n%a").replace(
@@ -444,7 +536,7 @@ class BookingFormFrame(tk.Frame):
         outer.grid()
 
     def _refresh_room_suggestions(self) -> None:
-        """Hien thi tat ca phong con trong theo ngay & ca hoc da chon."""
+        """Hien thi tat ca phong con trong theo ngay, ca hoc & suc chua toi thieu."""
         if not hasattr(self, '_room_suggest_frame'):
             return
         frame = self._room_suggest_frame
@@ -463,19 +555,23 @@ class BookingFormFrame(tk.Frame):
             frame.grid_remove()
             return
 
-        free_rooms = [
-            r for r in self.room_ctrl.list_rooms()
-            if r.status == "Hoat dong"
-            and slot in self.booking_ctrl.available_slots(r.room_id, date)
-        ]
+        try:
+            min_cap = int(self.capacity_var.get() or "0")
+        except ValueError:
+            min_cap = 0
+
+        free_rooms = self.room_ctrl.get_available_rooms_by_capacity(
+            self.booking_ctrl, date, slot, min_capacity=min_cap
+        )
 
         if not free_rooms:
-            notice = tk.Frame(frame, bg="#fef2f2", highlightthickness=1,
-                              highlightbackground="#fecaca")
+            notice = tk.Frame(frame, bg="#fdf2f8", highlightthickness=1,
+                              highlightbackground="#fbcfe8")
             notice.pack(fill="x", pady=(4, 0))
+            cap_msg = f"  (suc chua ≥ {min_cap})" if min_cap > 0 else ""
             tk.Label(notice,
-                     text=f"⚠️  Khong co phong trong nao vao {date}  –  {slot}",
-                     bg="#fef2f2", fg="#dc2626",
+                     text=f"⚠️  Khong co phong trong nao vao {date}  –  {slot}{cap_msg}",
+                     bg="#fdf2f8", fg="#db2777",
                      font=("Segoe UI", 9, "bold")).pack(padx=12, pady=7)
             frame.grid()
             return
@@ -493,6 +589,10 @@ class BookingFormFrame(tk.Frame):
         tk.Label(hdr_left, text=f"  {date}  –  {slot}",
                  bg="#eff6ff", fg="#2563eb",
                  font=("Segoe UI", 9, "bold")).pack(side="left")
+        if min_cap > 0:
+            tk.Label(hdr_left, text=f"  •  suc chua ≥ {min_cap} nguoi",
+                     bg="#eff6ff", fg="#7c3aed",
+                     font=("Segoe UI", 8, "bold")).pack(side="left")
         tk.Label(hdr, text=f"✅ {len(free_rooms)} phong  •  Click de chon nhanh",
                  bg="#eff6ff", fg="#60a5fa",
                  font=("Segoe UI", 8)).pack(side="right", padx=12)
@@ -502,7 +602,7 @@ class BookingFormFrame(tk.Frame):
                             highlightbackground="#e2e8f0")
         chips_bg.pack(fill="x")
 
-        for r in free_rooms[:14]:   # gioi han 14 chip
+        for r in free_rooms:   # hien thi tat ca phong con trong
             display = f"{r.room_id} – {r.name} (SC: {r.capacity})"
             chip_col = tk.Frame(chips_bg, bg="#f8fafc")
             chip_col.pack(side="left", padx=6, pady=6)
@@ -545,6 +645,10 @@ class BookingFormFrame(tk.Frame):
                 self._draw_room_info(room)
         if date_str:
             self.date_var.set(date_str)
+            try:
+                self._date_entry.set_date(dt.date.fromisoformat(date_str))  # type: ignore[attr-defined]
+            except Exception:
+                pass
         if slot:
             self.slot_var.set(slot)
         self._refresh_slots()
@@ -552,11 +656,16 @@ class BookingFormFrame(tk.Frame):
     def _submit(self) -> None:
         display = self.room_var.get().strip()
         room_id = self._room_display_map.get(display, display.split(" – ")[0]) if display else ""
+        # Use DateEntry widget directly as authoritative date source
+        try:
+            booking_date = self._date_entry.get_date().isoformat()  # type: ignore[attr-defined]
+        except Exception:
+            booking_date = self.date_var.get().strip()
         try:
             self.booking_ctrl.create_booking(
                 user=self.current_user,
                 room_id=room_id,
-                booking_date=self.date_var.get().strip(),
+                booking_date=booking_date,
                 slot=self.slot_var.get().strip(),
                 purpose=self.purpose_text.get("1.0", "end"),
             )
@@ -571,6 +680,14 @@ class BookingFormFrame(tk.Frame):
         self.room_var.set("")
         self.date_var.set(dt.date.today().isoformat())
         self.slot_var.set("Ca 1")
+        # Reset slot button visuals
+        for sn, sb in self._slot_btns.items():
+            if sn == "Ca 1":
+                sb.config(bg=C_PRIMARY, fg="white", relief="sunken",
+                          font=("Segoe UI", 9, "bold"))
+            else:
+                sb.config(bg="#f1f5f9", fg="#334155", relief="flat",
+                          font=("Segoe UI", 9))
         self._draw_room_placeholder()
         self._suggest_outer.grid_remove()
         self._room_suggest_frame.grid_remove()

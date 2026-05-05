@@ -16,7 +16,7 @@ CARD_PALETTE = [
     ("#eef2ff", "#4f46e5", "🏫", "Tong phong"),         # Indigo
     ("#dcfce7", "#15803d", "📅", "Tong dat phong"),     # Green
     ("#fef3c7", "#b45309", "⏳", "Cho duyet"),         # Amber
-    ("#fee2e2", "#dc2626", "🚫", "Tu choi"),           # Red
+    ("#fdf2f8", "#db2777", "🚫", "Tu choi"),           # Red
     ("#e0f2fe", "#0369a1", "👥", "Nguoi dung"),        # Sky
     ("#ede9fe", "#6d28d9", "🔧", "Thiet bi"),          # Violet
 ]
@@ -24,7 +24,7 @@ CARD_PALETTE = [
 STATUS_COLOR = {
     "Da duyet":  "#16a34a",
     "Cho duyet": "#f59e0b",
-    "Tu choi":   "#ef4444",
+    "Tu choi":   "#ec4899",
 }
 
 
@@ -88,17 +88,17 @@ class DashboardFrame(tk.Frame):
             card.pack(fill="both", expand=True, padx=(0, 3), pady=(0, 4))
 
             # Hover effect
-            def _on_enter(e: Any, c=card, b=bg) -> None:
+            def _on_enter(e: Any, c: Any = card, b: Any = bg) -> None:
                 _darken = {"#eef2ff": "#e0e7ff", "#dcfce7": "#bbf7d0",
-                           "#fef3c7": "#fde68a", "#fee2e2": "#fecaca",
+                           "#fef3c7": "#fde68a", "#fdf2f8": "#fbcfe8",
                            "#e0f2fe": "#bae6fd", "#ede9fe": "#ddd6fe"}
                 c.config(bg=_darken.get(b, b))
-            def _on_leave(e: Any, c=card, b=bg) -> None:
+            def _on_leave(e: Any, c: Any = card, b: Any = bg) -> None:
                 c.config(bg=b)
 
             nav_key = CARD_NAV[idx] if idx < len(CARD_NAV) else "dashboard"
 
-            def _on_click(e: Any, k=nav_key) -> None:
+            def _on_click(e: Any, k: str = nav_key) -> None:
                 w: Any = self.master
                 while w is not None:
                     if hasattr(w, "_navigate"):
@@ -202,9 +202,9 @@ class DashboardFrame(tk.Frame):
     # ── Today's bookings mini-panel ───────────────────────────────────────────
     def _draw_today_panel(self, body: tk.Frame) -> None:
         today_str = dt.date.today().isoformat()
-        today_bookings = [
-            b for b in (self.booking_ctrl.list_bookings(from_today=False) or [])
-            if b.booking_date == today_str
+        today_bookings = [ # type: ignore
+            b for b in (self.booking_ctrl.list_bookings(from_today=False) or []) # type: ignore
+            if b.booking_date == today_str # type: ignore
         ]
 
         shadow = tk.Frame(body, bg="#c7d2fe")
@@ -219,7 +219,7 @@ class DashboardFrame(tk.Frame):
                  bg=C_SURFACE, fg=C_DARK, font=F_SECTION).pack(side="left")
         count_bg = "#dcfce7" if today_bookings else "#f1f5f9"
         count_fg = "#15803d" if today_bookings else C_MUTED
-        tk.Label(hdr, text=f"  {len(today_bookings)} lich  ",
+        tk.Label(hdr, text=f"  {len(today_bookings)} lich  ", # type: ignore
                  bg=count_bg, fg=count_fg,
                  font=("Segoe UI", 9, "bold")).pack(side="left", padx=8)
 
@@ -242,43 +242,43 @@ class DashboardFrame(tk.Frame):
         STATUS_CHIP: dict[str, tuple[str, str]] = {
             "Da duyet":  ("#dcfce7", "#15803d"),
             "Cho duyet": ("#fef3c7", "#b45309"),
-            "Tu choi":   ("#fee2e2", "#dc2626"),
+            "Tu choi":   ("#fdf2f8", "#db2777"),
         }
         slots_wrap = tk.Frame(card, bg=C_SURFACE)
         slots_wrap.pack(fill="x")
-        for b in today_bookings[:8]:
-            chip_bg, chip_fg = STATUS_CHIP.get(b.status, ("#f1f5f9", C_MUTED))
-            slot_time = SLOT_TIMES.get(b.slot, b.slot)
+        for b in today_bookings[:8]: # type: ignore
+            chip_bg, chip_fg = STATUS_CHIP.get(b.status, ("#f1f5f9", C_MUTED)) # type: ignore
+            slot_time: str = SLOT_TIMES.get(b.slot, b.slot) or b.slot # type: ignore
             row = tk.Frame(slots_wrap, bg=C_SURFACE,
                            highlightthickness=1, highlightbackground=C_BORDER)
             row.pack(fill="x", pady=3)
             # Slot pill
             slot_pill = tk.Frame(row, bg=C_PRIMARY, padx=10, pady=6)
             slot_pill.pack(side="left")
-            tk.Label(slot_pill, text=b.slot,
+            tk.Label(slot_pill, text=b.slot, # type: ignore
                      bg=C_PRIMARY, fg="white",
                      font=("Segoe UI", 9, "bold")).pack()
-            tk.Label(slot_pill, text=slot_time,
+            tk.Label(slot_pill, text=slot_time, # type: ignore
                      bg=C_PRIMARY, fg="#c7d2fe",
                      font=("Segoe UI", 7)).pack()
             # Room chip
             room_chip = tk.Frame(row, bg="#eef2ff", padx=8, pady=6)
             room_chip.pack(side="left", padx=(0, 1))
-            tk.Label(room_chip, text=f"🏫 {b.room_id}",
+            tk.Label(room_chip, text=f"🏫 {b.room_id}", # type: ignore
                      bg="#eef2ff", fg="#4f46e5",
                      font=("Segoe UI", 9, "bold")).pack()
             # User name
-            tk.Label(row, text=f"👤 {b.user_name}",
+            tk.Label(row, text=f"👤 {b.user_name}", # type: ignore
                      bg=C_SURFACE, fg=C_DARK,
                      font=("Segoe UI", 9)).pack(side="left", padx=10)
             # Status
             status_chip = tk.Frame(row, bg=chip_bg, padx=8, pady=4)
             status_chip.pack(side="right", padx=8)
-            tk.Label(status_chip, text=b.status,
+            tk.Label(status_chip, text=b.status, # type: ignore
                      bg=chip_bg, fg=chip_fg,
                      font=("Segoe UI", 8, "bold")).pack()
-        if len(today_bookings) > 8:
-            tk.Label(card, text=f"  + {len(today_bookings) - 8} lich khac...",
+        if len(today_bookings) > 8: # type: ignore
+            tk.Label(card, text=f"  + {len(today_bookings) - 8} lich khac...", # type: ignore
                      bg=C_SURFACE, fg=C_MUTED,
                      font=("Segoe UI", 8, "italic")).pack(anchor="w", pady=(4, 0))
 
@@ -356,7 +356,7 @@ class DashboardFrame(tk.Frame):
             segs = [
                 (da_duyet,  "#16a34a"),
                 (cho_duyet, "#f59e0b"),
-                (tu_choi,   "#ef4444"),
+                (tu_choi,   "#ec4899"),
             ]
             if total == 0:
                 cv.create_arc(MARGIN, MARGIN, SIZE - MARGIN, SIZE - MARGIN,  # type: ignore[no-untyped-call]
@@ -398,7 +398,7 @@ class DashboardFrame(tk.Frame):
         for label, val, color in [
             ("Da duyet",  da_duyet,  "#16a34a"),
             ("Cho duyet", cho_duyet, "#f59e0b"),
-            ("Tu choi",   tu_choi,   "#ef4444"),
+            ("Tu choi",   tu_choi,   "#ec4899"),
         ]:
             row = tk.Frame(legend, bg=C_SURFACE)
             row.pack(anchor="w", pady=5)

@@ -8,18 +8,20 @@ from gui.theme import (C_BG, C_DARK, C_PRIMARY, C_SURFACE, C_BORDER, C_MUTED,
                        F_SECTION, F_BODY_B, make_tree, fill_tree, with_scrollbar,
                        page_header)
 
+from tkcalendar import DateEntry  # type: ignore[import-untyped]
+
 CARD_PALETTE = [
     ("#eef2ff", "#4f46e5", "📚"),   # Indigo
     ("#dcfce7", "#16a34a", "📅"),   # Green
     ("#fef3c7", "#b45309", "📋"),   # Amber
-    ("#fee2e2", "#dc2626", "🚫"),   # Red
+    ("#fdf2f8", "#db2777", "🚫"),   # Red
     ("#e0f2fe", "#0369a1", "👤"),   # Sky
     ("#ede9fe", "#6d28d9", "🛠"),   # Violet
 ]
 
 BAR_COLORS = [
     "#4f46e5", "#6366f1", "#16a34a", "#f59e0b",
-    "#9333ea", "#06b6d4", "#ef4444", "#84cc16",
+    "#9333ea", "#06b6d4", "#ec4899", "#84cc16",
 ]
 
 
@@ -53,7 +55,7 @@ class ReportFrame(tk.Frame):
 
         pdf_btn = tk.Button(
             toolbar, text="📄  Xuat PDF",
-            bg="#dc2626", fg="white", font=("Segoe UI", 9, "bold"),
+            bg="#db2777", fg="white", font=("Segoe UI", 9, "bold"),
             relief="flat", cursor="hand2", padx=10, pady=6,
             command=self._export_pdf,
         )
@@ -69,28 +71,18 @@ class ReportFrame(tk.Frame):
                  font=("Segoe UI", 10, "bold")).pack(side="left")
 
         def _date_entry(parent: tk.Frame, var: tk.StringVar,
-                        placeholder: str) -> tk.Entry:
+                        placeholder: str) -> tk.Widget:
             wrap = tk.Frame(parent, bg="#ffffff", highlightthickness=1,
                             highlightbackground="#c7d2fe")
             wrap.pack(side="left", padx=(8, 0))
-            e = tk.Entry(wrap, textvariable=var, width=12,
-                         font=("Segoe UI", 10), relief="flat",
-                         bg="#ffffff", fg="#1e293b", insertbackground=C_PRIMARY)
-            e.insert(0, placeholder)
+
+            e = DateEntry(wrap, textvariable=var, width=12,
+                           date_pattern="yyyy-mm-dd",
+                           background=C_PRIMARY, foreground="white",
+                           weekendbackground="white", weekendforeground="black",
+                           state="readonly",
+                           borderwidth=1, font=("Segoe UI", 10))
             e.pack(padx=6, pady=4)
-            def _on_focus_in(event: Any, entry=e, ph=placeholder) -> None:
-                if entry.get() == ph:
-                    entry.delete(0, "end")
-                    entry.config(fg="#1e293b")
-                wrap.config(highlightbackground=C_PRIMARY)
-            def _on_focus_out(event: Any, entry=e, ph=placeholder) -> None:
-                if not entry.get().strip():
-                    entry.insert(0, ph)
-                    entry.config(fg=C_MUTED)
-                wrap.config(highlightbackground="#c7d2fe")
-            e.bind("<FocusIn>",  _on_focus_in)
-            e.bind("<FocusOut>", _on_focus_out)
-            e.config(fg=C_MUTED)
             return e
 
         tk.Label(filter_panel, text="Tu:", bg="#eef2ff", fg="#4f46e5",

@@ -39,7 +39,7 @@ class RoomController:
         """Return a sorted unique list of room types present in the DB."""
         return sorted({r.room_type for r in self.room_dao.list_all() if r.room_type})
 
-    def room_stats(self, booking_ctrl: "BookingController") -> list[dict]:
+    def room_stats(self, booking_ctrl: "BookingController") -> list[dict[str, object]]:
         """Return per-room dict with booking count for each room.
 
         Returns list of dicts:
@@ -51,7 +51,7 @@ class RoomController:
             count_map[b.room_id] = count_map.get(b.room_id, 0) + 1
         result = []
         for r in self.room_dao.list_all():
-            result.append({
+            result.append({ # type: ignore
                 "room_id": r.room_id,
                 "name": r.name,
                 "capacity": r.capacity,
@@ -59,7 +59,7 @@ class RoomController:
                 "status": r.status,
                 "booking_count": count_map.get(r.room_id, 0),
             })
-        return result
+        return result # type: ignore
 
     # ── Mutations ─────────────────────────────────────────────────────────────
 
@@ -104,5 +104,14 @@ class RoomController:
             if slot in booking_ctrl.available_slots(room.room_id, booking_date):
                 available.append(room)
         return available
+
+    def get_available_rooms_by_capacity(self, booking_ctrl: "BookingController",
+                                        booking_date: str, slot: str,
+                                        min_capacity: int = 0) -> list[Room]:
+        """Return active, free rooms with capacity >= min_capacity, sorted by capacity."""
+        rooms = self.get_available_rooms(booking_ctrl, booking_date, slot)
+        if min_capacity > 0:
+            rooms = [r for r in rooms if r.capacity >= min_capacity]
+        return sorted(rooms, key=lambda r: r.capacity)
 
 

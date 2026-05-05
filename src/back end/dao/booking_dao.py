@@ -15,6 +15,7 @@ def _row_to_booking(row: sqlite3.Row) -> Booking:
         slot=row["slot"],
         purpose=row["purpose"],
         status=row["status"],
+        rejection_reason=row["rejection_reason"] if "rejection_reason" in row.keys() else "",
     )
 
 
@@ -35,6 +36,46 @@ class BookingDAO:
             "SELECT * FROM bookings WHERE user_id=? ORDER BY booking_date DESC",
             (user_id,),
         ).fetchall()
+        return [_row_to_booking(r) for r in rows]
+
+    def search(self,
+               user_id: str = "",
+               status: str = "",
+               room_id: str = "",
+               date_from: str = "",
+               date_to: str = "",
+               keyword: str = "",
+               from_today: bool = False) -> list[Booking]:
+        """SQL-level filtered query — avoids loading the entire table."""
+        import datetime as _dt
+        clauses: list[str] = []
+        params: list[object] = []
+        if from_today:
+            clauses.append("booking_date >= ?")
+            params.append(_dt.date.today().isoformat())
+        if user_id:
+            clauses.append("user_id = ?")
+            params.append(user_id)
+        if status:
+            clauses.append("status = ?")
+            params.append(status)
+        if room_id:
+            clauses.append("room_id = ?")
+            params.append(room_id)
+        if date_from:
+            clauses.append("booking_date >= ?")
+            params.append(date_from)
+        if date_to:
+            clauses.append("booking_date <= ?")
+            params.append(date_to)
+        if keyword:
+            kw = f"%{keyword}%"
+            clauses.append("(user_name LIKE ? OR room_id LIKE ? OR purpose LIKE ?)")
+            params.extend([kw, kw, kw])
+        where = ("WHERE " + " AND ".join(clauses)) if clauses else ""
+        sql = f"SELECT * FROM bookings {where} ORDER BY booking_date DESC, id"
+        conn = get_connection()
+        rows = conn.execute(sql, params).fetchall()
         return [_row_to_booking(r) for r in rows]
 
     def save(self, booking: Booking) -> Booking:

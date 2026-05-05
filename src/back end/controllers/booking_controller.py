@@ -33,29 +33,22 @@ class BookingController:
                       status: str = "", room_id: str = "", date_text: str = "",
                       from_today: bool = True,
                       date_from: str = "", date_to: str = "",
+                      keyword: str = "",
                       page: int = 0, page_size: int = 0) -> list[Booking]:
-        """Return filtered bookings.
-
-        Extra filters vs original:
-        - ``date_from`` / ``date_to``  – inclusive date range (YYYY-MM-DD)
-        - ``page`` / ``page_size``     – 0 means no pagination
-        """
-        bookings = self.booking_dao.list_all()
-        if from_today:
-            today = dt.date.today().isoformat()
-            bookings = [b for b in bookings if b.booking_date >= today]
+        """Return filtered bookings using SQL-level filtering for performance."""
+        uid = ""
         if current_user is not None and current_user.role != "Admin":
-            bookings = [b for b in bookings if b.user_id == current_user.user_id]
-        if status:
-            bookings = [b for b in bookings if b.status == status]
-        if room_id:
-            bookings = [b for b in bookings if b.room_id == room_id]
-        if date_text:
-            bookings = [b for b in bookings if b.booking_date == date_text]
-        if date_from:
-            bookings = [b for b in bookings if b.booking_date >= date_from]
-        if date_to:
-            bookings = [b for b in bookings if b.booking_date <= date_to]
+            uid = current_user.user_id
+
+        bookings = self.booking_dao.search(
+            user_id=uid,
+            status=status,
+            room_id=room_id,
+            date_from=date_text or date_from,
+            date_to=date_to,
+            keyword=keyword,
+            from_today=from_today,
+        )
         if page_size > 0:
             start = page * page_size
             bookings = bookings[start: start + page_size]
@@ -70,10 +63,26 @@ class BookingController:
                                       page=0, page_size=0))
 
     def available_slots(self, room_id: str, booking_date: str) -> list[str]:
-        used = {b.slot for b in self.booking_dao.list_all()
-                if b.room_id == room_id and b.booking_date == booking_date
-                and b.status != "Tu choi"}
+        used = {b.slot for b in self.booking_dao.search(
+                    room_id=room_id, date_from=booking_date, date_to=booking_date)
+                if b.status != "Tu choi"}
         return [s for s in self.SLOT_OPTIONS if s not in used]
+
+    def approve_booking(self, booking_id: str) -> Booking:
+        """Shortcut to approve a booking (Admin action)."""
+        return self.update_status(booking_id, "Da duyet")
+
+    def reject_booking(self, booking_id: str, reason: str = "") -> Booking:
+        """Shortcut to reject a booking."""
+        booking = self.booking_dao.find_by_id(booking_id)
+        if booking is None:
+            raise ValueError("Khong tim thay yeu cau dat phong.")
+        booking.status = "Tu choi"
+        if reason:
+            booking.rejection_reason = reason
+        saved = self.booking_dao.save(booking)
+        self._fire_email(saved, "Tu choi")
+        return saved
 
     # ── Create / Edit / Delete ────────────────────────────────────────────────
 
@@ -173,9 +182,9 @@ class BookingController:
         if not purpose.strip():
             raise ValueError("Muc dich dat phong khong duoc de trong.")
         # Check conflict, excluding current booking
-        used = {b.slot for b in self.booking_dao.list_all()
-                if b.room_id == room_id and b.booking_date == booking_date
-                and b.status != "Tu choi" and b.booking_id != booking_id}
+        used = {b.slot for b in self.booking_dao.search(
+                    room_id=room_id, date_from=booking_date, date_to=booking_date)
+                if b.status != "Tu choi" and b.booking_id != booking_id}
         if slot in used:
             raise ValueError("Phong da co lich trong ca hoc nay.")
         booking.room_id = room_id
@@ -272,11 +281,16 @@ class BookingController:
     # ── Schedule ─────────────────────────────────────────────────────────────
 
     def build_schedule(self, week_offset: int = 0) -> list[Schedule]:
-        """Return Schedule rows for the week at *week_offset* from today's week."""
+        """Return Schedule rows for the week at *week_offset* from today's week.
+
+        Includes both one-off bookings AND recurring schedule occurrences.
+        """
         rows: list[Schedule] = []
         today = dt.date.today()
         week_start = today - dt.timedelta(days=today.weekday()) + dt.timedelta(weeks=week_offset)
         week_end   = week_start + dt.timedelta(days=6)
+
+        # ── One-off bookings ─────────────────────────────────────────────────
         for b in self.booking_dao.list_all():
             try:
                 d = dt.date.fromisoformat(b.booking_date)
@@ -289,6 +303,44 @@ class BookingController:
                                  slot=b.slot,
                                  label=f"{b.room_id} – {b.user_name}",
                                  status=b.status))
+
+        # ── Recurring schedule occurrences ───────────────────────────────────
+        _SLOT_TIME_MAP: dict[tuple[str, str], str] = {
+            ("07:00", "09:00"): "Ca 1",
+            ("09:15", "11:15"): "Ca 2",
+            ("13:00", "15:00"): "Ca 3",
+            ("15:15", "17:15"): "Ca 4",
+            ("17:30", "19:30"): "Ca 5",
+        }
+        try:
+            from dao.schedule_rule_dao import ScheduleRuleDAO
+            occ_dao = ScheduleRuleDAO()
+            occurrences = occ_dao.list_occurrences_by_date_range(
+                week_start.isoformat(), week_end.isoformat()
+            )
+            for occ in occurrences:
+                if occ.status == "Huy":
+                    continue
+                try:
+                    d = dt.date.fromisoformat(occ.occurrence_date)
+                except Exception:
+                    continue
+                weekday = self.WEEKDAY_LABELS[d.weekday()]
+                slot = _SLOT_TIME_MAP.get(
+                    (occ.start_time, occ.end_time),
+                    f"{occ.start_time}–{occ.end_time}",
+                )
+                name_part = f" ({occ.lecturer_name})" if occ.lecturer_name else ""
+                rows.append(Schedule(
+                    room_id=occ.room_id,
+                    weekday=weekday,
+                    slot=slot,
+                    label=f"[CK] {occ.subject}{name_part}",
+                    status="Lich day",   # distinct → falls back to light-blue cell
+                ))
+        except Exception:
+            pass  # never crash the calendar if occurrence query fails
+
         return rows
 
     def week_date_range(self, week_offset: int = 0) -> tuple[dt.date, dt.date]:

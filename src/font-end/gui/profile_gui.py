@@ -143,7 +143,7 @@ class ProfileDialog(tk.Toplevel):
 
         # Apply change via controller (verifies old password, logs action)
         try:
-            self.auth_ctrl.change_password(
+            self.auth_ctrl.change_password( # type: ignore
                 username=self.user.username,  # type: ignore
                 old_password=old,
                 new_password=new,

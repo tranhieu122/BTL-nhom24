@@ -1,13 +1,54 @@
 """Authentication logic."""
 from __future__ import annotations
+import datetime as dt # type: ignore
 import uuid
 from dao.user_dao import UserDAO
 from models.user import User
-from utils.password_hash import verify_password, hash_password, sha256_hash
+from utils.password_hash import verify_password, hash_password
 from utils.validators import is_valid_email, is_valid_phone
 from utils.logger import get_logger
 
 _log = get_logger(__name__)
+
+# ── Rate-limiting constants ────────────────────────────────────────────────────
+_MAX_ATTEMPTS  = 5           # lock after this many consecutive failures
+_LOCKOUT_SECS  = 300         # 5-minute lockout window
+
+# Tracks {username: (fail_count, first_fail_timestamp)}
+_login_attempts: dict[str, tuple[int, float]] = {}
+
+
+def _check_lockout(username: str) -> int:
+    """Return seconds remaining in lockout (0 = not locked)."""
+    import time
+    entry = _login_attempts.get(username)
+    if entry is None:
+        return 0
+    count, first_fail = entry
+    if count < _MAX_ATTEMPTS:
+        return 0
+    elapsed = time.time() - first_fail
+    remaining = int(_LOCKOUT_SECS - elapsed)
+    return max(remaining, 0)
+
+
+def _record_failure(username: str) -> None:
+    import time
+    entry = _login_attempts.get(username)
+    if entry is None:
+        _login_attempts[username] = (1, time.time())
+    else:
+        count, first_fail = entry
+        elapsed = time.time() - first_fail
+        if elapsed >= _LOCKOUT_SECS:
+            # Old lockout expired — reset counter
+            _login_attempts[username] = (1, time.time())
+        else:
+            _login_attempts[username] = (count + 1, first_fail)
+
+
+def _clear_failures(username: str) -> None:
+    _login_attempts.pop(username, None)
 
 
 class AuthController:
@@ -16,18 +57,37 @@ class AuthController:
 
     # ── Login ─────────────────────────────────────────────────────────────────
     def authenticate(self, username: str, password: str) -> User | None:
-        user = self.user_dao.find_by_username(username.strip())
+        uname = username.strip()
+
+        # Check lockout before hitting the DB
+        remaining = _check_lockout(uname)
+        if remaining > 0:
+            mins = remaining // 60
+            secs = remaining % 60
+            raise PermissionError(
+                f"Tai khoan tam khoa {mins}:{secs:02d} phut do dang nhap sai nhieu lan. "
+                "Vui long thu lai sau."
+            )
+
+        user = self.user_dao.find_by_username(uname)
         if user is None or user.status != "Hoat dong":
-            _log.warning("Failed login attempt for username='%s'", username)
+            _record_failure(uname)
+            _log.warning("Failed login attempt for username='%s'", uname)
             return None
         if not verify_password(password, user.password_hash):
-            _log.warning("Wrong password for username='%s'", username)
+            _record_failure(uname)
+            attempts_left = _MAX_ATTEMPTS - (_login_attempts.get(uname, (0,))[0])
+            _log.warning("Wrong password for username='%s' (%d attempts left)",
+                         uname, max(attempts_left, 0))
             return None
+
+        # Success — clear failure counter
+        _clear_failures(uname)
         # Auto-upgrade legacy SHA-256 hash to PBKDF2 on successful login
         if not user.password_hash.startswith("pbkdf2:"):
             user.password_hash = hash_password(password)
             self.user_dao.save(user)
-            _log.info("Upgraded password hash for '%s' to PBKDF2", username)
+            _log.info("Upgraded password hash for '%s' to PBKDF2", uname)
         _log.info("User '%s' (%s) logged in", user.username, user.role)
         return user
 

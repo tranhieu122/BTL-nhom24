@@ -4,6 +4,8 @@ import datetime as dt
 import tkinter as tk
 from tkinter import messagebox, ttk
 from typing import Any
+
+from tkcalendar import DateEntry  # type: ignore[import-untyped]
 from gui.room_detail_gui import RoomDetailDialog
 from gui.room_feedback_gui import RoomRatingDialog, RoomIssueDialog
 from gui.theme import (C_BG, C_SURFACE, C_BORDER, C_PRIMARY,
@@ -111,17 +113,17 @@ class RoomManagementFrame(tk.Frame):
         date_frame = tk.Frame(ctrl_row, bg=C_SURFACE, highlightthickness=1,
                               highlightbackground=C_BORDER)
         date_frame.pack(side="left", padx=(6, 18))
-        date_entry = tk.Entry(date_frame, textvariable=self._date_var,
-                              font=("Segoe UI", 11), width=12,
-                              relief="flat", bg=C_SURFACE, fg=C_TEXT,
-                              insertbackground=C_PRIMARY)
-        date_entry.pack(padx=8, pady=5)
-        date_entry.bind("<FocusIn>",
-            lambda _: date_frame.config(highlightbackground=C_PRIMARY,
-                                        highlightthickness=2))
-        date_entry.bind("<FocusOut>",
-            lambda _: date_frame.config(highlightbackground=C_BORDER,
-                                        highlightthickness=1))
+        date_entry = DateEntry(  # type: ignore[possibly-unbound]
+            date_frame, textvariable=self._date_var,
+            width=12, date_pattern="yyyy-mm-dd",
+            background=C_PRIMARY, foreground="white",
+            weekendbackground="white", weekendforeground="black",
+            state="readonly",
+            borderwidth=1, font=("Segoe UI", 11),
+        )
+        date_entry.pack(padx=4, pady=4)
+        date_entry.bind("<<DateEntrySelected>>",  # type: ignore[attr-defined]
+            lambda _: self.after(100, self._show_available))
 
         # Ca hoc label + combobox
         tk.Label(ctrl_row, text="🕐  Ca hoc:", bg=C_SURFACE,
@@ -268,4 +270,4 @@ class RoomManagementFrame(tk.Frame):
         else:
             self._suggest_status.config(
                 text=f"⚠️  Khong co phong trong  |  {date_text}  –  {slot}",
-                fg="#dc2626")
+                fg="#db2777")

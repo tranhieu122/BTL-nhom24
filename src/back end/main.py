@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-He Thong Quan Ly Dat Phong Hoc - Nhom 24
+He Thong Quan Ly Phong Hoc - Nhom 24
 Thanh vien: Tran Trung Hieu · Nguyen Huy Hai · Nguyen Tuan Minh
 Entry point: khoi dong ung dung va day du toan bo module.
 """
@@ -34,6 +34,7 @@ from controllers.notification_controller import NotificationController
 from controllers.report_controller import ReportController
 from controllers.room_controller import RoomController
 from controllers.room_feedback_controller import RoomFeedbackController
+from controllers.schedule_rule_controller import ScheduleRuleController
 from controllers.user_controller import UserController
 
 from gui.theme import apply_theme
@@ -48,6 +49,7 @@ from gui.report_gui import ReportFrame
 from gui.room_feedback_gui import RoomIssueManagementFrame
 from gui.room_gui import RoomManagementFrame
 from gui.schedule_gui import ScheduleFrame
+from gui.recurring_schedule_gui import RecurringScheduleFrame
 from gui.user_gui import UserManagementFrame
 
 # ── Layout ───────────────────────────────────────────────────────────────────
@@ -84,39 +86,42 @@ ROLE_AVATAR = {
 
 # ── Nav: (label, key, icon).  key=="---" → section header ────────────────────
 NAV_ALL = [
-    ("Trang chu",       "dashboard",      "🏠"),
-    ("Dat phong",       "booking_form",   "📝"),
-    ("Danh sach dat",   "booking_list",   "📋"),
-    ("Lich bieu",       "schedule",       "📆"),
-    ("Thong bao",       "notifications",  "🔔"),
-    ("QUAN TRI",        "---",            None),
-    ("Quan ly phong",   "rooms",          "🏫"),
-    ("Nguoi dung",      "users",          "👥"),
-    ("Thiet bi",        "equipment",      "🔧"),
-    ("Bao cao",         "report",         "📊"),
-    ("Bao loi phong",   "room_issues",    "🚨"),
+    ("Trang chu",       "dashboard",           "🏠"),
+    ("Dat phong",       "booking_form",        "📝"),
+    ("Danh sach dat",   "booking_list",        "📋"),
+    ("Lich bieu",       "schedule",            "📆"),
+    ("Lich day chu ky", "recurring_schedule",  "🔁"),
+    ("Thong bao",       "notifications",       "🔔"),
+    ("QUAN TRI",        "---",                 None),
+    ("Quan ly phong",   "rooms",               "🏫"),
+    ("Nguoi dung",      "users",               "👥"),
+    ("Thiet bi",        "equipment",           "🔧"),
+    ("Bao cao",         "report",              "📊"),
+    ("Bao loi phong",   "room_issues",         "🚨"),
 ]
 
 NAV_GV_SV = [
-    ("Trang chu",   "dashboard",     "🏠"),
-    ("Dat phong",   "booking_form",  "📝"),
-    ("Lich su dat", "booking_list",  "📋"),
-    ("Lich bieu",   "schedule",      "📆"),
-    ("Thong bao",   "notifications", "🔔"),
-    ("Phong hoc",   "rooms",         "🏫"),
+    ("Trang chu",       "dashboard",           "🏠"),
+    ("Dat phong",       "booking_form",        "📝"),
+    ("Lich su dat",     "booking_list",        "📋"),
+    ("Lich bieu",       "schedule",            "📆"),
+    ("Lich day chu ky", "recurring_schedule",  "🔁"),
+    ("Thong bao",       "notifications",       "🔔"),
+    ("Phong hoc",       "rooms",               "🏫"),
 ]
 
 PAGE_TITLES = {
-    "dashboard":     "Trang chu",
-    "rooms":         "Quan ly phong hoc",
-    "booking_form":  "Dat phong hoc",
-    "booking_list":  "Danh sach dat phong",
-    "users":         "Quan ly nguoi dung",
-    "equipment":     "Quan ly thiet bi",
-    "report":        "Bao cao thong ke",
-    "schedule":      "Lich bieu phong hoc",
-    "room_issues":   "Bao cao su co phong",
-    "notifications": "Thong bao noi bo",
+    "dashboard":           "Trang chu",
+    "rooms":               "Quan ly phong hoc",
+    "booking_form":        "Dat phong hoc",
+    "booking_list":        "Danh sach dat phong",
+    "users":               "Quan ly nguoi dung",
+    "equipment":           "Quan ly thiet bi",
+    "report":              "Bao cao thong ke",
+    "schedule":            "Lich bieu phong hoc",
+    "recurring_schedule":  "Lich day theo chu ky tuan",
+    "room_issues":         "Bao cao su co phong",
+    "notifications":       "Thong bao noi bo",
 }
 
 
@@ -132,7 +137,7 @@ def _initials(name: str) -> str:
 class App(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
-        self.title("He Thong Quan Ly Dat Phong Hoc v2.0")
+        self.title("He Thong Quan Ly Phong Hoc")
         self.geometry("1280x780")
         self.minsize(960, 600)
         self.configure(bg=C_BG)
@@ -149,6 +154,7 @@ class App(tk.Tk):
         self.report_ctrl = ReportController(
             self.room_ctrl, self.booking_ctrl,
             self.user_ctrl, self.equip_ctrl)
+        self.schedule_rule_ctrl = ScheduleRuleController()
         self.notif_ctrl = NotificationController()
         try:
             from database.sqlite_db import backup_database
@@ -443,7 +449,7 @@ class MainShell(tk.Frame):
                                 outline="#818cf8", width=1)
             logo_bg.create_text(32, 32, text="🏫", font=("Segoe UI", 16),
                                 fill="white")
-            logo_bg.create_text(58, 29, text="He Thong QLPH",
+            logo_bg.create_text(58, 29, text="HT Quan Ly Phong Hoc",
                                 font=("Segoe UI", 10, "bold"),
                                 fill="#e0e7ff", anchor="w")
             logo_bg.create_text(58, 48, text="v2.0  •  Nhom 24",
@@ -630,7 +636,8 @@ class MainShell(tk.Frame):
             frame = BookingFormFrame(
                 self._content_frame, app.booking_ctrl, app.room_ctrl,
                 app.current_user,
-                on_booking_created=lambda: self._navigate("booking_list"))
+                on_booking_created=lambda: self._navigate("booking_list"),
+                equipment_controller=app.equip_ctrl)
         elif key in ("booking_list", "lich_su_dat"):
             frame = BookingListFrame(self._content_frame,
                                      app.booking_ctrl, app.current_user,
@@ -651,6 +658,14 @@ class MainShell(tk.Frame):
         elif key in ("schedule", "lich_bieu"):
             frame = ScheduleFrame(self._content_frame,
                                   app.booking_ctrl, app.room_ctrl)
+        elif key == "recurring_schedule":
+            frame = RecurringScheduleFrame(
+                self._content_frame,
+                app.schedule_rule_ctrl,
+                app.room_ctrl,
+                app.user_ctrl,
+                current_user=app.current_user,
+            )
         else:
             frame = tk.Frame(self._content_frame, bg=C_BG)
             tk.Label(frame, text=f"Trang '{key}' dang phat trien.",

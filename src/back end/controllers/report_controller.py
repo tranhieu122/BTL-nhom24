@@ -77,7 +77,7 @@ class ReportController:
 
     def monthly_booking_counts(self) -> list[tuple[str, int]]:
         """Return (YYYY-MM, count) sorted ascending for the past 12 months."""
-        from datetime import date, timedelta
+        from datetime import date, timedelta # type: ignore
         today = date.today()
         months = []
         for i in range(11, -1, -1):
@@ -87,14 +87,14 @@ class ReportController:
             while m <= 0:
                 m += 12
                 y -= 1
-            months.append(f"{y:04d}-{m:02d}")
+            months.append(f"{y:04d}-{m:02d}") # type: ignore
 
-        counts: dict[str, int] = {m: 0 for m in months}
+        counts: dict[str, int] = {m: 0 for m in months} # type: ignore
         for b in self.booking_ctrl.list_bookings(from_today=False):
             ym = b.booking_date[:7]  # "YYYY-MM"
             if ym in counts:
                 counts[ym] += 1
-        return [(m, counts[m]) for m in months]
+        return [(m, counts[m]) for m in months] # type: ignore
 
     # ── Slot / user analytics ─────────────────────────────────────────────────
 

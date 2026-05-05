@@ -1,9 +1,11 @@
 # equipment_gui.py  –  equipment management screen  (v2.0 - full CRUD)
 from __future__ import annotations
+import datetime as dt
 import tkinter as tk
 from tkinter import messagebox, ttk
 from typing import Any
-from gui.theme import (C_BG, C_PRIMARY, C_SURFACE, C_BORDER, C_MUTED,
+from tkcalendar import DateEntry  # type: ignore[import-untyped]
+from gui.theme import (C_BG, C_SURFACE, C_BORDER, C_MUTED,
                        F_INPUT, make_tree, fill_tree, with_scrollbar, # type: ignore
                        page_header, btn, search_box, labeled_entry)
 
@@ -47,8 +49,6 @@ class EquipmentDialog(tk.Toplevel):
         tk.Frame(hdr, bg="#4f46e5", height=3).pack(fill="x")
         hdr_inner = tk.Frame(hdr, bg="#1e1b4b", padx=22, pady=14)
         hdr_inner.pack(fill="x")
-        is_edit = bool(getattr(self, "result", None) is None
-                       and self.title() != "Them thiet bi")
         icon_lbl = tk.Label(hdr_inner,
                             text="✏️" if "Sua" in self.title() else "🔧",
                             bg="#1e1b4b", font=("Segoe UI", 18))
@@ -68,17 +68,33 @@ class EquipmentDialog(tk.Toplevel):
         frm.pack()
 
         icons = {"equipment_id": "🔑", "name": "🔧",
-                 "equipment_type": "📦", "purchase_date": "📅"}
+                 "equipment_type": "📦"}
         labels_map = {"equipment_id": "MA THIET BI *", "name": "TEN THIET BI *",
-                      "equipment_type": "LOAI THIET BI *",
-                      "purchase_date": "NGAY MUA (YYYY-MM-DD) *"}
+                      "equipment_type": "LOAI THIET BI *"}
         r = 0
-        for key in ("equipment_id", "name", "equipment_type", "purchase_date"):
+        for key in ("equipment_id", "name", "equipment_type"):
             outer, _ = labeled_entry(
                 frm, labels_map[key], self.vars[key],
                 icon=icons[key], width=32)
             outer.grid(row=r, column=0, columnspan=2, sticky="ew", pady=(6, 0))
             r += 1
+
+        # Date picker for purchase_date
+        tk.Label(frm, text="NGAY MUA *", bg=C_SURFACE, fg=C_MUTED,
+                 font=("Segoe UI", 8, "bold")).grid(
+            row=r, column=0, columnspan=2, sticky="w", pady=(10, 2))
+        r += 1
+        _init_date = self.vars["purchase_date"].get()
+        try:
+            _dt_val = dt.date.fromisoformat(_init_date) if _init_date else dt.date.today()
+        except ValueError:
+            _dt_val = dt.date.today()
+        self._date_entry = DateEntry(
+            frm, font=("Segoe UI", 10), date_pattern="yyyy-mm-dd",
+            background="#4f46e5", foreground="white", width=32)
+        self._date_entry.set_date(_dt_val) # type: ignore
+        self._date_entry.grid(row=r, column=0, columnspan=2, sticky="ew", ipady=4) # type: ignore
+        r += 1
 
         # Room combobox
         tk.Label(frm, text="PHONG *", bg=C_SURFACE, fg=C_MUTED,
@@ -110,8 +126,10 @@ class EquipmentDialog(tk.Toplevel):
 
     def _save(self) -> None:
         v = {k: var.get().strip() for k, var in self.vars.items()}
+        # Read purchase_date from DateEntry widget
+        v["purchase_date"] = self._date_entry.get_date().isoformat() # type: ignore
         if not all([v["equipment_id"], v["name"], v["equipment_type"],
-                    v["room_id"], v["purchase_date"]]):
+                    v["room_id"], v["purchase_date"]]): # type: ignore
             messagebox.showwarning("Thieu thong tin",
                                    "Vui long dien day du cac truong bat buoc (*).",
                                    parent=self)
@@ -144,7 +162,7 @@ class EquipmentManagementFrame(tk.Frame):
             ("total",    "🔧", "Tong thiet bi",  "#eef2ff", "#4f46e5"),
             ("active",   "✅", "Hoat dong",       "#dcfce7", "#15803d"),
             ("maintain", "⚙️", "Bao tri",         "#fef3c7", "#b45309"),
-            ("broken",   "❌", "Hong",            "#fee2e2", "#dc2626"),
+            ("broken",   "❌", "Hong",            "#fdf2f8", "#db2777"),
             ("rooms",    "🏫", "Phong co TB",     "#f0f9ff", "#0369a1"),
         ]
         for key, icon, label, bg, fg in stat_defs:
@@ -249,9 +267,11 @@ class EquipmentManagementFrame(tk.Frame):
             return
         try:
             self.equip_ctrl.save_equipment(dlg.result)
-        except ValueError as e:
-            messagebox.showerror("Loi", str(e))
+        except Exception as e:
+            messagebox.showerror("Loi khi luu thiet bi", str(e))
             return
+        # Reset filter to show all so the newly added item is visible
+        self.room_var.set("Tat ca")
         self.refresh()
         messagebox.showinfo("Thanh cong",
                             f"Da them thiet bi '{dlg.result['name']}'.")
@@ -270,8 +290,8 @@ class EquipmentManagementFrame(tk.Frame):
             return
         try:
             self.equip_ctrl.save_equipment(dlg.result)
-        except ValueError as e:
-            messagebox.showerror("Loi", str(e))
+        except Exception as e:
+            messagebox.showerror("Loi khi cap nhat thiet bi", str(e))
             return
         self.refresh()
 

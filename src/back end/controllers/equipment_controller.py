@@ -1,17 +1,21 @@
 """Equipment management business logic."""
 from __future__ import annotations
 from dao.equipment_dao import EquipmentDAO
+from dao.room_feedback_dao import EquipmentReportDAO, EquipmentReport
 from models.equipment import Equipment
+from models.user import User
 from utils.logger import get_logger
 
 _log = get_logger(__name__)
 
 VALID_STATUSES = {"Hoat dong", "Bao tri", "Hong", "Dang sua", "Da thanh ly"}
+VALID_REPORT_STATUSES = {"Cho xu ly", "Dang xu ly", "Da xu ly"}
 
 
 class EquipmentController:
     def __init__(self) -> None:
         self.equipment_dao = EquipmentDAO()
+        self.report_dao = EquipmentReportDAO()
 
     # ── Queries ───────────────────────────────────────────────────────────────
 
@@ -86,34 +90,39 @@ class EquipmentController:
         _log.info("Equipment %s status → %s", equipment_id, new_status)
         return saved
 
-    def __init__(self) -> None:
-        self.equipment_dao = EquipmentDAO()
+    # ── Maintenance reports ───────────────────────────────────────────────────
 
-    def list_equipment(self, room_id: str = "") -> list[Equipment]:
-        items = self.equipment_dao.list_all()
-        if room_id:
-            items = [e for e in items if e.room_id == room_id]
-        return items
+    def report_broken(self, equipment_id: str, user: User,
+                      description: str) -> EquipmentReport:
+        """Create a maintenance request for a broken/faulty equipment item.
 
-    def save_equipment(self, payload: dict[str, str]) -> Equipment:
-        equipment_id = payload["equipment_id"].strip().upper()
-        name         = payload["name"].strip()
-        room_id      = payload["room_id"].strip()
-        if not equipment_id:
-            raise ValueError("Ma thiet bi khong duoc de trong.")
-        if not name:
-            raise ValueError("Ten thiet bi khong duoc de trong.")
-        if not room_id:
-            raise ValueError("Hay chon phong chua thiet bi.")
-        equip = Equipment(
+        Also marks the equipment status as 'Bao tri' automatically.
+        """
+        equip = self.equipment_dao.find_by_id(equipment_id)
+        if equip is None:
+            raise ValueError("Khong tim thay thiet bi.")
+        if not description.strip():
+            raise ValueError("Mo ta su co khong duoc de trong.")
+        # Auto-update equipment status to "Bao tri"
+        if equip.status == "Hoat dong":
+            equip.status = "Bao tri"
+            self.equipment_dao.save(equip)
+        report = self.report_dao.report(
             equipment_id=equipment_id,
-            name=name,
-            equipment_type=payload["equipment_type"].strip(),
-            room_id=room_id,
-            status=payload["status"].strip(),
-            purchase_date=payload["purchase_date"].strip(),
+            equipment_name=equip.name,
+            room_id=equip.room_id,
+            user_id=user.user_id,
+            user_name=user.full_name,
+            description=description.strip(),
         )
-        return self.equipment_dao.save(equip)
+        _log.info("Equipment report created for %s by %s", equipment_id, user.username)
+        return report
 
-    def delete_equipment(self, equipment_id: str) -> None:
-        self.equipment_dao.delete(equipment_id)
+    def list_reports(self, room_id: str = "",
+                     status: str = "") -> list[EquipmentReport]:
+        return self.report_dao.list_all(room_id=room_id, status=status)
+
+    def resolve_report(self, report_id: int) -> None:
+        self.report_dao.update_status(report_id, "Da xu ly")
+        _log.info("Equipment report %d resolved", report_id)
+

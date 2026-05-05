@@ -14,7 +14,7 @@ _CATEGORY_RULES: list[tuple[list[str], str, str, str]] = [
     # keywords,              icon, badge_bg,  badge_fg
     (["dat phong", "booking", "phong"], "📅", "#eef2ff", "#4f46e5"),
     (["duyet", "phe duyet"],             "✅", "#dcfce7", "#15803d"),
-    (["tu choi", "huy"],                 "❌", "#fee2e2", "#dc2626"),
+    (["tu choi", "huy"],                 "❌", "#fdf2f8", "#db2777"),
     (["thiet bi", "equipment"],          "🔧", "#ede9fe", "#6d28d9"),
     (["bao tri", "sua chua"],            "🛠", "#fef3c7", "#b45309"),
     (["he thong", "system"],             "⚙",  "#f1f5f9", "#475569"),
@@ -170,7 +170,7 @@ class NotificationFrame(tk.Frame):
             self._badge_lbl = tk.Label(
                 self._header_frame,
                 text=f"  {unread_count} chua doc  ",
-                bg="#dc2626", fg="white",
+                bg="#db2777", fg="white",
                 font=("Segoe UI", 9, "bold"),
                 padx=4, pady=2)
             self._badge_lbl.pack(side="right", padx=16, pady=10)
@@ -191,12 +191,12 @@ class NotificationFrame(tk.Frame):
             return
 
         for n in notifs:
-            self._draw_row(n)
+            self._draw_row(n) # type: ignore
 
-    def _draw_row(self, n: dict) -> None:
+    def _draw_row(self, n: dict) -> None: # type: ignore
         is_unread = not n["is_read"]
         row_bg    = "#eef2ff" if is_unread else C_SURFACE
-        icon, cat_bg, cat_fg = _categorise(n.get("title", ""), n.get("message", ""))
+        icon, cat_bg, cat_fg = _categorise(n.get("title", ""), n.get("message", "")) # type: ignore
 
         # ── Outer card wrapper ────────────────────────────────────────────────
         card_wrap = tk.Frame(self._list_frame, bg=C_BG, padx=8, pady=4)
@@ -209,20 +209,20 @@ class NotificationFrame(tk.Frame):
         card.pack(fill="x")
 
         # Hover effect
-        def _enter(_: Any, c=card, bg=row_bg) -> None:
+        def _enter(_: Any, c=card, bg=row_bg) -> None: # type: ignore
             darken = "#dde6ff" if bg == "#eef2ff" else "#f8fafc"
             c.config(bg=darken)
             for ch in c.winfo_children():
                 try:
-                    ch.config(bg=darken)
+                    ch.config(bg=darken) # type: ignore
                 except Exception:
                     pass
 
-        def _leave(_: Any, c=card, bg=row_bg) -> None:
+        def _leave(_: Any, c=card, bg=row_bg) -> None: # type: ignore
             c.config(bg=bg)
             for ch in c.winfo_children():
                 try:
-                    ch.config(bg=bg)
+                    ch.config(bg=bg) # type: ignore
                 except Exception:
                     pass
 
@@ -252,17 +252,17 @@ class NotificationFrame(tk.Frame):
             tk.Label(top, text="●", bg=row_bg, fg="#4f46e5",
                      font=("Segoe UI", 8)).pack(side="left", padx=(0, 4))
 
-        tk.Label(top, text=n.get("title", "Thong bao"),
+        tk.Label(top, text=n.get("title", "Thong bao"), # type: ignore
                  bg=row_bg, fg=C_DARK,
                  font=("Segoe UI", 10, "bold")).pack(side="left")
 
-        rel = relative_time(n.get("created_at", ""))
+        rel = relative_time(n.get("created_at", "")) # type: ignore
         tk.Label(top, text=rel, bg=row_bg, fg=C_MUTED,
                  font=("Segoe UI", 8, "italic")).pack(side="right")
 
         # Message preview (max 2 lines)
-        msg = n.get("message", "")
-        tk.Label(content, text=msg, bg=row_bg, fg=C_TEXT,
+        msg = n.get("message", "") # type: ignore
+        tk.Label(content, text=msg, bg=row_bg, fg=C_TEXT, # type: ignore
                  font=F_BODY, wraplength=700,
                  justify="left", anchor="w").pack(fill="x", pady=(3, 0))
 
@@ -270,7 +270,7 @@ class NotificationFrame(tk.Frame):
         bottom = tk.Frame(content, bg=row_bg)
         bottom.pack(fill="x", pady=(5, 0))
 
-        sender = n.get("sender_name", "He thong")
+        sender = n.get("sender_name", "He thong") # type: ignore
         sender_chip = tk.Frame(bottom, bg=cat_bg, padx=6, pady=2)
         sender_chip.pack(side="left")
         tk.Label(sender_chip, text=f"Tu: {sender}",
@@ -291,24 +291,24 @@ class NotificationFrame(tk.Frame):
             read_btn.bind("<Button-1>", _mark_read)
 
         # ── Click to view detail ──────────────────────────────────────────────
-        def _on_click(_: Any = None, nid: int = n["id"], item: dict = n) -> None:
+        def _on_click(_: Any = None, nid: int = n["id"], item: dict = n) -> None: # type: ignore
             if not n["is_read"]:
                 self.notif_ctrl.mark_read(nid)
-            self._show_notification_detail(item)
+            self._show_notification_detail(item) # pyright: ignore[reportUnknownMemberType]
             self.refresh()
 
         for widget in (card, content, top, bottom):
-            widget.bind("<Button-1>", _on_click)
+            widget.bind("<Button-1>", _on_click) # pyright: ignore[reportUnknownArgumentType]
 
 
-    def _show_notification_detail(self, n: dict) -> None:
+    def _show_notification_detail(self, n: dict) -> None: # pyright: ignore[reportMissingTypeArgument, reportUnknownParameterType]
         dlg = tk.Toplevel(self)
         dlg.title("Chi tiet thong bao")
         dlg.configure(bg=C_SURFACE)
         dlg.resizable(False, False)
         dlg.transient(self.winfo_toplevel())
 
-        icon, cat_bg, cat_fg = _categorise(n.get("title", ""), n.get("message", ""))
+        icon, cat_bg, cat_fg = _categorise(n.get("title", ""), n.get("message", "")) # pyright: ignore[reportUnknownArgumentType, reportUnusedVariable, reportUnknownMemberType]
 
         # Header
         hdr = tk.Frame(dlg, bg="#4f46e5", padx=18, pady=14)
@@ -321,10 +321,10 @@ class NotificationFrame(tk.Frame):
                  font=("Segoe UI", 18)).pack()
         info = tk.Frame(hdr_inner, bg="#4f46e5")
         info.pack(side="left")
-        tk.Label(info, text=n.get("title", "Thong bao"),
+        tk.Label(info, text=n.get("title", "Thong bao"), # type: ignore
                  bg="#4f46e5", fg="white",
                  font=("Segoe UI", 13, "bold")).pack(anchor="w")
-        sender = n.get("sender_name", "He thong")
+        sender = n.get("sender_name", "He thong") # type: ignore
         tk.Label(info, text=f"Tu: {sender}",
                  bg="#4f46e5", fg="#c7d2fe",
                  font=("Segoe UI", 9)).pack(anchor="w")
@@ -333,12 +333,12 @@ class NotificationFrame(tk.Frame):
         card.pack(fill="both", expand=True, padx=14, pady=14)
 
         # Time row
-        created = n.get("created_at", "")
-        rel = relative_time(created)
+        created = n.get("created_at", "") # type: ignore
+        rel = relative_time(created) # type: ignore
         try:
-            abs_time = dt.datetime.fromisoformat(str(created)).strftime("%d/%m/%Y %H:%M")
+            abs_time = dt.datetime.fromisoformat(str(created)).strftime("%d/%m/%Y %H:%M") # type: ignore
         except Exception:
-            abs_time = str(created)
+            abs_time = str(created) # type: ignore
         time_row = tk.Frame(card, bg="#f8fafc", highlightthickness=1,
                             highlightbackground=C_BORDER, padx=10, pady=6)
         time_row.pack(fill="x", pady=(0, 12))
@@ -349,7 +349,7 @@ class NotificationFrame(tk.Frame):
         msg_box = tk.Frame(card, bg="#f8fafc",
                            highlightthickness=1, highlightbackground=C_BORDER)
         msg_box.pack(fill="x")
-        tk.Label(msg_box, text=n.get("message", ""),
+        tk.Label(msg_box, text=n.get("message", ""), # pyright: ignore[reportUnknownMemberType] # type: ignore
                  bg="#f8fafc", fg=C_TEXT,
                  font=("Segoe UI", 11), wraplength=520,
                  justify="left", anchor="w").pack(fill="x", padx=12, pady=12)

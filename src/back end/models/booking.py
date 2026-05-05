@@ -1,6 +1,6 @@
 """Booking model."""
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 @dataclass
 class Booking:
@@ -12,3 +12,4 @@ class Booking:
     slot: str
     purpose: str
     status: str = "Cho duyet"
+    rejection_reason: str = ""
