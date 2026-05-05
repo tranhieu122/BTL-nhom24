@@ -60,23 +60,6 @@ Dự án cung cấp giải pháp chuyển đổi số toàn diện cho quy trìn
 
 ---
 
-## 🏗️ Kiến trúc hệ thống
-
-Dự án áp dụng mô hình **MVC** kết hợp **DAO (Data Access Object)** giúp tách biệt logic, giao diện và dữ liệu:
-
-```mermaid
-graph TD
-    GUI[GUI / View\n(Tkinter)] <-->|Tương tác| CTRL[Controller\n(Xử lý Logic)]
-    CTRL <-->|Gọi hàm| DAO[DAO\n(Thao tác CSDL)]
-    DAO <-->|Truy vấn| DB[(SQLite Database)]
-    DAO -->|Tạo đối tượng| MODEL[Model\n(Dataclasses)]
-    CTRL -.->|Sử dụng| MODEL
-```
-
-> **Chi tiết thiết kế:** Xem thêm tài liệu giải thích UML và ERD tại `Docs/readme9.md` và thư mục `Docs/Design/`.
-
----
-
 ## 📂 Cấu trúc thư mục
 
 ```text
