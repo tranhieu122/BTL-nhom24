@@ -13,7 +13,7 @@
 
 ---
 
-## 📝 Giới thiệu
+## 📝 Giới thiệu 
 
 Hệ thống **Quản lý đặt phòng học** là một ứng dụng desktop mạnh mẽ được xây dựng bằng **Python** và **Tkinter**, tuân thủ nghiêm ngặt kiến trúc **MVC (Model – View – Controller)**. 
 
