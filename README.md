@@ -175,14 +175,3 @@ python -m pytest tests/ -v
 - **Audit Logging:** Ghi nhận mọi hoạt động quan trọng vào file `logs/app.log` (Hỗ trợ xoay vòng file log tối đa 2MB, lưu 3 bản backup).
 
 ---
-
-## 👥 Nhóm phát triển (Nhóm 24).
-
-| STT | Họ và Tên | Vai trò |
-|:---:|:---|:---|
-| 1 | **Trần Trung Hiếu** | Trưởng nhóm / Full-stack |
-| 2 | **Nguyễn Huy Hải** | Thành viên |
-| 3 | **Nguyễn Tuấn Minh** | Thành viên |
-
----
-*Dự án được phát triển với niềm đam mê ❤️ và sự nghiêm túc.*
