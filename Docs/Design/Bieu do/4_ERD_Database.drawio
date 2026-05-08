@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="Electron" agent="Mozilla/5.0">
+  <diagram id="diagram_ERD" name="ERD – Hệ Thống Quản Lý Đặt Phòng Học">
+    <mxGraphModel dx="1500" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ============================================================
+             LEGEND
+        ============================================================ -->
+        <mxCell id="leg1" value="LEGEND" style="text;html=1;fontStyle=1;fontSize=13;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" value="PK  Primary Key" style="text;html=1;fontSize=11;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="70" width="160" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" value="FK  Foreign Key" style="text;html=1;fontSize=11;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="92" width="160" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" value="――▷  1 : N  Relationship" style="text;html=1;fontSize=11;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="114" width="200" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             TABLE: users
+        ============================================================ -->
+        <mxCell id="t_users" value="&lt;table width=&quot;100%&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot;&gt;&lt;tr style=&quot;background:#4472C4;color:white;&quot;&gt;&lt;th colspan=&quot;3&quot; style=&quot;text-align:center;font-size:13px;&quot;&gt;users&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#D6E4FF;&quot;&gt;&lt;td&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;username&lt;/td&gt;&lt;td&gt;TEXT UNIQUE NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;full_name&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;role&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(Admin / Giang vien / Sinh vien)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;email&lt;/td&gt;&lt;td&gt;TEXT UNIQUE NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;phone&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;password_hash&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;status&lt;/td&gt;&lt;td&gt;TEXT DEFAULT 'Hoat dong'&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#EBF3FB;strokeColor=#4472C4;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="180" width="380" height="220" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             TABLE: rooms
+        ============================================================ -->
+        <mxCell id="t_rooms" value="&lt;table width=&quot;100%&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot;&gt;&lt;tr style=&quot;background:#4472C4;color:white;&quot;&gt;&lt;th colspan=&quot;3&quot; style=&quot;text-align:center;font-size:13px;&quot;&gt;rooms&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#D6E4FF;&quot;&gt;&lt;td&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;name&lt;/td&gt;&lt;td&gt;TEXT UNIQUE NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;capacity&lt;/td&gt;&lt;td&gt;INTEGER NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;room_type&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;equipment&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(mo ta chung)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;status&lt;/td&gt;&lt;td&gt;TEXT DEFAULT 'Hoat dong'&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#EBF3FB;strokeColor=#4472C4;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="180" width="360" height="185" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             TABLE: bookings
+        ============================================================ -->
+        <mxCell id="t_bookings" value="&lt;table width=&quot;100%&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot;&gt;&lt;tr style=&quot;background:#70AD47;color:white;&quot;&gt;&lt;th colspan=&quot;3&quot; style=&quot;text-align:center;font-size:13px;&quot;&gt;bookings&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#E2EFDA;&quot;&gt;&lt;td&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;user_id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT → users.id&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;user_name&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;room_id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT → rooms.id&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;booking_date&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(YYYY-MM-DD)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;slot&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(Ca 1 .. Ca 5)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;purpose&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;status&lt;/td&gt;&lt;td&gt;TEXT DEFAULT 'Cho duyet'&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;rejection_reason&lt;/td&gt;&lt;td&gt;TEXT DEFAULT ''  &lt;i&gt;(migration v1)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#E8F5E9;strokeColor=#70AD47;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="490" width="400" height="270" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             TABLE: equipment
+        ============================================================ -->
+        <mxCell id="t_equipment" value="&lt;table width=&quot;100%&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot;&gt;&lt;tr style=&quot;background:#ED7D31;color:white;&quot;&gt;&lt;th colspan=&quot;3&quot; style=&quot;text-align:center;font-size:13px;&quot;&gt;equipment&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#FCE4D6;&quot;&gt;&lt;td&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;name&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;equipment_type&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;room_id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT → rooms.id&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;status&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(Hoat dong / Hong / Bao tri)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;purchase_date&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(YYYY-MM-DD)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#FFF0E6;strokeColor=#ED7D31;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="180" width="380" height="185" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             TABLE: schedules
+        ============================================================ -->
+        <mxCell id="t_schedules" value="&lt;table width=&quot;100%&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot;&gt;&lt;tr style=&quot;background:#9B59B6;color:white;&quot;&gt;&lt;th colspan=&quot;3&quot; style=&quot;text-align:center;font-size:13px;&quot;&gt;schedules&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5EEF8;&quot;&gt;&lt;td&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;INTEGER AUTOINCREMENT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;room_id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT → rooms.id&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;weekday&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(Thu 2 .. Chu nhat)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;slot&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(Ca 1 .. Ca 5)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;label&lt;/td&gt;&lt;td&gt;TEXT DEFAULT ''&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;status&lt;/td&gt;&lt;td&gt;TEXT DEFAULT 'Trong'&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td colspan=&quot;3&quot;&gt;&lt;i&gt;UNIQUE(room_id, weekday, slot)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#F9F0FF;strokeColor=#9B59B6;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="490" width="380" height="230" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             TABLE: schedule_rules
+        ============================================================ -->
+        <mxCell id="t_schedule_rules" value="&lt;table width=&quot;100%&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot;&gt;&lt;tr style=&quot;background:#9B59B6;color:white;&quot;&gt;&lt;th colspan=&quot;3&quot; style=&quot;text-align:center;font-size:13px;&quot;&gt;schedule_rules&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5EEF8;&quot;&gt;&lt;td&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;INTEGER AUTOINCREMENT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;subject&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;days_of_week&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(e.g. &quot;1,3,5&quot;)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;start_time&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(HH:MM)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;end_time&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(HH:MM)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;start_date&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(YYYY-MM-DD)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;end_date&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(YYYY-MM-DD)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;room_id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT → rooms.id&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;lecturer_id&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(ref users.id)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;lecturer_name&lt;/td&gt;&lt;td&gt;TEXT DEFAULT ''&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;status&lt;/td&gt;&lt;td&gt;TEXT DEFAULT 'Hoat dong'&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;created_at&lt;/td&gt;&lt;td&gt;TEXT DEFAULT datetime('now')&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#F9F0FF;strokeColor=#9B59B6;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="820" width="420" height="360" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             TABLE: schedule_occurrences
+        ============================================================ -->
+        <mxCell id="t_schedule_occ" value="&lt;table width=&quot;100%&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot;&gt;&lt;tr style=&quot;background:#9B59B6;color:white;&quot;&gt;&lt;th colspan=&quot;3&quot; style=&quot;text-align:center;font-size:13px;&quot;&gt;schedule_occurrences&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5EEF8;&quot;&gt;&lt;td&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;INTEGER AUTOINCREMENT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;rule_id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;INTEGER → schedule_rules.id&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;occurrence_date&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(YYYY-MM-DD)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;day_of_week&lt;/td&gt;&lt;td&gt;INTEGER  &lt;i&gt;(1=T2 .. 7=CN)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;subject&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;start_time&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(HH:MM)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;end_time&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(HH:MM)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;room_id&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(ref rooms.id)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;lecturer_name&lt;/td&gt;&lt;td&gt;TEXT DEFAULT ''&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;status&lt;/td&gt;&lt;td&gt;TEXT DEFAULT 'Du kien'&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#F9F0FF;strokeColor=#9B59B6;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="820" width="420" height="300" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             TABLE: room_ratings
+        ============================================================ -->
+        <mxCell id="t_room_ratings" value="&lt;table width=&quot;100%&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot;&gt;&lt;tr style=&quot;background:#C0392B;color:white;&quot;&gt;&lt;th colspan=&quot;3&quot; style=&quot;text-align:center;font-size:13px;&quot;&gt;room_ratings&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#FADBD8;&quot;&gt;&lt;td&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;INTEGER AUTOINCREMENT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;room_id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT → rooms.id&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;user_id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT → users.id&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;user_name&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;stars&lt;/td&gt;&lt;td&gt;INTEGER  &lt;i&gt;CHECK(1..5)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;comment&lt;/td&gt;&lt;td&gt;TEXT DEFAULT ''&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;created_at&lt;/td&gt;&lt;td&gt;TEXT DEFAULT datetime('now')&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#FEF9F9;strokeColor=#C0392B;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="840" width="380" height="220" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             TABLE: room_issues
+        ============================================================ -->
+        <mxCell id="t_room_issues" value="&lt;table width=&quot;100%&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot;&gt;&lt;tr style=&quot;background:#C0392B;color:white;&quot;&gt;&lt;th colspan=&quot;3&quot; style=&quot;text-align:center;font-size:13px;&quot;&gt;room_issues&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#FADBD8;&quot;&gt;&lt;td&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;INTEGER AUTOINCREMENT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;room_id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT → rooms.id&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;user_id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT → users.id&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;user_name&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;description&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;status&lt;/td&gt;&lt;td&gt;TEXT DEFAULT 'Chua xu ly'&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;notes&lt;/td&gt;&lt;td&gt;TEXT DEFAULT ''  &lt;i&gt;(migration v2)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;created_at&lt;/td&gt;&lt;td&gt;TEXT DEFAULT datetime('now')&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#FEF9F9;strokeColor=#C0392B;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="490" width="380" height="250" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             TABLE: notifications
+        ============================================================ -->
+        <mxCell id="t_notifications" value="&lt;table width=&quot;100%&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot;&gt;&lt;tr style=&quot;background:#16A085;color:white;&quot;&gt;&lt;th colspan=&quot;3&quot; style=&quot;text-align:center;font-size:13px;&quot;&gt;notifications  &lt;i style=&quot;font-size:10px;&quot;&gt;(migration v3)&lt;/i&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#D5F5E3;&quot;&gt;&lt;td&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;INTEGER AUTOINCREMENT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;sender_id&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(ref users.id / 'SYSTEM')&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;sender_name&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;recipient_id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT → users.id&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;title&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;message&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;is_read&lt;/td&gt;&lt;td&gt;INTEGER DEFAULT 0  &lt;i&gt;(0=unread)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;created_at&lt;/td&gt;&lt;td&gt;TEXT DEFAULT datetime('now')&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#E8FDF5;strokeColor=#16A085;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1120" width="400" height="240" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             TABLE: equipment_reports
+        ============================================================ -->
+        <mxCell id="t_equip_reports" value="&lt;table width=&quot;100%&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot;&gt;&lt;tr style=&quot;background:#ED7D31;color:white;&quot;&gt;&lt;th colspan=&quot;3&quot; style=&quot;text-align:center;font-size:13px;&quot;&gt;equipment_reports  &lt;i style=&quot;font-size:10px;&quot;&gt;(migration v5)&lt;/i&gt;&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#FCE4D6;&quot;&gt;&lt;td&gt;&lt;b&gt;PK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;INTEGER AUTOINCREMENT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;equipment_id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT → equipment.id&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;equipment_name&lt;/td&gt;&lt;td&gt;TEXT DEFAULT ''&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;FK&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;room_id&lt;/b&gt;&lt;/td&gt;&lt;td&gt;TEXT → rooms.id&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;user_id&lt;/td&gt;&lt;td&gt;TEXT  &lt;i&gt;(ref users.id)&lt;/i&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;user_name&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;description&lt;/td&gt;&lt;td&gt;TEXT NOT NULL&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;status&lt;/td&gt;&lt;td&gt;TEXT DEFAULT 'Cho xu ly'&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&quot;background:#F5F5F5;&quot;&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;created_at&lt;/td&gt;&lt;td&gt;TEXT DEFAULT datetime('now')&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#FFF0E6;strokeColor=#ED7D31;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="490" width="420" height="280" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             RELATIONSHIP LINES
+             Style: endArrow=ERmany (crow's foot) / startArrow=ERone
+        ============================================================ -->
+
+        <!-- users ──< bookings (user_id) -->
+        <mxCell id="r1" edge="1" parent="1" source="t_users" target="t_bookings"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#4472C4;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="1 : N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- rooms ──< bookings (room_id) -->
+        <mxCell id="r2" edge="1" parent="1" source="t_rooms" target="t_bookings"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#4472C4;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" value="1 : N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- rooms ──< equipment (room_id) -->
+        <mxCell id="r3" edge="1" parent="1" source="t_rooms" target="t_equipment"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#ED7D31;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="1 : N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- rooms ──< schedules (room_id) -->
+        <mxCell id="r4" edge="1" parent="1" source="t_rooms" target="t_schedules"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#9B59B6;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" value="1 : N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- rooms ──< room_ratings (room_id) -->
+        <mxCell id="r5" edge="1" parent="1" source="t_rooms" target="t_room_ratings"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#C0392B;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" value="1 : N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- rooms ──< room_issues (room_id) -->
+        <mxCell id="r6" edge="1" parent="1" source="t_rooms" target="t_room_issues"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#C0392B;strokeWidth=2;exitX=0;exitY=0.3;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" value="1 : N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- rooms ──< schedule_rules (room_id) -->
+        <mxCell id="r7" edge="1" parent="1" source="t_rooms" target="t_schedule_rules"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#9B59B6;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" value="1 : N">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="880" y="770" />
+              <mxPoint x="700" y="770" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- rooms ──< equipment_reports (room_id) -->
+        <mxCell id="r8" edge="1" parent="1" source="t_rooms" target="t_equip_reports"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#ED7D31;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" value="1 : N">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1100" y="310" />
+              <mxPoint x="1100" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- users ──< room_ratings (user_id) -->
+        <mxCell id="r9" edge="1" parent="1" source="t_users" target="t_room_ratings"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#C0392B;strokeWidth=2;exitX=0;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="1 : N">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-40" y="360" />
+              <mxPoint x="-40" y="950" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- users ──< room_issues (user_id) -->
+        <mxCell id="r10" edge="1" parent="1" source="t_users" target="t_room_issues"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#C0392B;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="1 : N">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-20" y="290" />
+              <mxPoint x="-20" y="615" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- users ──< notifications (recipient_id) -->
+        <mxCell id="r11" edge="1" parent="1" source="t_users" target="t_notifications"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#16A085;strokeWidth=2;exitX=0.1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="1 : N">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="80" y="780" />
+              <mxPoint x="-60" y="780" />
+              <mxPoint x="-60" y="1240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- schedule_rules ──< schedule_occurrences (rule_id) -->
+        <mxCell id="r12" edge="1" parent="1" source="t_schedule_rules" target="t_schedule_occ"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#9B59B6;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="1 : N  (ON DELETE CASCADE)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- equipment ──< equipment_reports (equipment_id) -->
+        <mxCell id="r13" edge="1" parent="1" source="t_equipment" target="t_equip_reports"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#ED7D31;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.3;entryY=0;entryDx=0;entryDy=0;" value="1 : N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             COLOR LEGEND BOXES (table groups)
+        ============================================================ -->
+        <mxCell id="cl1" value="Nhóm: Người dùng &amp; Xác thực" style="text;html=1;fontSize=11;fontStyle=1;fillColor=#EBF3FB;strokeColor=#4472C4;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="180" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cl2" value="Nhóm: Đặt phòng &amp; Lịch học" style="text;html=1;fontSize=11;fontStyle=1;fillColor=#F9F0FF;strokeColor=#9B59B6;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="230" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cl3" value="Nhóm: Thiết bị" style="text;html=1;fontSize=11;fontStyle=1;fillColor=#FFF0E6;strokeColor=#ED7D31;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="280" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cl4" value="Nhóm: Đánh giá &amp; Sự cố" style="text;html=1;fontSize=11;fontStyle=1;fillColor=#FEF9F9;strokeColor=#C0392B;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="330" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cl5" value="Nhóm: Thông báo" style="text;html=1;fontSize=11;fontStyle=1;fillColor=#E8FDF5;strokeColor=#16A085;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="380" width="120" height="40" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

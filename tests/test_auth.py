@@ -1,10 +1,10 @@
 """Unit tests for AuthController — login, register, rate limiting."""
 from __future__ import annotations
 import sys, os
-import pytest
+import pytest # type: ignore
 
 # Resolve the back-end source root
-_ROOT = os.path.join(os.path.dirname(__file__), "..", "src", "back end")
+_ROOT = os.path.join(os.path.dirname(__file__), "..", "src", "backend")
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
@@ -12,7 +12,7 @@ if _ROOT not in sys.path:
 os.environ.setdefault("DB_PATH", ":memory:")
 
 from controllers.auth_controller import (
-    AuthController, _login_attempts, _MAX_ATTEMPTS, _LOCKOUT_SECS,
+    AuthController, _login_attempts, _MAX_ATTEMPTS, _LOCKOUT_SECS, # type: ignore
     _record_failure, _clear_failures, _check_lockout,
 )
 

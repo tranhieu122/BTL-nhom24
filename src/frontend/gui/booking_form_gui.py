@@ -4,8 +4,7 @@ import datetime as dt
 import tkinter as tk
 from tkinter import messagebox, ttk
 from typing import Any
-from gui.theme import (C_BG, C_PRIMARY, C_SURFACE, C_BORDER, # type: ignore
-                       C_MUTED, page_header, btn) # type: ignore
+from gui.theme import (page_header, btn, _get_c, C_SURFACE, C_MUTED, C_PRIMARY, C_BORDER)
 
 from tkcalendar import DateEntry  # type: ignore[import-untyped]
 
@@ -15,7 +14,7 @@ class BookingFormFrame(tk.Frame):
                  room_controller: Any, current_user: Any,
                  on_booking_created: Any = None,
                  equipment_controller: Any = None) -> None:
-        super().__init__(master, bg=C_BG)
+        super().__init__(master, bg=_get_c("BG"))
         self.booking_ctrl = booking_controller
         self.room_ctrl    = room_controller
         self.current_user = current_user
@@ -33,35 +32,35 @@ class BookingFormFrame(tk.Frame):
         page_header(self, "Dat phong hoc", "📝").pack(fill="x")
 
         # User info banner
-        info = tk.Frame(self, bg="#eef2ff", highlightthickness=1,
-                        highlightbackground="#c7d2fe")
+        info = tk.Frame(self, bg=_get_c("INFO_BG"), highlightthickness=1,
+                        highlightbackground=_get_c("BORDER"))
         info.pack(fill="x", padx=20, pady=(0, 14))
         tk.Label(info, text=f"👤  {self.current_user.full_name}",
-                 bg="#eef2ff", fg="#4f46e5",
+                 bg=_get_c("INFO_BG"), fg=_get_c("ACCENT"),
                  font=("Segoe UI", 11, "bold")).pack(side="left", padx=16, pady=8)
         tk.Label(info, text=f"  │  Vai tro: {self.current_user.role}",
-                 bg="#eef2ff", fg=C_MUTED,
+                 bg=_get_c("INFO_BG"), fg=_get_c("MUTED"),
                  font=("Segoe UI", 10)).pack(side="left")
         tk.Label(info, text="📌 Dat phong se duoc admin duyet truoc khi co hieu luc",
-                 bg="#eef2ff", fg="#4338ca",
+                 bg=_get_c("INFO_BG"), fg=_get_c("ACCENT"),
                  font=("Segoe UI", 9)).pack(side="right", padx=16)
 
         # Main form + room info card side by side
-        body = tk.Frame(self, bg=C_BG)
+        body = tk.Frame(self, bg=_get_c("BG"))
         body.pack(fill="both", expand=True, padx=20, pady=(0, 16))
         body.columnconfigure(0, weight=3)
         body.columnconfigure(1, weight=2)
         body.rowconfigure(0, weight=1)
 
         # ── Left: form ────────────────────────────────────────────────────────
-        card = tk.Frame(body, bg=C_SURFACE, highlightthickness=1,
-                        highlightbackground=C_BORDER, padx=24, pady=20)
+        card = tk.Frame(body, bg=_get_c("SURFACE"), highlightthickness=1,
+                        highlightbackground=_get_c("BORDER"), padx=24, pady=20)
         card.grid(row=0, column=0, sticky="nsew", padx=(0, 10))
         card.columnconfigure(0, weight=1)
         card.columnconfigure(1, weight=1, minsize=200)
 
         def lbl(row: int, col: int, text: str) -> None:
-            tk.Label(card, text=text, bg=C_SURFACE, fg=C_MUTED,
+            tk.Label(card, text=text, bg=_get_c("SURFACE"), fg=_get_c("MUTED"),
                      font=("Segoe UI", 9, "bold")).grid(
                 row=row, column=col, sticky="w", pady=(14, 2))
 
@@ -82,14 +81,14 @@ class BookingFormFrame(tk.Frame):
         room_cb.bind("<<ComboboxSelected>>", self._on_room_selected)  # type: ignore[arg-type]
 
         # Date picker
-        date_frame = tk.Frame(card, bg=C_SURFACE)
+        date_frame = tk.Frame(card, bg=_get_c("SURFACE"))
         date_frame.grid(row=1, column=1, sticky="ew", padx=(12, 0))
         de = DateEntry(date_frame,  # type: ignore[possibly-unbound]
                        width=28, date_pattern="yyyy-mm-dd",
-                       background=C_PRIMARY, foreground="white",
-                       headersbackground=C_PRIMARY, headersforeground="white",
-                       selectbackground=C_PRIMARY, selectforeground="white",
-                       weekendbackground="white", weekendforeground="black",
+                       background=_get_c("ACCENT"), foreground="white",
+                       headersbackground=_get_c("ACCENT"), headersforeground="white",
+                       selectbackground=_get_c("ACCENT"), selectforeground="white",
+                       weekendbackground=_get_c("SURFACE"), weekendforeground=_get_c("TEXT"),
                        borderwidth=2, font=("Segoe UI", 10))
         de.set_date(dt.date.today()) # type: ignore
         de.pack(fill="x", expand=True)  # type: ignore[attr-defined]
@@ -100,7 +99,7 @@ class BookingFormFrame(tk.Frame):
             self._refresh_slots()
 
         de.bind("<<DateEntrySelected>>",  # type: ignore[attr-defined]
-                lambda _: self.after(100, _on_date_selected))  # type: ignore[misc]
+                lambda _=None: self.after(100, _on_date_selected))  # type: ignore[misc]
 
         # ── Capacity filter row ───────────────────────────────────────────────
         lbl(2, 0, "SO NGUOI DU KIEN (de loc phong)")
@@ -113,11 +112,11 @@ class BookingFormFrame(tk.Frame):
                               width=6, font=("Segoe UI", 10),
                               relief="solid", bd=1)
         cap_spin.pack(side="left", padx=6)
-        cap_spin.bind("<FocusOut>", lambda _: self._refresh_room_suggestions())
-        cap_spin.bind("<Return>", lambda _: self._refresh_room_suggestions())
-        cap_spin.bind("<ButtonRelease-1>", lambda _: self.after(50, self._refresh_room_suggestions))
-        cap_spin.bind("<<Increment>>", lambda _: self.after(50, self._refresh_room_suggestions))
-        cap_spin.bind("<<Decrement>>", lambda _: self.after(50, self._refresh_room_suggestions))
+        cap_spin.bind("<FocusOut>", lambda _=None: self._refresh_room_suggestions())
+        cap_spin.bind("<Return>", lambda _=None: self._refresh_room_suggestions())
+        cap_spin.bind("<ButtonRelease-1>", lambda _=None: self.after(50, self._refresh_room_suggestions))
+        cap_spin.bind("<<Increment>>", lambda _=None: self.after(50, self._refresh_room_suggestions))
+        cap_spin.bind("<<Decrement>>", lambda _=None: self.after(50, self._refresh_room_suggestions))
         tk.Label(cap_frame, text="nguoi  (0 = hien thi tat ca)",
                  bg=C_SURFACE, fg=C_MUTED, font=("Segoe UI", 8)).pack(side="left")
 
@@ -159,8 +158,8 @@ class BookingFormFrame(tk.Frame):
                 command=lambda s=slot_name: _select_slot(s))
             sb.grid(row=0, column=i, padx=2)
             self._slot_btns[slot_name] = sb
-            sb.bind("<Enter>", lambda e, s=sb: s.config(bg="#e0e7ff") if s.cget("bg") != C_PRIMARY else None)
-            sb.bind("<Leave>", lambda e, s=sb: s.config(bg="#f1f5f9") if s.cget("bg") != C_PRIMARY else None)
+            sb.bind("<Enter>", lambda e=None, s=sb: s.config(bg="#e0e7ff") if s.cget("bg") != C_PRIMARY else None)
+            sb.bind("<Leave>", lambda e=None, s=sb: s.config(bg="#f1f5f9") if s.cget("bg") != C_PRIMARY else None)
 
         avail_lbl = tk.Label(card, textvariable=self.avail_var, bg="#f0fdf4",
                              fg="#15803d", font=("Segoe UI", 9), width=32,
@@ -191,15 +190,8 @@ class BookingFormFrame(tk.Frame):
         self.purpose_text.grid(row=9, column=0, columnspan=2,
                                sticky="ew", pady=(0, 16))
 
-        # ── Equipment selection & fault-report panel (appears after room pick) ─
-        self._equip_panel_frame = tk.Frame(card, bg=C_SURFACE)
-        self._equip_panel_frame.grid(row=10, column=0, columnspan=2,
-                                     sticky="ew", pady=(0, 4))
-        self._equip_panel_frame.grid_remove()
-        self._equip_selections: list[dict] = []
-
         btn_f = tk.Frame(card, bg=C_SURFACE)
-        btn_f.grid(row=11, column=1, sticky="e")
+        btn_f.grid(row=10, column=1, sticky="e")
         btn(btn_f, "📤  Gui yeu cau dat phong", self._submit).pack()
 
         # ── Right: room info card ─────────────────────────────────────────────
@@ -353,160 +345,12 @@ class BookingFormFrame(tk.Frame):
                 command=lambda r=room: self._open_equipment_report(r))
             report_btn.pack(fill="x", pady=(0, 4), ipadx=4, ipady=4)
 
-    def _build_equip_panel(self, room_id: str) -> None:
-        """Rebuild the interactive equipment-selection panel for *room_id*.
-
-        Each row shows:
-          • equipment name + type
-          • current status badge
-          • [Su dung] checkbox  — disabled when equipment is already broken
-          • [Bao hong] checkbox — auto-checked for broken equipment
-          • description entry   — enabled only when [Bao hong] is ticked
-        """
-        frame = self._equip_panel_frame
-        for w in frame.winfo_children():
-            w.destroy()
-        self._equip_selections = []
-
-        if self.equip_ctrl is None or not room_id:
-            frame.grid_remove()
-            return
-
-        try:
-            items = self.equip_ctrl.list_equipment(room_id=room_id)
-        except Exception:
-            items = []
-
-        if not items:
-            frame.grid_remove()
-            return
-
-        # ── Section header ─────────────────────────────────────────────────
-        tk.Frame(frame, bg=C_BORDER, height=1).pack(fill="x", pady=(8, 0))
-        hdr = tk.Frame(frame, bg="#fefce8", highlightthickness=1,
-                       highlightbackground="#fde68a")
-        hdr.pack(fill="x")
-        tk.Label(hdr,
-                 text="⚙️  Thiet bi trong phong — Chon su dung & bao su co",
-                 bg="#fefce8", fg="#92400e",
-                 font=("Segoe UI", 9, "bold")).pack(side="left", padx=12, pady=6)
-        tk.Label(hdr, text=f"{len(items)} thiet bi",
-                 bg="#fefce8", fg="#b45309",
-                 font=("Segoe UI", 8)).pack(side="right", padx=12)
-
-        # ── Table ──────────────────────────────────────────────────────────
-        table = tk.Frame(frame, bg=C_BORDER)
-        table.pack(fill="x", pady=(1, 0))
-        table.columnconfigure(0, weight=2, minsize=140)
-        table.columnconfigure(1, minsize=100)
-        table.columnconfigure(2, minsize=70)
-        table.columnconfigure(3, minsize=70)
-        table.columnconfigure(4, weight=3, minsize=160)
-
-        for col_i, col_txt in enumerate(
-                ["Thiet bi", "Trang thai", "Su dung", "Bao hong", "Mo ta loi"]):
-            tk.Label(table, text=col_txt, bg="#e2e8f0", fg="#475569",
-                     font=("Segoe UI", 8, "bold"),
-                     anchor="center", padx=6, pady=4
-                     ).grid(row=0, column=col_i, sticky="ew",
-                            padx=(0, 1), pady=(0, 1))
-
-        STATUS_CFG: dict[str, tuple[str, str, str]] = {
-            "Hoat dong":   ("✅", "#dcfce7", "#15803d"),
-            "Bao tri":     ("⚠️", "#fef3c7", "#b45309"),
-            "Hong":        ("❌", "#fdf2f8", "#db2777"),
-            "Dang sua":    ("🔨", "#dbeafe", "#1d4ed8"),
-            "Da thanh ly": ("🗑", "#f1f5f9", "#64748b"),
-        }
-        BROKEN_STATUSES = {"Hong", "Bao tri", "Dang sua"}
-
-        for row_i, eq in enumerate(items, start=1):
-            row_bg = "#ffffff" if row_i % 2 == 1 else "#f8fafc"
-            is_broken  = eq.status in BROKEN_STATUSES
-            use_var    = tk.BooleanVar(value=not is_broken)
-            broken_var = tk.BooleanVar(value=is_broken)
-            desc_var   = tk.StringVar()
-
-            # Col 0: name + type
-            name_cell = tk.Frame(table, bg=row_bg)
-            name_cell.grid(row=row_i, column=0, sticky="ew",
-                           padx=(0, 1), pady=1)
-            tk.Label(name_cell, text=eq.name, bg=row_bg, fg="#1e293b",
-                     font=("Segoe UI", 9, "bold"),
-                     anchor="w", padx=8).pack(side="left")
-            tk.Label(name_cell, text=f" [{eq.equipment_type}]",
-                     bg=row_bg, fg="#94a3b8",
-                     font=("Segoe UI", 8)).pack(side="left")
-
-            # Col 1: status badge
-            icon, badge_bg, badge_fg = STATUS_CFG.get(
-                eq.status, ("•", row_bg, "#64748b"))
-            tk.Label(table, text=f"{icon} {eq.status}",
-                     bg=badge_bg, fg=badge_fg,
-                     font=("Segoe UI", 8, "bold"),
-                     anchor="center"
-                     ).grid(row=row_i, column=1, sticky="ew",
-                            padx=(0, 1), pady=1, ipady=3)
-
-            # Col 2: "Su dung" checkbox — disabled for already-broken equipment
-            use_cb = tk.Checkbutton(
-                table, variable=use_var, bg=row_bg,
-                activebackground=row_bg,
-                cursor="" if is_broken else "hand2",
-                state="disabled" if is_broken else "normal")
-            use_cb.grid(row=row_i, column=2, pady=1)
-
-            # Col 3: "Bao hong" checkbox
-            broken_cb = tk.Checkbutton(  # noqa: F841
-                table, variable=broken_var, bg=row_bg,
-                fg="#db2777", selectcolor=row_bg,
-                activebackground=row_bg, cursor="hand2")
-            broken_cb.grid(row=row_i, column=3, pady=1)
-
-            # Col 4: description entry (enabled only when broken is ticked)
-            desc_entry = tk.Entry(
-                table, textvariable=desc_var,
-                font=("Segoe UI", 9), relief="solid", bd=1,
-                bg="#fff7ed" if is_broken else "#f8fafc",
-                fg="#1e293b",
-                state="normal" if is_broken else "disabled")
-            desc_entry.grid(row=row_i, column=4, sticky="ew",
-                            padx=(2, 6), pady=1, ipady=3)
-
-            # When "Bao hong" is toggled: sync desc entry + use checkbox
-            def _on_broken(
-                    *_: Any,
-                    bv: tk.BooleanVar = broken_var,
-                    de: tk.Entry = desc_entry,
-                    uv: tk.BooleanVar = use_var,
-                    ucb: tk.Checkbutton = use_cb,
-            ) -> None:
-                if bv.get():
-                    de.config(state="normal", bg="#fff7ed")
-                    uv.set(False)
-                    ucb.config(state="disabled")
-                else:
-                    de.config(state="disabled", bg="#f8fafc")
-                    ucb.config(state="normal")
-
-            broken_var.trace_add("write", _on_broken)
-
-            self._equip_selections.append({
-                "equip":      eq,
-                "use_var":    use_var,
-                "broken_var": broken_var,
-                "desc_var":   desc_var,
-            })
-
-        frame.grid()
-
     def _on_room_selected(self, _event: Any = None) -> None:
         display = self.room_var.get()
         room_id = self._room_display_map.get(display, display.split(" – ")[0])
         room = self.room_ctrl.get_room(room_id)
         if room:
             self._draw_room_info(room)
-        self._build_equip_panel(room_id)
         self._refresh_slots()
 
     def _open_equipment_report(self, room: Any) -> None:
@@ -753,36 +597,36 @@ class BookingFormFrame(tk.Frame):
                  font=("Segoe UI", 8)).pack(side="right", padx=12)
 
         # ── Chips row ─────────────────────────────────────────────────────────
-        chips_bg = tk.Frame(frame, bg="#f8fafc", highlightthickness=1,
-                            highlightbackground="#e2e8f0")
+        chips_bg = tk.Frame(frame, bg=_get_c("BG"), highlightthickness=1,
+                            highlightbackground=_get_c("BORDER"))
         chips_bg.pack(fill="x")
 
         for r in free_rooms:   # hien thi tat ca phong con trong
             display = f"{r.room_id} – {r.name} (SC: {r.capacity})"
-            chip_col = tk.Frame(chips_bg, bg="#f8fafc")
+            chip_col = tk.Frame(chips_bg, bg=_get_c("BG"))
             chip_col.pack(side="left", padx=6, pady=6)
 
             chip_btn = tk.Button(
                 chip_col,
                 text=f"  {r.room_id}  ",
-                bg="#dbeafe", fg="#1d4ed8",
+                bg=_get_c("INFO_BG"), fg=_get_c("ACCENT"),
                 font=("Segoe UI", 9, "bold"),
                 relief="flat", bd=0, cursor="hand2",
-                activebackground="#bfdbfe",
+                activebackground=_get_c("SB_HOVER"),
                 command=lambda dn=display, s=slot:
                     self._apply_suggestion(dn, None, s),
             )
             chip_btn.pack()
-            chip_btn.bind("<Enter>", lambda e, b=chip_btn: b.config(bg="#bfdbfe"))
-            chip_btn.bind("<Leave>", lambda e, b=chip_btn: b.config(bg="#dbeafe"))
+            chip_btn.bind("<Enter>", lambda e=None, b=chip_btn: b.config(bg=_get_c("SB_HOVER")))
+            chip_btn.bind("<Leave>", lambda e=None, b=chip_btn: b.config(bg=_get_c("INFO_BG")))
 
             tk.Label(chip_col,
                      text=f"{r.name}",
-                     bg="#f8fafc", fg="#334155",
+                     bg=_get_c("BG"), fg=_get_c("TEXT"),
                      font=("Segoe UI", 7, "bold")).pack()
             tk.Label(chip_col,
                      text=f"{r.capacity} ch.  •  {r.room_type}",
-                     bg="#f8fafc", fg="#64748b",
+                     bg=_get_c("BG"), fg=_get_c("MUTED"),
                      font=("Segoe UI", 7)).pack()
 
         frame.grid()
@@ -811,55 +655,38 @@ class BookingFormFrame(tk.Frame):
     def _submit(self) -> None:
         display = self.room_var.get().strip()
         room_id = self._room_display_map.get(display, display.split(" – ")[0]) if display else ""
+        if not room_id:
+            messagebox.showwarning("Chua chon phong",
+                                   "Vui long chon phong hoc truoc khi dat.")
+            return
+        if not self.slot_var.get().strip():
+            messagebox.showwarning("Chua chon ca",
+                                   "Vui long chon ca hoc.")
+            return
+        purpose = self.purpose_text.get("1.0", "end").strip()
+        if not purpose:
+            messagebox.showwarning("Thieu muc dich",
+                                   "Vui long nhap muc dich su dung phong.")
+            return
         # Use DateEntry widget directly as authoritative date source
         try:
             booking_date = self._date_entry.get_date().isoformat()  # type: ignore[attr-defined]
         except Exception:
             booking_date = self.date_var.get().strip()
-
-        # Collect maintenance requests; require description for each broken item
-        maintenance_reqs = [
-            (s["equip"], s["desc_var"].get())
-            for s in self._equip_selections
-            if s["broken_var"].get()
-        ]
-        for equip, desc in maintenance_reqs:
-            if not desc.strip():
-                messagebox.showerror(
-                    "Thieu mo ta loi",
-                    f"Vui long nhap mo ta su co cho thiet bi:\n  {equip.name}")
-                return
-
         try:
             self.booking_ctrl.create_booking(
                 user=self.current_user,
                 room_id=room_id,
                 booking_date=booking_date,
                 slot=self.slot_var.get().strip(),
-                purpose=self.purpose_text.get("1.0", "end"),
+                purpose=purpose,
             )
         except ValueError as err:
             messagebox.showerror("Khong the dat phong", str(err))
             return
-
-        # Submit maintenance requests (booking already saved — don't block on errors)
-        failed_reports: list[str] = []
-        if self.equip_ctrl is not None:
-            for equip, desc in maintenance_reqs:
-                try:
-                    self.equip_ctrl.report_broken(
-                        equip.equipment_id, self.current_user, desc.strip())
-                except Exception:
-                    failed_reports.append(equip.name)
-
-        msg = ("Yeu cau dat phong da duoc gui.\n"
-               "Vui long cho admin duyet de co hieu luc.")
-        if maintenance_reqs:
-            ok = len(maintenance_reqs) - len(failed_reports)
-            msg += f"\n\n🔧  Da tao {ok}/{len(maintenance_reqs)} bao cao su co thiet bi."
-        if failed_reports:
-            msg += f"\n⚠  Loi khi gui bao cao: {', '.join(failed_reports)}"
-        messagebox.showinfo("Dat phong thanh cong!", msg)
+        messagebox.showinfo("Dat phong thanh cong!",
+                            "Yeu cau da duoc gui.\n"
+                            "Vui long cho admin duyet de co hieu luc.")
         # Reset form fields to prevent accidental duplicate submission
         self.purpose_text.delete("1.0", "end")
         self.room_var.set("")
@@ -868,18 +695,16 @@ class BookingFormFrame(tk.Frame):
         # Reset slot button visuals
         for sn, sb in self._slot_btns.items():
             if sn == "Ca 1":
-                sb.config(bg=C_PRIMARY, fg="white", relief="sunken",
+                sb.config(bg=_get_c("ACCENT"), fg="white", relief="sunken",
                           font=("Segoe UI", 9, "bold"))
             else:
-                sb.config(bg="#f1f5f9", fg="#334155", relief="flat",
+                sb.config(bg=_get_c("BG"), fg=_get_c("TEXT"), relief="flat",
                           font=("Segoe UI", 9))
         self._draw_room_placeholder()
         self._suggest_outer.grid_remove()
         self._room_suggest_frame.grid_remove()
-        self._equip_panel_frame.grid_remove()
-        self._equip_selections = []
         self.avail_var.set("Chon phong va ngay de xem")
-        self._avail_lbl.config(bg="#f0fdf4", fg="#15803d")
+        self._avail_lbl.config(bg=_get_c("SUCCESS_BG"), fg=_get_c("SUCCESS"))
         self._refresh_slots()
         if self.on_booking_created:
             self.on_booking_created()

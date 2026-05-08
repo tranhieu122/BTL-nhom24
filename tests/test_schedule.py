@@ -4,7 +4,7 @@ import sys, os
 import datetime as dt
 import pytest
 
-_ROOT = os.path.join(os.path.dirname(__file__), "..", "src", "back end")
+_ROOT = os.path.join(os.path.dirname(__file__), "..", "src", "backend")
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
@@ -26,7 +26,7 @@ def _base_payload(**overrides) -> dict:  # type: ignore
         "end_time":      "09:00",
         "start_date":    today.isoformat(),
         "end_date":      (today + dt.timedelta(weeks=4)).isoformat(),
-        "room_id":       "P201",
+        "room_id":       "P101",
         "lecturer_id":   "GV001",
         "lecturer_name": "Nguyen Van A",
         **overrides,
@@ -92,7 +92,7 @@ class TestOccurrenceGeneration:
     def test_cancel_rule_marks_occurrences(self):
         ctrl = _make_ctrl()
         rule = ctrl.create_rule(_base_payload())
-        ctrl.cancel_rule(rule.rule_id)
+        ctrl.update_rule_status(rule.rule_id, "Huy")
         updated = ctrl.get_rule(rule.rule_id)
         assert updated is not None
         assert updated.status == "Huy"

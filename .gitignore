@@ -8,8 +8,8 @@ __pycache__/
 .env
 
 # Database sinh ra khi chay – khong can track
-src/back end/database/classroom_booking.db
-src/back end/database/backups/
+src/backend/database/classroom_booking.db
+src/backend/database/backups/
 
 # Bao cao xuat ra
 exports/
@@ -20,7 +20,7 @@ exports/
 *.bkp
 
 # Logs
-src/back end/logs/
+src/backend/logs/
 *.log
 
 # GitHub Workflows
